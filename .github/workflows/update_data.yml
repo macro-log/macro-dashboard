@@ -1,0 +1,60 @@
+name: Financial Data Update
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: pip install yfinance pandas
+
+      - name: Run Update Script
+        run: |
+          python << END
+          import yfinance as yf
+          import json
+          import os
+
+          tickers = {
+              "비트코인": "BTC-USD", "S&P500": "^GSPC", "나스닥": "^IXIC", "다우존스": "^DJI",
+              "원달러 환율": "KRW=X", "엔달러 환율": "JPY=X", "미국 국채 10년": "^TNX",
+              "미국 국채 5년": "^FVX", "한국 국채 10년": "KR10YT=RR", "일본 국채 10년": "JG10Y.T",
+              "금 (Gold)": "GC=F", "WTI 유가": "CL=F"
+          }
+
+          results = {}
+          for name, ticker in tickers.items():
+              try:
+                  t = yf.Ticker(ticker)
+                  data = t.history(period="2d")
+                  if not data.empty:
+                      curr = data['Close'].iloc[-1]
+                      prev = t.info.get('previousClose', data['Close'].iloc[0])
+                      change = ((curr - prev) / prev) * 100
+                      results[name] = {"price": f"{curr:,.2f}", "change": f"{'+' if change >= 0 else ''}{change:.2f}%"}
+              except:
+                  results[name] = {"price": "점검중", "change": "-"}
+
+          os.makedirs('content', exist_ok=True)
+          with open('content/indicators.json', 'w', encoding='utf-8') as f:
+              json.dump(results, f, indent=4, ensure_ascii=False)
+          END
+
+      - name: Commit and Push
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add content/indicators.json
+          git commit -m "지표 업데이트 [skip netlify]" || echo "No changes"
+          git push
