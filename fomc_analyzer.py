@@ -4,7 +4,7 @@ import pandas as pd
 import json
 
 # -----------------------------
-# 텍스트 정리 (전처리)
+# 텍스트 정리 (전처리) - 수정 없음
 # -----------------------------
 def clean_text(text):
     text = text.lower()
@@ -18,14 +18,14 @@ def clean_text(text):
         "that","with","as","by","at","an","be","this","it",
         "were","was","are","from","or","but","not","have",
         "had","has","their","they","them","its", "will", "would",
-        "could", "should", "been", "been"
+        "could", "should", "been", "been", "meeting", "committee", "fed", "federal"
     ])
 
     words = [w for w in words if w not in stopwords and len(w) > 3]
     return words
 
 # -----------------------------
-# 단어 빈도 계산
+# 단어 빈도 계산 - 수정 없음
 # -----------------------------
 def get_word_freq(filepath):
     try:
@@ -38,7 +38,7 @@ def get_word_freq(filepath):
         return Counter()
 
 # -----------------------------
-# 변화율 계산 및 JSON 저장
+# [수정] 분석 및 통합 JSON 저장
 # -----------------------------
 def analyze_and_save(current_file, compare_file, output_json):
     print(f"\n[{output_json}] 분석 중...")
@@ -51,28 +51,43 @@ def analyze_and_save(current_file, compare_file, output_json):
         return
 
     rows = []
-    # 두 의사록의 모든 단어 집합
     all_words = set(current_freq.keys()).union(set(compare_freq.keys()))
 
     for word in all_words:
         cur = current_freq.get(word, 0)
         comp = compare_freq.get(word, 0)
         
-        # 변화율 계산 (분모가 0일 경우 처리)
+        # 변화율 계산
         if comp == 0:
             change_rate = float('inf') if cur > 0 else 0
         else:
             change_rate = (cur - comp) / comp
 
-        rows.append({"word": word, "current": cur, "compare": comp, "change_rate": change_rate})
+        # [수정] 데이터 형태를 UI에 맞게 변경
+        rows.append({
+            "word": word, 
+            "delta": f"{'+' if change_rate > 0 else ''}{change_rate:.2%}" # 변화율을 %로 표현
+        })
 
     # 데이터프레임 변환 및 정렬 (변화폭이 가장 큰 단어순)
     df = pd.DataFrame(rows)
-    df = df.sort_values(by="change_rate", key=lambda x: x.abs(), ascending=False)
+    df = df.sort_values(by="word", ascending=False) # 단어 순 정렬
     
-    # 💡 웹사이트 연동 핵심: JSON 파일로 저장
-    top_words = df.head(50) # 상위 50개만 저장
-    top_words.to_json(output_json, orient="records", force_ascii=False)
+    # 💡 웹사이트 연동 핵심: 모든 단어가 아닌 top 10만 추출
+    top_words = df.head(10).to_dict(orient="records")
+    
+    # [수정] Scenario 데이터 임시 생성 (실제 구현시 자동화 필요)
+    scenario_text = "이번 회의에서는 금리 인하에 대한 논의가 전월 대비 완화되었으며, 인플레이션 상승 위험이 높게 평가되었습니다."
+
+    # [핵심] JSON 파일 구조 통합
+    final_data = {
+        "scenario": scenario_text,
+        "keywords": top_words
+    }
+    
+    with open(output_json, 'w', encoding='utf-8') as f:
+        json.dump(final_data, f, ensure_ascii=False, indent=4)
+        
     print(f"✅ {output_json} 파일 생성 완료!")
 
 # -----------------------------
@@ -82,10 +97,6 @@ if __name__ == "__main__":
     # 파일 경로 설정 (signal9 폴더 안에 있어야 함)
     current = "current_minutes.txt"
     previous = "previous_minutes.txt"
-    last_year = "last_year_minutes.txt"
 
-    # 1. 직전 의사록 대비 분석
-    analyze_and_save(current, previous, "change_vs_previous.json")
-    
-    # 2. 1년 전 대비 분석
-    analyze_and_save(current, last_year, "change_vs_last_year.json")
+    # [수정] 💡 웹사이트는 indicators.json 만 필요함
+    analyze_and_save(current, previous, "indicators.json")

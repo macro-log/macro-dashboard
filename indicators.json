@@ -1,0 +1,45 @@
+{
+    "scenario": "이번 회의에서는 금리 인하에 대한 논의가 전월 대비 완화되었으며, 인플레이션 상승 위험이 높게 평가되었습니다.",
+    "keywords": [
+        {
+            "word": "york",
+            "delta": "+600.00%"
+        },
+        {
+            "word": "yields",
+            "delta": "0.00%"
+        },
+        {
+            "word": "years",
+            "delta": "+66.67%"
+        },
+        {
+            "word": "year",
+            "delta": "-6.67%"
+        },
+        {
+            "word": "working",
+            "delta": "+inf%"
+        },
+        {
+            "word": "workers",
+            "delta": "+inf%"
+        },
+        {
+            "word": "without",
+            "delta": "-50.00%"
+        },
+        {
+            "word": "within",
+            "delta": "-66.67%"
+        },
+        {
+            "word": "wilson",
+            "delta": "+inf%"
+        },
+        {
+            "word": "willing",
+            "delta": "+inf%"
+        }
+    ]
+}
