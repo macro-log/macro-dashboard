@@ -3,48 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Macro Dashboard</title>
+    <title>FOMC Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #001f3f; color: white; padding: 20px; }
-        .container { max-width: 1000px; margin: 0 auto; }
-        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-        canvas { background-color: white; border-radius: 8px; padding: 10px; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .card { background-color: white; color: black; border-radius: 8px; padding: 20px; margin-top: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        canvas { width: 100% !important; height: 400px !important; }
         h1 { text-align: center; }
-        .status { text-align: center; margin-bottom: 20px; font-weight: bold; }
+        .scenario-text { font-size: 1.2em; font-weight: bold; margin-bottom: 10px; color: #001f3f; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Macro Economic Indicators</h1>
-        <div class="status" id="status">데이터 업데이트 중...</div>
-        <div class="dashboard-grid">
-            <canvas id="chart1"></canvas>
-            <canvas id="chart2"></canvas>
-            </div>
+        <h1>FOMC Analysis Dashboard</h1>
+        <div class="card">
+            <div class="scenario-text" id="scenario">데이터 불러오는 중...</div>
+            <canvas id="myChart"></canvas>
+        </div>
     </div>
     <script>
-        // 데이터 불러오기 및 그래프 생성 스크립트
         fetch('indicators.json')
             .then(response => response.json())
             .then(data => {
-                document.getElementById('status').innerText = '최신 데이터 반영 완료';
-                
-                // 그래프 1 생성 예시
-                const ctx1 = document.getElementById('chart1').getContext('2d');
-                new Chart(ctx1, {
-                    type: 'line',
+                document.getElementById('scenario').innerText = "Scenario: " + data.scenario;
+                const ctx = document.getElementById('myChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
                     data: {
-                        labels: data.dates,
+                        labels: data.keywords.map(k => k.word),
                         datasets: [{
-                            label: 'GDP Growth',
-                            data: data.gdp,
-                            borderColor: 'rgb(75, 192, 192)',
-                            tension: 0.1
+                            label: 'Keywords Delta (%)',
+                            data: data.keywords.map(k => parseFloat(k.delta)),
+                            backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
                         }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: { y: { beginAtZero: true } }
                     }
                 });
-                // ... 나머지 9개 그래프 생성 코드
             });
     </script>
 </body>
