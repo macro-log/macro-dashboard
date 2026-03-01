@@ -6,37 +6,45 @@
     <title>Macro Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #001f3f; color: white; padding: 20px; }
-        .container { max-width: 800px; margin: 0 auto; }
-        canvas { background-color: white; border-radius: 8px; padding: 10px; margin-top: 20px; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #001f3f; color: white; padding: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        canvas { background-color: white; border-radius: 8px; padding: 10px; }
         h1 { text-align: center; }
+        .status { text-align: center; margin-bottom: 20px; font-weight: bold; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>FOMC Analysis Dashboard</h1>
-        <div id="scenario">데이터를 불러오는 중...</div>
-        <canvas id="myChart"></canvas>
+        <h1>Macro Economic Indicators</h1>
+        <div class="status" id="status">데이터 업데이트 중...</div>
+        <div class="dashboard-grid">
+            <canvas id="chart1"></canvas>
+            <canvas id="chart2"></canvas>
+            </div>
     </div>
     <script>
+        // 데이터 불러오기 및 그래프 생성 스크립트
         fetch('indicators.json')
             .then(response => response.json())
             .then(data => {
-                document.getElementById('scenario').innerText = data.scenario;
-                const ctx = document.getElementById('myChart').getContext('2d');
-                new Chart(ctx, {
-                    type: 'bar',
+                document.getElementById('status').innerText = '최신 데이터 반영 완료';
+                
+                // 그래프 1 생성 예시
+                const ctx1 = document.getElementById('chart1').getContext('2d');
+                new Chart(ctx1, {
+                    type: 'line',
                     data: {
-                        labels: data.keywords.map(k => k.word),
+                        labels: data.dates,
                         datasets: [{
-                            label: 'Keywords Delta (%)',
-                            data: data.keywords.map(k => parseFloat(k.delta)),
-                            backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1
+                            label: 'GDP Growth',
+                            data: data.gdp,
+                            borderColor: 'rgb(75, 192, 192)',
+                            tension: 0.1
                         }]
                     }
                 });
+                // ... 나머지 9개 그래프 생성 코드
             });
     </script>
 </body>
