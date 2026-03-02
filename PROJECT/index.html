@@ -138,21 +138,23 @@
                 listTitle.innerText = "기업별 단어 변화";
             }
 
-            // 2. 데이터 필터링
-            const filteredData = rawData.keywords.filter(item => {
+            // 2. 데이터 필터링 (rawData가 곧 배열임)
+            const filteredData = rawData.filter(item => {
                 return currentDataType === 'fomc' ? item.type === 'fomc' : item.type === 'company';
             });
 
-            // 3. 정렬 (기업일 경우 지정된 순서대로)
+            // 3. 정렬
             if (currentDataType === 'company') {
+                // 기업 순서 지정
                 const companyOrder = [
                     "NVIDIA", "Google", "Apple", "Microsoft", 
                     "Amazon", "Meta", "Broadcom", "Tesla", "Berkshire"
                 ];
                 filteredData.sort((a, b) => {
-                    return companyOrder.indexOf(a.word) - companyOrder.indexOf(b.word);
+                    return companyOrder.indexOf(a.source) - companyOrder.indexOf(b.source);
                 });
             } else {
+                // FOMC는 count 순
                 filteredData.sort((a, b) => b.count - a.count);
             }
 
@@ -217,11 +219,12 @@
         window.onload = function() { 
             changeWidget('BINANCE:BTCUSDT');
 
+            // JSON 파일 불러오기
             fetch('indicators.json')
                 .then(response => response.json())
                 .then(data => {
                     rawData = data; // [중요] 데이터 저장
-                    updateUI(); // 초기 UI 렌더링 (fomc)
+                    updateUI(); // 초기 UI 렌더링
                 })
                 .catch(err => console.error("Data Load Error:", err));
         };

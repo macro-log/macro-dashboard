@@ -1,62 +1,12 @@
 [
-  {
-    "name": "Inflation",
-    "value": 48,
-    "type": "FOMC"
-  },
-  {
-    "name": "Interest Rate",
-    "value": 35,
-    "type": "FOMC"
-  },
-  {
-    "name": "AI Chip Demand",
-    "value": 55,
-    "type": "NVIDIA"
-  },
-  {
-    "name": "Data Center",
-    "value": 45,
-    "type": "NVIDIA"
-  },
-  {
-    "name": "Search AI",
-    "value": 42,
-    "type": "Google"
-  },
-  {
-    "name": "Cloud Growth",
-    "value": 40,
-    "type": "Microsoft"
-  },
-  {
-    "name": "iPhone Sales",
-    "value": 38,
-    "type": "Apple"
-  },
-  {
-    "name": "AWS",
-    "value": 32,
-    "type": "Amazon"
-  },
-  {
-    "name": "Metaverse Investment",
-    "value": 29,
-    "type": "Meta"
-  },
-  {
-    "name": "Custom Chips",
-    "value": 25,
-    "type": "Broadcom"
-  },
-  {
-    "name": "EV Demand",
-    "value": 30,
-    "type": "Tesla"
-  },
-  {
-    "name": "Cash Holding",
-    "value": 20,
-    "type": "Berkshire"
-  }
+  { "word": "AI Chip Demand", "count": 55, "trend": "up", "impact": "High", "type": "company", "source": "NVIDIA" },
+  { "word": "Inflation", "count": 48, "trend": "up", "impact": "High", "type": "fomc", "source": "FOMC Minutes" },
+  { "word": "Data Center", "count": 45, "trend": "up", "impact": "High", "type": "company", "source": "NVIDIA" },
+  { "word": "Search AI", "count": 42, "trend": "up", "impact": "High", "type": "company", "source": "Google" },
+  { "word": "Cloud Growth", "count": 40, "trend": "up", "impact": "High", "type": "company", "source": "Microsoft" },
+  { "word": "iPhone Sales", "count": 38, "trend": "down", "impact": "Mid", "type": "company", "source": "Apple" },
+  { "word": "Interest Rate", "count": 35, "trend": "down", "impact": "Mid", "type": "fomc", "source": "FOMC Minutes" },
+  { "word": "AWS", "count": 32, "trend": "up", "impact": "Mid", "type": "company", "source": "Amazon" },
+  { "word": "EV Demand", "count": 30, "trend": "down", "impact": "High", "type": "company", "source": "Tesla" },
+  { "word": "Metaverse Investment", "count": 29, "trend": "down", "impact": "High", "type": "company", "source": "Meta" }
 ]
