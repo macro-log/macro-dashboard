@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIGNAL 9 | Strategic Data Terminal</title>
+    <title>SIGNAL 9 | 핵심 데이터 터미널</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -36,7 +36,7 @@
 
     <header>
         <div class="logo">SIGNAL 9</div>
-        <div style="font-size: 0.8rem; color: var(--text-dim);">MACRO INTELLIGENCE TERMINAL</div>
+        <div style="font-size: 0.8rem; color: var(--text-dim);">핵심 데이터 터미널</div>
     </header>
     
     <div class="main-layout">
@@ -56,16 +56,19 @@
 
         <div class="analysis-grid">
             <div class="card h-[450px]">
-                <span class="section-label">Keyword Sentiment Frequency</span>
-                <h3 class="text-xl font-bold mb-4">FOMC Minutes: Top 10 Keywords</h3>
+                <div class="flex justify-between items-center mb-4">
+                    <span class="section-label" id="chart-title-label">키워드 심리 분석</span>
+                    <button onclick="toggleDataType()" id="toggle-btn" class="!px-3 !py-1 !text-xs !bg-[#262f45] !text-white !border-none">기업 키워드 보기</button>
+                </div>
+                <h3 class="text-xl font-bold mb-4" id="chart-title">FOMC 의사록: 상위 10개 키워드</h3>
                 <div class="flex-grow">
                     <canvas id="keywordChart"></canvas>
                 </div>
             </div>
 
             <div class="card h-[450px]">
-                <span class="section-label">Strategic Word Tracking</span>
-                <h3 class="text-xl font-bold mb-4">Sentiment Delta</h3>
+                <span class="section-label">핵심 데이터 목록</span>
+                <h3 class="text-xl font-bold mb-4" id="list-title">상세 데이터 변화</h3>
                 <ul id="indicator-list" class="scroll-list space-y-2"></ul>
             </div>
         </div>
@@ -73,6 +76,10 @@
 
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script type="text/javascript">
+        // [데이터 관리] 현재 보고있는 데이터 타입 (fomc 또는 company)
+        let currentDataType = 'fomc';
+        let rawData = null; // 데이터를 저장할 변수
+
         function loadTicker(symbol) {
             const container = document.getElementById('ticker_container');
             container.innerHTML = "";
@@ -87,14 +94,14 @@
 
         function loadChart(symbol) {
             document.getElementById('chart_box').innerHTML = "";
+            const hideVolumeSymbols = ['TVC:GOLD'];                
+            const showVolume = !hideVolumeSymbols.includes(symbol);
             new TradingView.widget({
                 "width": "100%", "height": 600, "symbol": symbol, "interval": "D",
                 "timezone": "Asia/Seoul", "theme": "dark", "style": "1", "locale": "ko",
                 "container_id": "chart_box", "hide_side_toolbar": false, "withdateranges": true,
-                "details": false,     // [요청반영] 불필요한 사진 속 상세창 제거
-                "hotlist": false,     // [요청반영] 핫리스트 제거
-                "calendar": false,    // [요청반영] 캘린더 제거
-                "studies": [ "Volume@tv-basicstudies" ]
+                "details": false, "hotlist": false, "calendar": false,
+                "studies": showVolume ? [ "Volume@tv-basicstudies" ] : [] 
             });
         }
 
@@ -103,58 +110,118 @@
             loadChart(symbol);
         }
 
+        // [요청반영] 데이터 토글 기능
+        function toggleDataType() {
+            currentDataType = (currentDataType === 'fomc') ? 'company' : 'fomc';
+            updateUI();
+        }
+
+        // [요청반영] UI 업데이트 및 데이터 필터링
+        function updateUI() {
+            if (!rawData) return;
+
+            const toggleBtn = document.getElementById('toggle-btn');
+            const chartTitle = document.getElementById('chart-title');
+            const chartTitleLabel = document.getElementById('chart-title-label');
+            const listTitle = document.getElementById('list-title');
+
+            // 1. UI 텍스트 변경
+            if (currentDataType === 'fomc') {
+                toggleBtn.innerText = "기업 키워드 보기";
+                chartTitleLabel.innerText = "키워드 심리 분석";
+                chartTitle.innerText = "FOMC 의사록: 상위 10개 키워드";
+                listTitle.innerText = "상세 데이터 변화";
+            } else {
+                toggleBtn.innerText = "FOMC 분석 보기";
+                chartTitleLabel.innerText = "기업 심리 분석";
+                chartTitle.innerText = "핵심 기업: 상위 10개 키워드";
+                listTitle.innerText = "기업별 단어 변화";
+            }
+
+            // 2. 데이터 필터링
+            const filteredData = rawData.keywords.filter(item => {
+                return currentDataType === 'fomc' ? item.type === 'fomc' : item.type === 'company';
+            });
+
+            // 3. 정렬 (기업일 경우 지정된 순서대로)
+            if (currentDataType === 'company') {
+                const companyOrder = [
+                    "NVIDIA", "Google", "Apple", "Microsoft", 
+                    "Amazon", "Meta", "Broadcom", "Tesla", "Berkshire"
+                ];
+                filteredData.sort((a, b) => {
+                    return companyOrder.indexOf(a.word) - companyOrder.indexOf(b.word);
+                });
+            } else {
+                filteredData.sort((a, b) => b.count - a.count);
+            }
+
+            renderChartAndList(filteredData);
+        }
+
+        // [요청반영] 차트 및 리스트 렌더링 로직 (재사용)
+        let myChart = null; // 차트 인스턴스 저장용
+        function renderChartAndList(data) {
+            const listElement = document.getElementById('indicator-list');
+            listElement.innerHTML = ""; // 기존 리스트 삭제
+
+            const top10 = data.slice(0, 10);
+            const ctx = document.getElementById('keywordChart').getContext('2d');
+
+            // 기존 차트 삭제 (필수)
+            if (myChart) myChart.destroy();
+            
+            myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: top10.map(k => k.word),
+                    datasets: [{
+                        label: '언급 빈도 (Count)',
+                        data: top10.map(k => k.count),
+                        backgroundColor: 'rgba(56, 189, 248, 0.4)',
+                        borderColor: 'rgba(56, 189, 248, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#262f45' } },
+                        x: { grid: { display: false } }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            data.forEach(item => {
+                const li = document.createElement('li');
+                li.className = 'flex justify-between items-center p-3 rounded bg-[#1e293b] border border-[#262f45] hover:border-[#38bdf8] transition-all';
+                const trendIcon = item.trend === 'up' ? '🔺' : (item.trend === 'down' ? '🔻' : '➖');
+                const source = item.source || "Corporate Action"; 
+
+                li.innerHTML = `
+                    <div class="flex flex-col">
+                        <span class="font-bold text-sm text-slate-100">${item.word}</span>
+                        <span class="text-[10px] text-gray-400 font-semibold">${source} | Impact: ${item.impact}</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="text-sm font-mono text-sky-400">${item.count}</span>
+                        <span class="text-xs">${trendIcon}</span>
+                    </div>
+                `;
+                listElement.appendChild(li);
+            });
+        }
+
         window.onload = function() { 
             changeWidget('BINANCE:BTCUSDT');
 
             fetch('indicators.json')
                 .then(response => response.json())
                 .then(data => {
-                    const sortedData = data.keywords.sort((a, b) => b.count - a.count);
-                    const listElement = document.getElementById('indicator-list');
-                    const top10 = sortedData.slice(0, 10);
-                    const ctx = document.getElementById('keywordChart').getContext('2d');
-                    
-                    new Chart(ctx, {
-                        type: 'bar',
-                        data: {
-                            labels: top10.map(k => k.word),
-                            datasets: [{
-                                label: 'Mentions (Count)',
-                                data: top10.map(k => k.count),
-                                backgroundColor: 'rgba(56, 189, 248, 0.4)',
-                                borderColor: 'rgba(56, 189, 248, 1)',
-                                borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: {
-                                y: { beginAtZero: true, grid: { color: '#262f45' } },
-                                x: { grid: { display: false } }
-                            },
-                            plugins: { legend: { display: false } }
-                        }
-                    });
-
-                    sortedData.forEach(item => {
-                        const li = document.createElement('li');
-                        li.className = 'flex justify-between items-center p-3 rounded bg-[#1e293b] border border-[#262f45] hover:border-[#38bdf8] transition-all';
-                        const trendIcon = item.trend === 'up' ? '🔺' : (item.trend === 'down' ? '🔻' : '➖');
-                        const impactColor = item.impact === 'High' ? 'text-red-400' : (item.impact === 'Mid' ? 'text-yellow-400' : 'text-gray-400');
-
-                        li.innerHTML = `
-                            <div class="flex flex-col">
-                                <span class="font-bold text-sm text-slate-100">${item.word}</span>
-                                <span class="text-[10px] ${impactColor} font-semibold">IMPACT: ${item.impact}</span>
-                            </div>
-                            <div class="flex items-center gap-4">
-                                <span class="text-sm font-mono text-sky-400">${item.count}</span>
-                                <span class="text-xs">${trendIcon}</span>
-                            </div>
-                        `;
-                        listElement.appendChild(li);
-                    });
+                    rawData = data; // [중요] 데이터 저장
+                    updateUI(); // 초기 UI 렌더링 (fomc)
                 })
                 .catch(err => console.error("Data Load Error:", err));
         };

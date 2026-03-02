@@ -1,36 +1,100 @@
 {
-  "last_updated": "2026-03-02",
-  "fomc_sentiment": "Hawkish",
   "keywords": [
-    { "word": "Inflation", "count": 48, "trend": "up", "impact": "High" },
-    { "word": "Employment", "count": 35, "trend": "stable", "impact": "Mid" },
-    { "word": "Restrictive", "count": 12, "trend": "up", "impact": "High" },
-    { "word": "Recession", "count": 5, "trend": "down", "impact": "Low" },
-    { "word": "Uncertainty", "count": 22, "trend": "up", "impact": "Mid" },
-    { "word": "Disinflation", "count": 8, "trend": "up", "impact": "Mid" },
-    { "word": "Tightening", "count": 15, "trend": "stable", "impact": "High" },
-    { "word": "Soft landing", "count": 4, "trend": "down", "impact": "Mid" },
-    { "word": "Data-dependent", "count": 28, "trend": "up", "impact": "Mid" },
-    { "word": "Stability", "count": 10, "trend": "stable", "impact": "High" },
-    { "word": "Housing", "count": 14, "trend": "up", "impact": "Low" },
-    { "word": "Consumption", "count": 19, "trend": "stable", "impact": "Mid" },
-    { "word": "Wages", "count": 21, "trend": "up", "impact": "High" },
-    { "word": "Liquidity", "count": 6, "trend": "down", "impact": "High" },
-    { "word": "Growth", "count": 25, "trend": "stable", "impact": "Mid" },
-    { "word": "Pause", "count": 3, "trend": "new", "impact": "High" },
-    { "word": "Pivot", "count": 1, "trend": "stable", "impact": "High" },
-    { "word": "Elevated", "count": 17, "trend": "up", "impact": "Mid" },
-    { "word": "Sticky", "count": 9, "trend": "up", "impact": "High" },
-    { "word": "Anchored", "count": 11, "trend": "stable", "impact": "Mid" },
-    { "word": "Banking", "count": 4, "trend": "stable", "impact": "High" },
-    { "word": "Credit", "count": 13, "trend": "up", "impact": "Mid" },
-    { "word": "Global", "count": 16, "trend": "stable", "impact": "Low" },
-    { "word": "Energy", "count": 7, "trend": "down", "impact": "Low" },
-    { "word": "Supply", "count": 12, "trend": "stable", "impact": "Mid" },
-    { "word": "Demand", "count": 18, "trend": "down", "impact": "Mid" },
-    { "word": "Trajectory", "count": 9, "trend": "stable", "impact": "Low" },
-    { "word": "Projections", "count": 14, "trend": "up", "impact": "Mid" },
-    { "word": "Lagged", "count": 5, "trend": "up", "impact": "High" },
-    { "word": "Symmetric", "count": 2, "trend": "stable", "impact": "Low" }
+    {
+      "word": "Inflation",
+      "count": 48,
+      "trend": "up",
+      "impact": "High",
+      "type": "FOMC",
+      "source": "FOMC Minutes"
+    },
+    {
+      "word": "Interest Rate",
+      "count": 35,
+      "trend": "down",
+      "impact": "Mid",
+      "type": "FOMC",
+      "source": "FOMC Minutes"
+    },
+    {
+      "word": "AI Chip Demand",
+      "count": 55,
+      "trend": "up",
+      "impact": "High",
+      "type": "NVIDIA",
+      "source": "Q1 Earnings Call"
+    },
+    {
+      "word": "Data Center",
+      "count": 45,
+      "trend": "up",
+      "impact": "High",
+      "type": "NVIDIA",
+      "source": "Q1 Earnings Call"
+    },
+    {
+      "word": "Search AI",
+      "count": 42,
+      "trend": "up",
+      "impact": "High",
+      "type": "Google",
+      "source": "Developer Conference"
+    },
+    {
+      "word": "Cloud Growth",
+      "count": 40,
+      "trend": "up",
+      "impact": "High",
+      "type": "Microsoft",
+      "source": "CEO Speech"
+    },
+    {
+      "word": "iPhone Sales",
+      "count": 38,
+      "trend": "down",
+      "impact": "Mid",
+      "type": "Apple",
+      "source": "Quarterly Report"
+    },
+    {
+      "word": "AWS",
+      "count": 32,
+      "trend": "up",
+      "impact": "Mid",
+      "type": "Amazon",
+      "source": "Quarterly Report"
+    },
+    {
+      "word": "Metaverse Investment",
+      "count": 29,
+      "trend": "down",
+      "impact": "High",
+      "type": "Meta",
+      "source": "Earnings Call"
+    },
+    {
+      "word": "Custom Chips",
+      "count": 25,
+      "trend": "up",
+      "impact": "Mid",
+      "type": "Broadcom",
+      "source": "Investor Day"
+    },
+    {
+      "word": "EV Demand",
+      "count": 30,
+      "trend": "down",
+      "impact": "High",
+      "type": "Tesla",
+      "source": "Quarterly Report"
+    },
+    {
+      "word": "Cash Holding",
+      "count": 20,
+      "trend": "down",
+      "impact": "Mid",
+      "type": "Berkshire",
+      "source": "Shareholder Meeting"
+    }
   ]
 }
