@@ -1,100 +1,62 @@
-{
-  "keywords": [
-    {
-      "word": "Inflation",
-      "count": 48,
-      "trend": "up",
-      "impact": "High",
-      "type": "FOMC",
-      "source": "FOMC Minutes"
-    },
-    {
-      "word": "Interest Rate",
-      "count": 35,
-      "trend": "down",
-      "impact": "Mid",
-      "type": "FOMC",
-      "source": "FOMC Minutes"
-    },
-    {
-      "word": "AI Chip Demand",
-      "count": 55,
-      "trend": "up",
-      "impact": "High",
-      "type": "NVIDIA",
-      "source": "Q1 Earnings Call"
-    },
-    {
-      "word": "Data Center",
-      "count": 45,
-      "trend": "up",
-      "impact": "High",
-      "type": "NVIDIA",
-      "source": "Q1 Earnings Call"
-    },
-    {
-      "word": "Search AI",
-      "count": 42,
-      "trend": "up",
-      "impact": "High",
-      "type": "Google",
-      "source": "Developer Conference"
-    },
-    {
-      "word": "Cloud Growth",
-      "count": 40,
-      "trend": "up",
-      "impact": "High",
-      "type": "Microsoft",
-      "source": "CEO Speech"
-    },
-    {
-      "word": "iPhone Sales",
-      "count": 38,
-      "trend": "down",
-      "impact": "Mid",
-      "type": "Apple",
-      "source": "Quarterly Report"
-    },
-    {
-      "word": "AWS",
-      "count": 32,
-      "trend": "up",
-      "impact": "Mid",
-      "type": "Amazon",
-      "source": "Quarterly Report"
-    },
-    {
-      "word": "Metaverse Investment",
-      "count": 29,
-      "trend": "down",
-      "impact": "High",
-      "type": "Meta",
-      "source": "Earnings Call"
-    },
-    {
-      "word": "Custom Chips",
-      "count": 25,
-      "trend": "up",
-      "impact": "Mid",
-      "type": "Broadcom",
-      "source": "Investor Day"
-    },
-    {
-      "word": "EV Demand",
-      "count": 30,
-      "trend": "down",
-      "impact": "High",
-      "type": "Tesla",
-      "source": "Quarterly Report"
-    },
-    {
-      "word": "Cash Holding",
-      "count": 20,
-      "trend": "down",
-      "impact": "Mid",
-      "type": "Berkshire",
-      "source": "Shareholder Meeting"
-    }
-  ]
-}
+[
+  {
+    "name": "Inflation",
+    "value": 48,
+    "type": "FOMC"
+  },
+  {
+    "name": "Interest Rate",
+    "value": 35,
+    "type": "FOMC"
+  },
+  {
+    "name": "AI Chip Demand",
+    "value": 55,
+    "type": "NVIDIA"
+  },
+  {
+    "name": "Data Center",
+    "value": 45,
+    "type": "NVIDIA"
+  },
+  {
+    "name": "Search AI",
+    "value": 42,
+    "type": "Google"
+  },
+  {
+    "name": "Cloud Growth",
+    "value": 40,
+    "type": "Microsoft"
+  },
+  {
+    "name": "iPhone Sales",
+    "value": 38,
+    "type": "Apple"
+  },
+  {
+    "name": "AWS",
+    "value": 32,
+    "type": "Amazon"
+  },
+  {
+    "name": "Metaverse Investment",
+    "value": 29,
+    "type": "Meta"
+  },
+  {
+    "name": "Custom Chips",
+    "value": 25,
+    "type": "Broadcom"
+  },
+  {
+    "name": "EV Demand",
+    "value": 30,
+    "type": "Tesla"
+  },
+  {
+    "name": "Cash Holding",
+    "value": 20,
+    "type": "Berkshire"
+  }
+]
