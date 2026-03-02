@@ -138,14 +138,14 @@
                 listTitle.innerText = "기업별 단어 변화";
             }
 
-            // 2. 데이터 필터링 (rawData가 곧 배열임)
+            // 2. 데이터 필터링
             const filteredData = rawData.filter(item => {
                 return currentDataType === 'fomc' ? item.type === 'fomc' : item.type === 'company';
             });
 
             // 3. 정렬
             if (currentDataType === 'company') {
-                // 기업 순서 지정
+                // 기업 순서 지정 (JSON의 source 필드와 일치하게)
                 const companyOrder = [
                     "NVIDIA", "Google", "Apple", "Microsoft", 
                     "Amazon", "Meta", "Broadcom", "Tesla", "Berkshire"
