@@ -1,45 +1,36 @@
 {
-    "scenario": "이번 회의에서는 금리 인하에 대한 논의가 전월 대비 완화되었으며, 인플레이션 상승 위험이 높게 평가되었습니다.",
-    "keywords": [
-        {
-            "word": "york",
-            "delta": "+600.00%"
-        },
-        {
-            "word": "yields",
-            "delta": "0.00%"
-        },
-        {
-            "word": "years",
-            "delta": "+66.67%"
-        },
-        {
-            "word": "year",
-            "delta": "-6.67%"
-        },
-        {
-            "word": "working",
-            "delta": "+inf%"
-        },
-        {
-            "word": "workers",
-            "delta": "+inf%"
-        },
-        {
-            "word": "without",
-            "delta": "-50.00%"
-        },
-        {
-            "word": "within",
-            "delta": "-66.67%"
-        },
-        {
-            "word": "wilson",
-            "delta": "+inf%"
-        },
-        {
-            "word": "willing",
-            "delta": "+inf%"
-        }
-    ]
+  "last_updated": "2026-03-02",
+  "fomc_sentiment": "Hawkish",
+  "keywords": [
+    { "word": "Inflation", "count": 48, "trend": "up", "impact": "High" },
+    { "word": "Employment", "count": 35, "trend": "stable", "impact": "Mid" },
+    { "word": "Restrictive", "count": 12, "trend": "up", "impact": "High" },
+    { "word": "Recession", "count": 5, "trend": "down", "impact": "Low" },
+    { "word": "Uncertainty", "count": 22, "trend": "up", "impact": "Mid" },
+    { "word": "Disinflation", "count": 8, "trend": "up", "impact": "Mid" },
+    { "word": "Tightening", "count": 15, "trend": "stable", "impact": "High" },
+    { "word": "Soft landing", "count": 4, "trend": "down", "impact": "Mid" },
+    { "word": "Data-dependent", "count": 28, "trend": "up", "impact": "Mid" },
+    { "word": "Stability", "count": 10, "trend": "stable", "impact": "High" },
+    { "word": "Housing", "count": 14, "trend": "up", "impact": "Low" },
+    { "word": "Consumption", "count": 19, "trend": "stable", "impact": "Mid" },
+    { "word": "Wages", "count": 21, "trend": "up", "impact": "High" },
+    { "word": "Liquidity", "count": 6, "trend": "down", "impact": "High" },
+    { "word": "Growth", "count": 25, "trend": "stable", "impact": "Mid" },
+    { "word": "Pause", "count": 3, "trend": "new", "impact": "High" },
+    { "word": "Pivot", "count": 1, "trend": "stable", "impact": "High" },
+    { "word": "Elevated", "count": 17, "trend": "up", "impact": "Mid" },
+    { "word": "Sticky", "count": 9, "trend": "up", "impact": "High" },
+    { "word": "Anchored", "count": 11, "trend": "stable", "impact": "Mid" },
+    { "word": "Banking", "count": 4, "trend": "stable", "impact": "High" },
+    { "word": "Credit", "count": 13, "trend": "up", "impact": "Mid" },
+    { "word": "Global", "count": 16, "trend": "stable", "impact": "Low" },
+    { "word": "Energy", "count": 7, "trend": "down", "impact": "Low" },
+    { "word": "Supply", "count": 12, "trend": "stable", "impact": "Mid" },
+    { "word": "Demand", "count": 18, "trend": "down", "impact": "Mid" },
+    { "word": "Trajectory", "count": 9, "trend": "stable", "impact": "Low" },
+    { "word": "Projections", "count": 14, "trend": "up", "impact": "Mid" },
+    { "word": "Lagged", "count": 5, "trend": "up", "impact": "High" },
+    { "word": "Symmetric", "count": 2, "trend": "stable", "impact": "Low" }
+  ]
 }
