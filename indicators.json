@@ -1,24 +1,42 @@
 [
   {
     "word": "Inflation",
-    "count": 52,
-    "score": 0.85,
-    "trend": "up",
-    "impact": "High",
+    "count": 1,
+    "sentiment_score": -4.0,
+    "trend": "down",
+    "impact": "Mid",
+    "context": "Inflation remains rising and persistent.",
     "type": "fomc",
-    "source": "FOMC Minutes",
-    "delta_count": 0,
-    "delta_score": 0.0
+    "source": "FOMC Analysis"
   },
   {
-    "word": "AI Chip Demand",
-    "count": 60,
-    "score": 0.9,
+    "word": "Growth",
+    "count": 1,
+    "sentiment_score": 6.0,
     "trend": "up",
-    "impact": "High",
-    "type": "company",
-    "source": "NVIDIA",
-    "delta_count": 0,
-    "delta_score": 0.0
+    "impact": "Mid",
+    "context": "However, economic growth is resilient and strong.",
+    "type": "fomc",
+    "source": "FOMC Analysis"
+  },
+  {
+    "word": "Labor Market",
+    "count": 1,
+    "sentiment_score": -4.0,
+    "trend": "down",
+    "impact": "Mid",
+    "context": "Labor market shows some weakness but stays stable.",
+    "type": "fomc",
+    "source": "FOMC Analysis"
+  },
+  {
+    "word": "Economic Outlook",
+    "count": 0,
+    "sentiment_score": 0.0,
+    "trend": "down",
+    "impact": "Mid",
+    "context": "No context",
+    "type": "fomc",
+    "source": "FOMC Analysis"
   }
 ]
