@@ -1,22 +1,42 @@
 [
-  { "word": "AI Chip Demand", "count": 55, "trend": "up", "impact": "High", "type": "company", "source": "NVIDIA" },
-  { "word": "Data Center", "count": 45, "trend": "up", "impact": "High", "type": "company", "source": "NVIDIA" },
-  { "word": "Search AI", "count": 42, "trend": "up", "impact": "High", "type": "company", "source": "Google" },
-  { "word": "Cloud Growth", "count": 40, "trend": "up", "impact": "High", "type": "company", "source": "Microsoft" },
-  { "word": "iPhone Sales", "count": 38, "trend": "down", "impact": "Mid", "type": "company", "source": "Apple" },
-  { "word": "AWS", "count": 32, "trend": "up", "impact": "Mid", "type": "company", "source": "Amazon" },
-  { "word": "Metaverse Investment", "count": 29, "trend": "down", "impact": "High", "type": "company", "source": "Meta" },
-  { "word": "Custom Chips", "count": 25, "trend": "up", "impact": "Mid", "type": "company", "source": "Broadcom" },
-  { "word": "EV Demand", "count": 30, "trend": "down", "impact": "High", "type": "company", "source": "Tesla" },
-  { "word": "Cash Holding", "count": 20, "trend": "down", "impact": "Mid", "type": "company", "source": "Berkshire" },
-  { "word": "Inflation", "count": 48, "trend": "up", "impact": "High", "type": "fomc", "source": "FOMC Minutes" },
-  { "word": "Interest Rate", "count": 35, "trend": "down", "impact": "Mid", "type": "fomc", "source": "FOMC Minutes" },
-  { "word": "Policy Shift", "count": 28, "trend": "up", "impact": "High", "type": "fomc", "source": "FOMC Minutes" },
-  { "word": "Economic Outlook", "count": 25, "trend": "down", "impact": "Mid", "type": "fomc", "source": "FOMC Minutes" },
-  { "word": "Labor Market", "count": 22, "trend": "up", "impact": "Mid", "type": "fomc", "source": "FOMC Minutes" },
-  { "word": "Quantitative Tightening", "count": 18, "trend": "up", "impact": "High", "type": "fomc", "source": "FOMC Minutes" },
-  { "word": "Financial Stability", "count": 15, "trend": "down", "impact": "Mid", "type": "fomc", "source": "FOMC Minutes" },
-  { "word": "Consumer Spending", "count": 12, "trend": "up", "impact": "Mid", "type": "fomc", "source": "FOMC Minutes" },
-  { "word": "Bond Yields", "count": 10, "trend": "up", "impact": "High", "type": "fomc", "source": "FOMC Minutes" },
-  { "word": "Geopolitical Risk", "count": 8, "trend": "up", "impact": "High", "type": "fomc", "source": "FOMC Minutes" }
+  {
+    "word": "Inflation",
+    "count": 1,
+    "sentiment_score": -4.0,
+    "trend": "down",
+    "impact": "Mid",
+    "context": "Inflation remains rising and persistent.",
+    "type": "fomc",
+    "source": "FOMC Analysis"
+  },
+  {
+    "word": "Growth",
+    "count": 1,
+    "sentiment_score": 6.0,
+    "trend": "up",
+    "impact": "Mid",
+    "context": "However, economic growth is resilient and strong.",
+    "type": "fomc",
+    "source": "FOMC Analysis"
+  },
+  {
+    "word": "Labor Market",
+    "count": 1,
+    "sentiment_score": -4.0,
+    "trend": "down",
+    "impact": "Mid",
+    "context": "Labor market shows some weakness but stays stable.",
+    "type": "fomc",
+    "source": "FOMC Analysis"
+  },
+  {
+    "word": "Economic Outlook",
+    "count": 0,
+    "sentiment_score": 0.0,
+    "trend": "down",
+    "impact": "Mid",
+    "context": "No context",
+    "type": "fomc",
+    "source": "FOMC Analysis"
+  }
 ]
