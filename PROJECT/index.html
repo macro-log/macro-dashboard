@@ -52,42 +52,29 @@
 
         <div class="analysis-grid">
             <div class="card h-[500px]">
-                <div class="flex justify-between items-center mb-2">
-                    <div>
-                        <span class="section-label">Market Sentiment Index</span>
-                        <div class="flex items-center gap-3">
-                            <h2 class="text-3xl font-black italic" id="temp-value">0.0°</h2>
-                            <div class="w-24 h-1.5 bg-gray-800 rounded-full overflow-hidden">
-                                <div id="temp-bar" class="h-full bg-gray-500 transition-all duration-1000" style="width: 50%;"></div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="flex justify-between items-center mb-4">
+                    <span class="section-label">Sentiment Analysis</span>
                     <button onclick="toggleDataType()" id="toggle-btn" class="!px-3 !py-1 !text-[10px] !bg-[#262f45] !text-white !border-none">기업 키워드 보기</button>
                 </div>
-                <h3 class="text-sm font-bold mb-4 text-slate-400" id="chart-title">FOMC 의사록: 상위 10개 키워드</h3>
+                <h3 class="text-xl font-bold mb-4" id="chart-title">FOMC 의사록: 상위 10개 키워드</h3>
                 <div class="flex-grow">
                     <canvas id="keywordChart"></canvas>
                 </div>
             </div>
 
             <div class="card h-[500px]">
-                <div class="flex justify-between items-end mb-4 border-b border-[#262f45] pb-3">
+                <div class="flex justify-between items-center mb-6 border-b border-[#262f45] pb-4">
                     <div>
-                        <span class="section-label">Detailed Data</span>
+                        <span class="section-label">Detailed Metrics</span>
                         <h3 class="text-lg font-bold" id="list-title">상세 데이터 변화</h3>
                     </div>
-                    <div class="flex gap-4 text-[11px] font-mono leading-tight">
-                        <div class="text-right border-r border-[#262f45] pr-3">
-                            <span class="text-gray-500 block text-[9px]">S&P 500</span>
-                            <span id="spy-react" class="font-bold">0.0%</span>
-                        </div>
-                        <div class="text-right border-r border-[#262f45] pr-3">
-                            <span class="text-gray-500 block text-[9px]">NAS 100</span>
-                            <span id="qqq-react" class="font-bold">0.0%</span>
-                        </div>
-                        <div class="text-right">
-                            <span class="text-gray-500 block text-[9px]">DOW</span>
-                            <span id="dia-react" class="font-bold">0.0%</span>
+                    <div class="text-right">
+                        <span class="text-[9px] text-gray-500 block uppercase font-bold tracking-widest">Market Temp</span>
+                        <div class="flex items-center gap-2 justify-end">
+                            <span class="text-2xl font-black italic tracking-tighter" id="temp-value">0.0°</span>
+                            <div class="w-12 h-1.5 bg-gray-800 rounded-full overflow-hidden">
+                                <div id="temp-bar" class="h-full bg-gray-500 transition-all duration-1000" style="width: 50%;"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -98,42 +85,61 @@
 
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script type="text/javascript">
-        let currentDataType = 'fomc'; let rawData = null; let myChart = null;
+        let currentDataType = 'fomc'; 
+        let rawData = null; 
+        let myChart = null;
 
-        function changeWidget(symbol) { loadTicker(symbol); loadChart(symbol); }
+        // 트레이딩뷰 위젯 로드 함수
         function loadTicker(symbol) {
-            const container = document.getElementById('ticker_container'); container.innerHTML = "";
-            const script = document.createElement('script'); script.src = "https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js";
-            script.async = true; script.innerHTML = JSON.stringify({ "symbol": symbol, "width": "100%", "colorTheme": "dark", "isTransparent": true, "locale": "ko" });
+            const container = document.getElementById('ticker_container'); 
+            container.innerHTML = "";
+            const script = document.createElement('script'); 
+            script.src = "https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js";
+            script.async = true; 
+            script.innerHTML = JSON.stringify({ "symbol": symbol, "width": "100%", "colorTheme": "dark", "isTransparent": true, "locale": "ko" });
             container.appendChild(script);
         }
+
         function loadChart(symbol) {
             document.getElementById('chart_box').innerHTML = "";
-            new TradingView.widget({ "width": "100%", "height": 600, "symbol": symbol, "interval": "D", "timezone": "Asia/Seoul", "theme": "dark", "style": "1", "locale": "ko", "container_id": "chart_box", "hide_side_toolbar": false, "withdateranges": true });
+            new TradingView.widget({
+                "width": "100%", "height": 600, "symbol": symbol, "interval": "D",
+                "timezone": "Asia/Seoul", "theme": "dark", "style": "1", "locale": "ko",
+                "container_id": "chart_box", "hide_side_toolbar": false, "withdateranges": true,
+                "studies": ["Volume@tv-basicstudies"],
+                "overrides": {
+                    // 거래량이 캔들을 너무 많이 가리지 않도록 위치 강제 조정 및 여백 확보
+                    "paneProperties.topMargin": 20,
+                    "paneProperties.bottomMargin": 5,
+                    "mainSeriesProperties.candleStyle.upColor": "#089981",
+                    "mainSeriesProperties.candleStyle.downColor": "#f23645",
+                    "volumePaneSize": "medium" 
+                }
+            });
         }
 
-        function toggleDataType() { currentDataType = (currentDataType === 'fomc') ? 'company' : 'fomc'; updateUI(); }
+        function changeWidget(symbol) { loadTicker(symbol); loadChart(symbol); }
 
+        function toggleDataType() { 
+            currentDataType = (currentDataType === 'fomc') ? 'company' : 'fomc'; 
+            updateUI(); 
+        }
+
+        // 데이터 업데이트 및 UI 렌더링
         function updateUI() {
             if (!rawData) return;
-            const indicators = rawData.indicators || rawData; // 구조 호환성
+            const indicators = rawData.indicators || [];
             
-            // [상단 온도 업데이트]
+            // 온도계 업데이트 로직
             const temp = rawData.market_temp || 0;
-            document.getElementById('temp-value').innerText = (temp > 0 ? '+' : '') + temp + '°';
+            const tempVal = document.getElementById('temp-value');
+            tempVal.innerText = (temp > 0 ? '+' : '') + temp + '°';
             const bar = document.getElementById('temp-bar');
             bar.style.width = ((temp + 100) / 2).toFixed(1) + '%';
-            if(temp >= 15) bar.className = "h-full bg-sky-500";
-            else if(temp <= -15) bar.className = "h-full bg-red-500";
-            else bar.className = "h-full bg-gray-500";
-
-            // [깨알 지수 반응 업데이트]
-            const react = rawData.market_reaction || { "SPY": "0.0%", "QQQ": "0.0%", "DIA": "0.0%" };
-            const setReact = (id, val) => {
-                const el = document.getElementById(id); el.innerText = val;
-                el.className = val.includes('-') ? "font-bold text-red-500" : "font-bold text-sky-400";
-            };
-            setReact('spy-react', react.SPY); setReact('qqq-react', react.QQQ); setReact('dia-react', react.DIA);
+            
+            if(temp >= 15) { tempVal.className = "text-2xl font-black italic tracking-tighter text-sky-400"; bar.className = "h-full bg-sky-500"; }
+            else if(temp <= -15) { tempVal.className = "text-2xl font-black italic tracking-tighter text-red-500"; bar.className = "h-full bg-red-500"; }
+            else { tempVal.className = "text-2xl font-black italic tracking-tighter text-gray-300"; bar.className = "h-full bg-gray-500"; }
 
             const filteredData = indicators.filter(item => currentDataType === 'fomc' ? item.type === 'fomc' : item.type === 'company');
             filteredData.sort((a, b) => b.sentiment_score - a.sentiment_score);
@@ -141,9 +147,11 @@
         }
 
         function renderChartAndList(data) {
-            const listElement = document.getElementById('indicator-list'); listElement.innerHTML = ""; 
+            const listElement = document.getElementById('indicator-list'); 
+            listElement.innerHTML = ""; 
             const top10 = data.slice(0, 10);
             const ctx = document.getElementById('keywordChart').getContext('2d');
+            
             if (myChart) myChart.destroy();
             
             myChart = new Chart(ctx, {
@@ -160,7 +168,7 @@
                 options: {
                     responsive: true, maintainAspectRatio: false,
                     scales: {
-                        y: { grid: { color: '#262f45' }, ticks: { color: '#94a3b8', font: { size: 10 } } },
+                        y: { grid: { color: '#262f45' }, ticks: { color: '#94a3b8', font: { size: 10 } }, beginAtZero: true, min: -10, max: 10 },
                         x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 9 }, maxRotation: 45, minRotation: 45 } }
                     },
                     plugins: { legend: { display: false } }
@@ -186,9 +194,11 @@
         }
 
         window.onload = function() { 
-            changeWidget('BINANCE:BTCUSDT');
+            changeWidget('BINANCE:BTCUSDT'); 
             fetch('indicators.json?v=' + new Date().getTime())
-                .then(r => r.json()).then(d => { rawData = d; updateUI(); });
+                .then(r => r.json())
+                .then(d => { rawData = d; updateUI(); })
+                .catch(e => console.error("JSON 로드 실패:", e));
         };
     </script>
 </body>

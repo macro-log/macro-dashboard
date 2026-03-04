@@ -1,81 +1,65 @@
 {
-  "market_temp": 4.0,
-  "market_reaction": {
-    "SPY": "-0.55%",
-    "QQQ": "-0.82%",
-    "DIA": "-0.15%",
-    "label": "HAWKISH REACTION"
-  },
+  "market_temp": 6.0,
   "indicators": [
     {
       "word": "Inflation",
-      "sentiment_score": -0.2,
-      "score_diff": 0.4,
-      "type": "fomc",
-      "source": "FOMC Analysis"
+      "sentiment_score": -2.0,
+      "score_diff": -0.1,
+      "type": "fomc"
     },
     {
       "word": "Growth",
-      "sentiment_score": 4.2,
-      "score_diff": 1.6,
-      "type": "fomc",
-      "source": "FOMC Analysis"
+      "sentiment_score": 4.6,
+      "score_diff": 0.5,
+      "type": "fomc"
     },
     {
       "word": "Labor Market",
       "sentiment_score": 0.0,
       "score_diff": -0.2,
-      "type": "fomc",
-      "source": "FOMC Analysis"
+      "type": "fomc"
     },
     {
       "word": "Interest Rate",
-      "sentiment_score": 0.5,
-      "score_diff": 1.1,
-      "type": "fomc",
-      "source": "FOMC Analysis"
+      "sentiment_score": -0.2,
+      "score_diff": 1.0,
+      "type": "fomc"
     },
     {
       "word": "Economic Outlook",
-      "sentiment_score": -1.4,
-      "score_diff": -0.8,
-      "type": "fomc",
-      "source": "FOMC Analysis"
+      "sentiment_score": -2.3,
+      "score_diff": -0.9,
+      "type": "fomc"
     },
     {
       "word": "Housing",
       "sentiment_score": 0.0,
-      "score_diff": 0.0,
-      "type": "fomc",
-      "source": "FOMC Analysis"
+      "score_diff": 1.0,
+      "type": "fomc"
     },
     {
       "word": "Consumer Spending",
-      "sentiment_score": 0.0,
-      "score_diff": 0.0,
-      "type": "fomc",
-      "source": "FOMC Analysis"
+      "sentiment_score": 5.0,
+      "score_diff": 5.0,
+      "type": "fomc"
     },
     {
       "word": "Financial Conditions",
       "sentiment_score": 0.0,
       "score_diff": 0.0,
-      "type": "fomc",
-      "source": "FOMC Analysis"
+      "type": "fomc"
     },
     {
       "word": "Global Stability",
       "sentiment_score": 0.0,
       "score_diff": 0.0,
-      "type": "fomc",
-      "source": "FOMC Analysis"
+      "type": "fomc"
     },
     {
       "word": "Unemployment",
       "sentiment_score": 0.9,
-      "score_diff": 0.9,
-      "type": "fomc",
-      "source": "FOMC Analysis"
+      "score_diff": 0.6,
+      "type": "fomc"
     }
   ]
 }

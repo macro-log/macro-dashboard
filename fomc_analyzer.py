@@ -2,45 +2,53 @@ import json
 import re
 import os
 
+# [보강] 모든 10개 키워드를 커버할 수 있도록 사전 확장
 SENTIMENT_CONFIG = {
     "PRICE": {
-        "positive": {"easing": 4.0, "slowing": 3.0, "stable": 2.0, "declining": 5.0, "moderate": 2.0},
-        "negative": {"persistent": -6.0, "rising": -4.0, "high": -3.0, "inflationary": -5.0, "above": -2.0}
+        "positive": {"easing": 4.0, "slowing": 3.0, "stable": 2.0, "declining": 5.0, "moderate": 2.0, "cooling": 4.0},
+        "negative": {"persistent": -6.0, "rising": -4.0, "high": -3.0, "inflationary": -5.0, "above": -2.0, "elevated": -4.0}
     },
     "GROWTH": {
-        "positive": {"resilient": 5.0, "strong": 6.0, "improving": 4.0, "robust": 7.0, "growth": 3.0},
-        "negative": {"weakness": -5.0, "slowing": -4.0, "stalling": -6.0, "declining": -7.0}
+        "positive": {"resilient": 5.0, "strong": 6.0, "improving": 4.0, "robust": 7.0, "growth": 3.0, "solid": 5.0, "expanding": 4.0},
+        "negative": {"weakness": -5.0, "slowing": -4.0, "stalling": -6.0, "declining": -7.0, "contraction": -6.0}
     },
     "GENERAL": {
-        "negative": {"uncertainty": -5.0, "risks": -6.0, "volatile": -4.0, "concerns": -3.0}
+        "positive": {"stable": 3.0, "confident": 4.0, "clear": 2.0, "balanced": 3.0},
+        "negative": {"uncertainty": -5.0, "risks": -6.0, "volatile": -4.0, "concerns": -3.0, "tightening": -4.0}
     }
 }
 
 def analyze_sentiment(text, keyword, category):
     if not text: return 0.0, ""
+    # 키워드 주변 문맥 추출 범위 확장
     sentences = re.findall(r"([^.]*?" + re.escape(keyword) + r"[^.]*\.)", text, re.IGNORECASE)
     if not sentences: return 0.0, ""
+    
     total_score = 0
     config = SENTIMENT_CONFIG.get(category, SENTIMENT_CONFIG["GENERAL"])
+    
+    # [개선] 문장에서 더 넓은 범위의 단어를 검색
     for sent in sentences:
-        words = sent.lower().split()
+        words = sent.lower()
         for pos, score in config.get("positive", {}).items():
             if pos in words: total_score += score
         for neg, score in config.get("negative", {}).items():
             if neg in words: total_score += score
+            
     final_score = max(-10.0, min(10.0, total_score / (len(sentences) or 1)))
     return round(final_score, 1), sentences[0].strip()[:100]
 
 def run_analysis():
-    curr_text = "Inflation remains high. Growth is resilient. Labor market is strong. Interest rate path is uncertain."
-    prev_text = "Inflation was rising. Growth was weak."
+    # 분석 대상 텍스트 (파일이 없을 경우를 대비한 샘플 데이터 보강)
+    curr_text = "Housing prices are cooling but remains elevated. Consumer spending is solid. Unemployment is stable."
+    prev_text = "Housing was rising. Consumer spending was weak. Unemployment was high."
     
     if os.path.exists('current_minutes.txt'):
         with open('current_minutes.txt', 'r', encoding='utf-8') as f: curr_text = f.read()
     if os.path.exists('previous_minutes.txt'):
         with open('previous_minutes.txt', 'r', encoding='utf-8') as f: prev_text = f.read()
 
-    # [수정] 10개 키워드로 확장
+    # 10개 키워드
     target_keywords = [
         {"word": "Inflation", "cat": "PRICE", "type": "fomc"},
         {"word": "Growth", "cat": "GROWTH", "type": "fomc"},
@@ -62,22 +70,14 @@ def run_analysis():
             "word": item['word'],
             "sentiment_score": curr_score,
             "score_diff": round(curr_score - prev_score, 1),
-            "type": item['type'],
-            "source": "FOMC Analysis"
+            "type": item['type']
         })
 
-    # [추가] 1단계: 시장 온도 계산 (-100 ~ 100 범위)
     avg_score = sum(r['sentiment_score'] for r in results) / len(results)
     market_temp = round(avg_score * 10, 1)
 
-    # [추가] 3단계: 지표 발표 후 미국 지수 변동성 (수동 업데이트용)
-    market_reaction = {
-        "SPY": "-0.55%", "QQQ": "-0.82%", "DIA": "-0.15%", "label": "HAWKISH REACTION"
-    }
-
     final_data = {
         "market_temp": market_temp,
-        "market_reaction": market_reaction,
         "indicators": results
     }
 
