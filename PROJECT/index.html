@@ -3,101 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>매크로 대시보드 - FOMC 분석 시스템</title>
+    <title>Macro Dashboard - FOMC Analysis</title>
     <style>
-        :root { --pos-color: #3498db; --neg-color: #e74c3c; --bg-color: #f8f9fa; }
-        body { font-family: 'Pretendard', -apple-system, sans-serif; background-color: var(--bg-color); margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 800px; margin: 0 auto; }
-        header { text-align: center; margin-bottom: 30px; padding: 20px; background: #2c3e50; color: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        :root { --main-bg: #f0f2f5; --card-bg: #ffffff; --pos-color: #007bff; --neg-color: #dc3545; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--main-bg); margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 1000px; margin: auto; }
         
-        .card { background: white; border-radius: 10px; padding: 20px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); transition: transform 0.2s; border-left: 6px solid #ccc; }
-        .card:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        header { background: #2c3e50; color: white; padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px; }
         
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .keyword { font-size: 1.25em; font-weight: 700; color: #2c3e50; }
-        .score { font-size: 1.3em; font-weight: 800; }
-        
-        .context-area { background: #f1f3f5; padding: 15px; border-radius: 6px; font-size: 0.95em; line-height: 1.6; color: #495057; border-left: 3px solid #dee2e6; margin-bottom: 10px; }
-        .context-label { font-weight: bold; color: #495057; display: block; margin-bottom: 5px; font-size: 0.85em; }
-        
-        .footer-info { display: flex; gap: 15px; font-size: 0.85em; color: #868e96; border-top: 1px solid #eee; pt: 10px; margin-top: 10px; }
-        .badge { padding: 2px 8px; border-radius: 12px; background: #e9ecef; font-weight: 600; }
+        /* 트레이딩뷰 차트 구역 */
+        .chart-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
+        @media (max-width: 768px) { .chart-container { grid-template-columns: 1fr; } }
 
-        /* 점수에 따른 동적 클래스 */
-        .positive-border { border-left-color: var(--pos-color); }
-        .negative-border { border-left-color: var(--neg-color); }
-        .positive-text { color: var(--pos-color); }
-        .negative-text { color: var(--neg-color); }
+        /* 분석 카드 디자인 */
+        .card { background: var(--card-bg); margin-bottom: 15px; padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-top: 5px solid #ccc; }
+        .card.pos { border-top-color: var(--pos-color); }
+        .card.neg { border-top-color: var(--neg-color); }
+        .card-header { display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
+        .score-badge { font-size: 1.1em; font-weight: 800; }
+        .pos .score-badge { color: var(--pos-color); }
+        .neg .score-badge { color: var(--neg-color); }
+        .context { background: #f8f9fa; padding: 15px; border-radius: 6px; margin: 10px 0; font-size: 0.95em; color: #555; border-left: 3px solid #eee; }
+        .meta { font-size: 0.85em; color: #999; }
     </style>
 </head>
 <body>
+    <div class="container">
+        <header>
+            <h1>📊 MACRO REAL-TIME DASHBOARD</h1>
+            <p>시장 주요 지표 및 FOMC 단어 분석</p>
+        </header>
 
-<div class="container">
-    <header>
-        <h1 style="margin: 0; font-size: 1.8em;">📊 FOMC Insight Dashboard</h1>
-        <p style="margin: 10px 0 0; opacity: 0.8;">연준 의사록 키워드 감성 및 맥락 분석</p>
-    </header>
+        <div class="chart-container">
+            <div style="height:400px;">
+                <div class="tradingview-widget-container" style="height:100%;width:100%">
+                    <div id="tradingview_nasdaq" style="height:100%;width:100%"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+                    <script type="text/javascript">
+                    new TradingView.widget({
+                      "autosize": true, "symbol": "NASDAQ:IXIC", "interval": "D", "timezone": "Etc/UTC", "theme": "light", "style": "1", "locale": "en", "toolbar_bg": "#f1f3f6", "enable_publishing": false, "allow_symbol_change": true, "container_id": "tradingview_nasdaq"
+                    });
+                    </script>
+                </div>
+            </div>
+            <div style="height:400px;">
+                <div class="tradingview-widget-container" style="height:100%;width:100%">
+                    <div id="tradingview_dxy" style="height:100%;width:100%"></div>
+                    <script type="text/javascript">
+                    new TradingView.widget({
+                      "autosize": true, "symbol": "CAPITALCOM:DXY", "interval": "D", "timezone": "Etc/UTC", "theme": "light", "style": "1", "locale": "en", "toolbar_bg": "#f1f3f6", "enable_publishing": false, "allow_symbol_change": true, "container_id": "tradingview_dxy"
+                    });
+                    </script>
+                </div>
+            </div>
+        </div>
 
-    <div id="fomc-list">
-        <p style="text-align: center; color: #666;">데이터를 실시간으로 분석 중입니다...</p>
+        <hr style="margin: 40px 0; border: 0; border-top: 1px solid #ddd;">
+
+        <h2 style="margin-bottom: 20px;">🔍 FOMC Sentiment Analysis (Score Order)</h2>
+        <div id="fomc-list">데이터를 분석 중입니다...</div>
     </div>
-</div>
 
-<script>
-    async function updateDashboard() {
-        try {
-            // 1. 데이터 가져오기 (캐시 방지를 위해 랜덤 쿼리 추가)
-            const response = await fetch('indicators.json?v=' + new Date().getTime());
-            if (!response.ok) throw new Error('데이터 파일을 찾을 수 없습니다.');
-            
-            const data = await response.json();
-            const listContainer = document.getElementById('fomc-list');
-            listContainer.innerHTML = ''; // 화면 초기화
-
-            if (data.length === 0) {
-                listContainer.innerHTML = '<p style="text-align:center;">분석된 데이터가 없습니다.</p>';
-                return;
-            }
-
-            // 2. 데이터 렌더링
-            data.forEach(item => {
-                const score = item.sentiment_score || 0;
-                const isPos = score >= 0;
-                const borderClass = isPos ? 'positive-border' : 'negative-border';
-                const textClass = isPos ? 'positive-text' : 'negative-text';
-                const trendIcon = item.trend === 'up' ? '📈' : '📉';
-
-                const card = document.createElement('div');
-                card.className = `card ${borderClass}`;
+    <script>
+        async function loadAnalysis() {
+            try {
+                const res = await fetch('indicators.json?v=' + new Date().getTime());
+                const data = await res.json();
                 
-                card.innerHTML = `
-                    <div class="card-header">
-                        <span class="keyword">🔍 ${item.word}</span>
-                        <span class="score ${textClass}">${isPos ? '+' : ''}${score.toFixed(1)}점</span>
-                    </div>
-                    <div class="context-area">
-                        <span class="context-label">📍 핵심 맥락 (Context)</span>
-                        "${item.context || '맥락 데이터가 없습니다.'}"
-                    </div>
-                    <div class="footer-info">
-                        <span>추세: <b class="${textClass}">${trendIcon} ${item.trend.toUpperCase()}</b></span>
-                        <span>영향력: <b class="badge">${item.impact}</b></span>
-                        <span>출처: <b>${item.source}</b></span>
-                    </div>
-                `;
-                listContainer.appendChild(card);
-            });
+                // +에서 - 순으로 정렬
+                data.sort((a, b) => b.sentiment_score - a.sentiment_score);
 
-        } catch (error) {
-            console.error('Error:', error);
-            document.getElementById('fomc-list').innerHTML = 
-                `<p style="text-align:center; color:red;">⚠️ 오류 발생: ${error.message}<br>파이썬 분석기를 먼저 실행해 주세요.</p>`;
+                const list = document.getElementById('fomc-list');
+                list.innerHTML = '';
+
+                data.forEach(item => {
+                    const score = item.sentiment_score;
+                    const statusClass = score > 0 ? 'pos' : (score < 0 ? 'neg' : '');
+                    
+                    list.innerHTML += `
+                        <div class="card ${statusClass}">
+                            <div class="card-header">
+                                <span class="keyword">🏷️ ${item.word}</span>
+                                <span class="score-badge">${score > 0 ? '+' : ''}${score.toFixed(1)}점</span>
+                            </div>
+                            <div class="context"><b>맥락:</b> "${item.context}"</div>
+                            <div class="meta">언급 횟수: <b>${item.count}회</b> | 추세: <b>${item.trend.toUpperCase()}</b></div>
+                        </div>
+                    `;
+                });
+            } catch (e) {
+                document.getElementById('fomc-list').innerHTML = "데이터 로딩 오류";
+            }
         }
-    }
-
-    // 페이지 로드 시 즉시 실행
-    window.onload = updateDashboard;
-</script>
-
+        window.onload = loadAnalysis;
+    </script>
 </body>
 </html>
