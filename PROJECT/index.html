@@ -138,7 +138,7 @@
                 return currentDataType === 'fomc' ? item.type === 'fomc' : item.type === 'company';
             });
 
-            // [요청 반영] 정렬 기준 수정: 무조건 sentiment_score 내림차순 (+에서 - 순)
+            // 점수 내림차순 정렬
             filteredData.sort((a, b) => b.sentiment_score - a.sentiment_score);
 
             renderChartAndList(filteredData);
@@ -181,17 +181,22 @@
                 const li = document.createElement('li');
                 li.className = 'flex justify-between items-center p-3 rounded bg-[#1e293b] border border-[#262f45] hover:border-[#38bdf8] transition-all';
                 
-                // 점수에 따른 아이콘 및 색상 변경
                 const score = item.sentiment_score;
+                const diff = item.score_diff || 0; // 변화량 가져오기
                 const trendIcon = score > 0 ? '🔺' : (score < 0 ? '🔻' : '➖');
                 const scoreColor = score > 0 ? 'text-sky-400' : (score < 0 ? 'text-red-400' : 'text-gray-400');
                 
-                const source = item.source || "Corporate Action"; 
+                // 변화량 컬러 (좋아졌으면 파랑, 나빠졌으면 빨강)
+                const diffColor = diff > 0 ? 'text-blue-400' : (diff < 0 ? 'text-red-500' : 'text-gray-500');
+                const diffText = diff > 0 ? `(+${diff})` : (diff < 0 ? `(${diff})` : '(0.0)');
+                const source = item.source || "Analysis"; 
 
                 li.innerHTML = `
                     <div class="flex flex-col">
                         <span class="font-bold text-sm text-slate-100">${item.word}</span>
-                        <span class="text-[10px] text-gray-400 font-semibold">${source} | Impact: ${item.impact}</span>
+                        <span class="text-[10px] text-gray-400 font-semibold">
+                            ${source} | 지난번 대비: <b class="${diffColor}">${diffText}</b>
+                        </span>
                     </div>
                     <div class="flex items-center gap-4">
                         <span class="text-sm font-mono ${scoreColor}">${score > 0 ? '+' : ''}${score}</span>
@@ -204,6 +209,7 @@
 
         window.onload = function() { 
             changeWidget('BINANCE:BTCUSDT');
+            // 캐시 방지용 시간 파라미터 추가
             fetch('indicators.json?v=' + new Date().getTime())
                 .then(response => response.json())
                 .then(data => {

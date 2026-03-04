@@ -1,87 +1,67 @@
-import json
-import re
-
-# [개선] 단어별로 직접 점수(가중치)를 부여합니다. 
-# 형님이 나중에 숫자를 바꾸기만 하면 분석 결과가 바로 바뀝니다.
-SENTIMENT_CONFIG = {
-    "PRICE": {
-        "positive": {"easing": 4.0, "slowing": 3.0, "stable": 2.0, "declining": 5.0, "moderate": 2.0},
-        "negative": {"persistent": -6.0, "rising": -4.0, "high": -3.0, "inflationary": -5.0, "above": -2.0}
-    },
-    "GROWTH": {
-        "positive": {"rising": 3.0, "resilient": 5.0, "strong": 6.0, "improving": 4.0, "robust": 7.0},
-        "negative": {"weakness": -5.0, "slowing": -4.0, "stalling": -6.0, "declining": -7.0, "concerns": -3.0}
-    },
-    "GENERAL": {
-        "negative": {"uncertainty": -5.0, "risks": -6.0, "volatile": -4.0, "concerns": -3.0}
-    }
-}
-
-def analyze_sentiment(text, keyword, category):
-    # 키워드가 포함된 문장 추출
-    sentences = re.findall(r"([^.]*?" + re.escape(keyword) + r"[^.]*\.)", text, re.IGNORECASE)
-    if not sentences: return 0.0, "No context"
-
-    total_score = 0
-    config = SENTIMENT_CONFIG.get(category, SENTIMENT_CONFIG["GENERAL"])
-    
-    for sent in sentences:
-        words = sent.lower().split()
-        
-        # 1. 카테고리별 긍정 단어 점수 합산
-        for pos_word, score in config.get("positive", {}).items():
-            if pos_word in words: total_score += score
-            
-        # 2. 카테고리별 부정 단어 점수 합산
-        for neg_word, score in config.get("negative", {}).items():
-            if neg_word in words: total_score += score # score가 이미 음수이므로 더하면 깎임
-            
-        # 3. 범용 위험 단어(GENERAL negative) 추가 감점 (로봇을 좀 더 보수적으로 세팅)
-        for gen_neg, score in SENTIMENT_CONFIG["GENERAL"]["negative"].items():
-            if gen_neg in words: total_score += (score * 0.5) # 중복 감점 방지를 위해 0.5배만 적용
-
-    # 문장당 평균 점수 계산 및 -10 ~ 10 범위 제한
-    final_score = max(-10.0, min(10.0, total_score / (len(sentences) or 1)))
-    return round(final_score, 1), sentences[0].strip()[:200]
-
-def run_analysis():
-    # 분석 대상 텍스트 (실제 의사록 전문을 여기에 넣으세요)
-    fomc_text = """
-    Inflation remains persistent but economic growth is resilient. 
-    Labor market shows some weakness. Geopolitical risks create uncertainty.
-    """
-
-    target_keywords = [
-        {"word": "Inflation", "cat": "PRICE", "type": "fomc"},
-        {"word": "Growth", "cat": "GROWTH", "type": "fomc"},
-        {"word": "Labor Market", "cat": "GROWTH", "type": "fomc"},
-        {"word": "Interest Rate", "cat": "PRICE", "type": "fomc"},
-        {"word": "Uncertainty", "cat": "GENERAL", "type": "fomc"},
-        {"word": "Stability", "cat": "GENERAL", "type": "fomc"},
-        {"word": "Consumer Spending", "cat": "GROWTH", "type": "fomc"},
-        {"word": "Housing", "cat": "PRICE", "type": "fomc"},
-        {"word": "Yields", "cat": "GENERAL", "type": "fomc"},
-        {"word": "Policy Shift", "cat": "GENERAL", "type": "fomc"}
-    ]
-
-    results = []
-    for item in target_keywords:
-        score, context = analyze_sentiment(fomc_text, item['word'], item['cat'])
-        results.append({
-            "word": item['word'],
-            "count": fomc_text.lower().count(item['word'].lower()),
-            "sentiment_score": score,
-            "trend": "up" if score > 0 else "down",
-            "impact": "High" if abs(score) > 6 else "Mid",
-            "context": context,
-            "type": item['type'],
-            "source": "FOMC Analysis"
-        })
-
-    # JSON 저장
-    with open('indicators.json', 'w', encoding='utf-8') as f:
-        json.dump(results, f, ensure_ascii=False, indent=2)
-    print("✅ indicators.json 생성 완료! (가중치 점수 적용됨)")
-
-if __name__ == "__main__":
-    run_analysis()
+[
+  {
+    "word": "Inflation",
+    "sentiment_score": -0.4,
+    "prev_score": -1.0,
+    "score_diff": 0.6,
+    "count": 55,
+    "count_diff": -15,
+    "trend": "up",
+    "impact": "Mid",
+    "context": "Respondents to the Open Market Desk Survey of Market Expectations (Desk survey) continued to see the",
+    "type": "fomc",
+    "source": "FOMC Analysis"
+  },
+  {
+    "word": "Growth",
+    "sentiment_score": 3.8,
+    "prev_score": 2.1,
+    "score_diff": 1.7,
+    "count": 20,
+    "count_diff": 2,
+    "trend": "up",
+    "impact": "Mid",
+    "context": "Respondents to the Open Market Desk Survey of Market Expectations (Desk survey) continued to see the",
+    "type": "fomc",
+    "source": "FOMC Analysis"
+  },
+  {
+    "word": "Labor Market",
+    "sentiment_score": -1.1,
+    "prev_score": -0.6,
+    "score_diff": -0.5,
+    "count": 17,
+    "count_diff": -4,
+    "trend": "down",
+    "impact": "Mid",
+    "context": "Labor market conditions showed signs of stabilizing following a period of gradual cooling.",
+    "type": "fomc",
+    "source": "FOMC Analysis"
+  },
+  {
+    "word": "Economic Outlook",
+    "sentiment_score": -2.1,
+    "prev_score": -0.9,
+    "score_diff": -1.2,
+    "count": 7,
+    "count_diff": -1,
+    "trend": "down",
+    "impact": "Mid",
+    "context": "Staff Economic Outlook\nThe staff projection for economic activity was stronger than the one prepared",
+    "type": "fomc",
+    "source": "FOMC Analysis"
+  },
+  {
+    "word": "Interest Rate",
+    "sentiment_score": 1.0,
+    "prev_score": -0.6,
+    "score_diff": 1.6,
+    "count": 4,
+    "count_diff": -6,
+    "trend": "up",
+    "impact": "Mid",
+    "context": "Over the intermeeting period, the effective federal funds rate remained stable at a level just below",
+    "type": "fomc",
+    "source": "FOMC Analysis"
+  }
+]
