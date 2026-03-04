@@ -1,22 +1,24 @@
 import json
 import re
 
-# 카테고리별 감성 사전
+# [개선] 단어별로 직접 점수(가중치)를 부여합니다. 
+# 형님이 나중에 숫자를 바꾸기만 하면 분석 결과가 바로 바뀝니다.
 SENTIMENT_CONFIG = {
     "PRICE": {
-        "positive": ["easing", "slowing", "stable", "declining", "moderate"],
-        "negative": ["persistent", "rising", "high", "inflationary", "above"]
+        "positive": {"easing": 4.0, "slowing": 3.0, "stable": 2.0, "declining": 5.0, "moderate": 2.0},
+        "negative": {"persistent": -6.0, "rising": -4.0, "high": -3.0, "inflationary": -5.0, "above": -2.0}
     },
     "GROWTH": {
-        "positive": ["rising", "resilient", "strong", "improving", "robust"],
-        "negative": ["weakness", "slowing", "stalling", "declining", "concerns"]
+        "positive": {"rising": 3.0, "resilient": 5.0, "strong": 6.0, "improving": 4.0, "robust": 7.0},
+        "negative": {"weakness": -5.0, "slowing": -4.0, "stalling": -6.0, "declining": -7.0, "concerns": -3.0}
     },
     "GENERAL": {
-        "negative": ["uncertainty", "risks", "volatile", "concerns"]
+        "negative": {"uncertainty": -5.0, "risks": -6.0, "volatile": -4.0, "concerns": -3.0}
     }
 }
 
 def analyze_sentiment(text, keyword, category):
+    # 키워드가 포함된 문장 추출
     sentences = re.findall(r"([^.]*?" + re.escape(keyword) + r"[^.]*\.)", text, re.IGNORECASE)
     if not sentences: return 0.0, "No context"
 
@@ -25,18 +27,25 @@ def analyze_sentiment(text, keyword, category):
     
     for sent in sentences:
         words = sent.lower().split()
-        for pos in config.get("positive", []):
-            if pos in words: total_score += 3
-        for neg in config.get("negative", []):
-            if neg in words: total_score -= 4
-        for gen_neg in SENTIMENT_CONFIG["GENERAL"]["negative"]:
-            if gen_neg in words: total_score -= 2
+        
+        # 1. 카테고리별 긍정 단어 점수 합산
+        for pos_word, score in config.get("positive", {}).items():
+            if pos_word in words: total_score += score
+            
+        # 2. 카테고리별 부정 단어 점수 합산
+        for neg_word, score in config.get("negative", {}).items():
+            if neg_word in words: total_score += score # score가 이미 음수이므로 더하면 깎임
+            
+        # 3. 범용 위험 단어(GENERAL negative) 추가 감점 (로봇을 좀 더 보수적으로 세팅)
+        for gen_neg, score in SENTIMENT_CONFIG["GENERAL"]["negative"].items():
+            if gen_neg in words: total_score += (score * 0.5) # 중복 감점 방지를 위해 0.5배만 적용
 
+    # 문장당 평균 점수 계산 및 -10 ~ 10 범위 제한
     final_score = max(-10.0, min(10.0, total_score / (len(sentences) or 1)))
     return round(final_score, 1), sentences[0].strip()[:200]
 
 def run_analysis():
-    # 여기에 FOMC 의사록 전문을 따옴표 사이에 넣으세요
+    # 분석 대상 텍스트 (실제 의사록 전문을 여기에 넣으세요)
     fomc_text = """
     Inflation remains persistent but economic growth is resilient. 
     Labor market shows some weakness. Geopolitical risks create uncertainty.
@@ -69,9 +78,10 @@ def run_analysis():
             "source": "FOMC Analysis"
         })
 
+    # JSON 저장
     with open('indicators.json', 'w', encoding='utf-8') as f:
         json.dump(results, f, ensure_ascii=False, indent=2)
-    print("✅ indicators.json 생성 완료!")
+    print("✅ indicators.json 생성 완료! (가중치 점수 적용됨)")
 
 if __name__ == "__main__":
     run_analysis()
