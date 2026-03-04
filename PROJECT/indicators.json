@@ -1,12 +1,77 @@
-target_keywords = [
-    {"word": "Inflation", "cat": "PRICE", "type": "fomc"},
-    {"word": "Growth", "cat": "GROWTH", "type": "fomc"},
-    {"word": "Labor Market", "cat": "GROWTH", "type": "fomc"},
-    {"word": "Interest Rate", "cat": "PRICE", "type": "fomc"},
-    {"word": "Uncertainty", "cat": "GENERAL", "type": "fomc"},
-    {"word": "Stability", "cat": "GENERAL", "type": "fomc"},
-    {"word": "Consumer Spending", "cat": "GROWTH", "type": "fomc"},
-    {"word": "Housing", "cat": "PRICE", "type": "fomc"},
-    {"word": "Yields", "cat": "GENERAL", "type": "fomc"},
-    {"word": "Policy Shift", "cat": "GENERAL", "type": "fomc"}
-]
+import json
+import re
+
+# 카테고리별 감성 사전
+SENTIMENT_CONFIG = {
+    "PRICE": {
+        "positive": ["easing", "slowing", "stable", "declining", "moderate"],
+        "negative": ["persistent", "rising", "high", "inflationary", "above"]
+    },
+    "GROWTH": {
+        "positive": ["rising", "resilient", "strong", "improving", "robust"],
+        "negative": ["weakness", "slowing", "stalling", "declining", "concerns"]
+    },
+    "GENERAL": {
+        "negative": ["uncertainty", "risks", "volatile", "concerns"]
+    }
+}
+
+def analyze_sentiment(text, keyword, category):
+    sentences = re.findall(r"([^.]*?" + re.escape(keyword) + r"[^.]*\.)", text, re.IGNORECASE)
+    if not sentences: return 0.0, "No context"
+
+    total_score = 0
+    config = SENTIMENT_CONFIG.get(category, SENTIMENT_CONFIG["GENERAL"])
+    
+    for sent in sentences:
+        words = sent.lower().split()
+        for pos in config.get("positive", []):
+            if pos in words: total_score += 3
+        for neg in config.get("negative", []):
+            if neg in words: total_score -= 4
+        for gen_neg in SENTIMENT_CONFIG["GENERAL"]["negative"]:
+            if gen_neg in words: total_score -= 2
+
+    final_score = max(-10.0, min(10.0, total_score / (len(sentences) or 1)))
+    return round(final_score, 1), sentences[0].strip()[:200]
+
+def run_analysis():
+    # 여기에 FOMC 의사록 전문을 따옴표 사이에 넣으세요
+    fomc_text = """
+    Inflation remains persistent but economic growth is resilient. 
+    Labor market shows some weakness. Geopolitical risks create uncertainty.
+    """
+
+    target_keywords = [
+        {"word": "Inflation", "cat": "PRICE", "type": "fomc"},
+        {"word": "Growth", "cat": "GROWTH", "type": "fomc"},
+        {"word": "Labor Market", "cat": "GROWTH", "type": "fomc"},
+        {"word": "Interest Rate", "cat": "PRICE", "type": "fomc"},
+        {"word": "Uncertainty", "cat": "GENERAL", "type": "fomc"},
+        {"word": "Stability", "cat": "GENERAL", "type": "fomc"},
+        {"word": "Consumer Spending", "cat": "GROWTH", "type": "fomc"},
+        {"word": "Housing", "cat": "PRICE", "type": "fomc"},
+        {"word": "Yields", "cat": "GENERAL", "type": "fomc"},
+        {"word": "Policy Shift", "cat": "GENERAL", "type": "fomc"}
+    ]
+
+    results = []
+    for item in target_keywords:
+        score, context = analyze_sentiment(fomc_text, item['word'], item['cat'])
+        results.append({
+            "word": item['word'],
+            "count": fomc_text.lower().count(item['word'].lower()),
+            "sentiment_score": score,
+            "trend": "up" if score > 0 else "down",
+            "impact": "High" if abs(score) > 6 else "Mid",
+            "context": context,
+            "type": item['type'],
+            "source": "FOMC Analysis"
+        })
+
+    with open('indicators.json', 'w', encoding='utf-8') as f:
+        json.dump(results, f, ensure_ascii=False, indent=2)
+    print("✅ indicators.json 생성 완료!")
+
+if __name__ == "__main__":
+    run_analysis()
