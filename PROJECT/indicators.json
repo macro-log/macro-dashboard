@@ -1,42 +1,12 @@
-[
-  {
-    "word": "Inflation",
-    "count": 1,
-    "sentiment_score": -4.0,
-    "trend": "down",
-    "impact": "Mid",
-    "context": "Inflation remains rising and persistent.",
-    "type": "fomc",
-    "source": "FOMC Analysis"
-  },
-  {
-    "word": "Growth",
-    "count": 1,
-    "sentiment_score": 6.0,
-    "trend": "up",
-    "impact": "Mid",
-    "context": "However, economic growth is resilient and strong.",
-    "type": "fomc",
-    "source": "FOMC Analysis"
-  },
-  {
-    "word": "Labor Market",
-    "count": 1,
-    "sentiment_score": -4.0,
-    "trend": "down",
-    "impact": "Mid",
-    "context": "Labor market shows some weakness but stays stable.",
-    "type": "fomc",
-    "source": "FOMC Analysis"
-  },
-  {
-    "word": "Economic Outlook",
-    "count": 0,
-    "sentiment_score": 0.0,
-    "trend": "down",
-    "impact": "Mid",
-    "context": "No context",
-    "type": "fomc",
-    "source": "FOMC Analysis"
-  }
+target_keywords = [
+    {"word": "Inflation", "cat": "PRICE", "type": "fomc"},
+    {"word": "Growth", "cat": "GROWTH", "type": "fomc"},
+    {"word": "Labor Market", "cat": "GROWTH", "type": "fomc"},
+    {"word": "Interest Rate", "cat": "PRICE", "type": "fomc"},
+    {"word": "Uncertainty", "cat": "GENERAL", "type": "fomc"},
+    {"word": "Stability", "cat": "GENERAL", "type": "fomc"},
+    {"word": "Consumer Spending", "cat": "GROWTH", "type": "fomc"},
+    {"word": "Housing", "cat": "PRICE", "type": "fomc"},
+    {"word": "Yields", "cat": "GENERAL", "type": "fomc"},
+    {"word": "Policy Shift", "cat": "GENERAL", "type": "fomc"}
 ]
