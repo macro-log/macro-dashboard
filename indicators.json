@@ -1,42 +1,75 @@
-[
-  {
-    "word": "Inflation",
-    "count": 1,
-    "sentiment_score": -4.0,
-    "trend": "down",
-    "impact": "Mid",
-    "context": "Inflation remains rising and persistent.",
-    "type": "fomc",
-    "source": "FOMC Analysis"
-  },
-  {
-    "word": "Growth",
-    "count": 1,
-    "sentiment_score": 6.0,
-    "trend": "up",
-    "impact": "Mid",
-    "context": "However, economic growth is resilient and strong.",
-    "type": "fomc",
-    "source": "FOMC Analysis"
-  },
-  {
-    "word": "Labor Market",
-    "count": 1,
-    "sentiment_score": -4.0,
-    "trend": "down",
-    "impact": "Mid",
-    "context": "Labor market shows some weakness but stays stable.",
-    "type": "fomc",
-    "source": "FOMC Analysis"
-  },
-  {
-    "word": "Economic Outlook",
-    "count": 0,
-    "sentiment_score": 0.0,
-    "trend": "down",
-    "impact": "Mid",
-    "context": "No context",
-    "type": "fomc",
-    "source": "FOMC Analysis"
-  }
-]
+{
+  "market_temp": "-11.5",
+  "indicators": [
+    {
+      "word": "PARTICIPANTS",
+      "sentiment_score": -1.6,
+      "display_score": "-1.6",
+      "score_diff": "-0.2",
+      "type": "fomc"
+    },
+    {
+      "word": "MARKET",
+      "sentiment_score": -1.1,
+      "display_score": "-1.1",
+      "score_diff": "-0.2",
+      "type": "fomc"
+    },
+    {
+      "word": "INFLATION",
+      "sentiment_score": -2.2,
+      "display_score": "-2.2",
+      "score_diff": "-0.2",
+      "type": "fomc"
+    },
+    {
+      "word": "COMMITTEE",
+      "sentiment_score": -1.1,
+      "display_score": "-1.1",
+      "score_diff": "-0.2",
+      "type": "fomc"
+    },
+    {
+      "word": "FEDERAL",
+      "sentiment_score": -0.2,
+      "display_score": "-0.2",
+      "score_diff": "-0.2",
+      "type": "fomc"
+    },
+    {
+      "word": "POLICY",
+      "sentiment_score": -2.1,
+      "display_score": "-2.1",
+      "score_diff": "-0.2",
+      "type": "fomc"
+    },
+    {
+      "word": "REMAINED",
+      "sentiment_score": -2.0,
+      "display_score": "-2.0",
+      "score_diff": "-0.2",
+      "type": "fomc"
+    },
+    {
+      "word": "PERCENT",
+      "sentiment_score": -0.8,
+      "display_score": "-0.8",
+      "score_diff": "-0.2",
+      "type": "fomc"
+    },
+    {
+      "word": "RESERVE",
+      "sentiment_score": 0.3,
+      "display_score": "+0.3",
+      "score_diff": "+0.3",
+      "type": "fomc"
+    },
+    {
+      "word": "CONTINUED",
+      "sentiment_score": -0.7,
+      "display_score": "-0.7",
+      "score_diff": "-0.2",
+      "type": "fomc"
+    }
+  ]
+}

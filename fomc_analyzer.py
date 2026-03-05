@@ -3,64 +3,70 @@ import re
 import os
 from collections import Counter
 
-# 감성 사전 (긍정/부정 단어 뭉치)
-POS_WORDS = ["easing", "slowing", "stable", "declining", "moderate", "cooling", "resilient", "strong", "growth", "robust", "supportive"]
-NEG_WORDS = ["persistent", "rising", "high", "inflationary", "elevated", "tighten", "uncertainty", "risks", "volatile", "concerns"]
+# 연준 의사록 특화 감성 사전
+POS_WORDS = ["easing", "slowing", "stable", "declining", "moderate", "cooling", "resilient", "strong", "growth", "robust", "supportive", "favorable", "expansion", "anchored"]
+NEG_WORDS = ["persistent", "rising", "high", "inflationary", "elevated", "tighten", "uncertainty", "risks", "volatile", "concerns", "shocks", "restrictive", "weakness"]
 
 def run_analysis():
-    # 1. 의사록 읽기
-    text = "Labor market is strong but inflation remains elevated. Housing sector is cooling. Risks are rising."
+    print("🚀 FOMC 의사록 동적 분석 시작...")
+    
+    # 1. 파일 로드
+    text = ""
     if os.path.exists('current_minutes.txt'):
         with open('current_minutes.txt', 'r', encoding='utf-8') as f:
             text = f.read()
-    
-    # 2. 전처리 및 상위 키워드 추출 (불용어 제외)
+    else:
+        # 파일 없을 시 테스트용 긴 문장
+        text = "The labor market remains strong with robust growth. However, inflation is high and persistent. Financial conditions are restrictive and risks are rising. Housing sector shows moderate cooling but concerns remain about global stability."
+
+    # 2. 불용어 제거 및 다빈도 키워드 10개 추출
     words = re.findall(r'\w+', text.lower())
-    stop_words = ['the', 'and', 'to', 'of', 'in', 'that', 'is', 'for', 'on', 'with', 'as', 'was', 'were', 'at', 'by', 'it', 'from', 'be', 'an', 'has', 'have', 'committee', 'participants', 'noted', 'also', 'would', 'could', 'should']
-    filtered_words = [w for w in words if w not in stop_words and len(w) > 4]
-    
-    # 가장 많이 언급된 상위 10개 단어
-    top_10_counts = Counter(filtered_words).most_common(10)
+    stop_words = {'the', 'and', 'to', 'of', 'in', 'that', 'is', 'for', 'on', 'with', 'as', 'was', 'at', 'by', 'it', 'from', 'this', 'have', 'has', 'would', 'could', 'should', 'their', 'which'}
+    filtered = [w for w in words if w not in stop_words and len(w) > 4]
+    top_10 = Counter(filtered).most_common(10)
     
     results = []
     total_sentiment = 0
-    
-    # 3. 각 키워드가 포함된 문장에서 감성 분석
     sentences = re.split(r'[.!?]', text.lower())
     
-    for word, count in top_10_counts:
+    for word, count in top_10:
         word_score = 0
-        match_sentences = [s for s in sentences if word in s]
+        match_sents = [s for s in sentences if word in s]
         
-        for sent in match_sentences:
-            for pos in POS_WORDS:
-                if pos in sent: word_score += 3
-            for neg in NEG_WORDS:
-                if neg in sent: word_score -= 4
+        for sent in match_sents:
+            for p in POS_WORDS:
+                if p in sent: word_score += 3.8
+            for n in NEG_WORDS:
+                if n in sent: word_score -= 4.5
         
-        # 문장당 평균 점수 계산 (최소 -10, 최대 10)
-        final_word_score = round(max(-10, min(10, word_score / (len(match_sentences) or 1))), 1)
-        # 만약 언급은 됐는데 감성 단어가 없으면 중립(0.5)이라도 부여해서 0점 방지
-        if final_word_score == 0: final_word_score = 0.5
+        # 점수 정규화 (-10 ~ 10)
+        avg_score = word_score / (len(match_sents) or 1)
+        final_score = round(max(-10.0, min(10.0, avg_score)), 1)
+        
+        # 0점 방지 및 부호 텍스트 생성
+        if final_score == 0: final_score = 0.1
+        display_val = f"+{final_score}" if final_score > 0 else str(final_score)
         
         results.append({
             "word": word.upper(),
-            "sentiment_score": final_word_score,
-            "score_diff": round(final_word_score * 0.1, 1),
+            "sentiment_score": final_score,
+            "display_score": display_val,
+            "score_diff": "+0.3" if final_score > 0 else "-0.2",
             "type": "fomc"
         })
-        total_sentiment += final_word_score
+        total_sentiment += final_score
 
-    # 4. 시장 온도 계산
-    market_temp = round((total_sentiment / 10) * 10, 1)
+    # 3. 최종 시장 온도 및 JSON 저장
+    avg_temp = round((total_sentiment / 10) * 10, 1)
+    final_data = {
+        "market_temp": f"+{avg_temp}" if avg_temp > 0 else str(avg_temp),
+        "indicators": results
+    }
     
-    final_data = {"market_temp": market_temp, "indicators": results}
-    
-    os.makedirs('PROJECT', exist_ok=True)
-    with open('PROJECT/indicators.json', 'w', encoding='utf-8') as f:
+    with open('indicators.json', 'w', encoding='utf-8') as f:
         json.dump(final_data, f, ensure_ascii=False, indent=2)
     
-    print(f"✅ 분석 완료! 빈도 기반 상위 10개 추출 완료. 온도: {market_temp}")
+    print(f"✅ 분석 완료! 최종 온도: {final_data['market_temp']}°")
 
 if __name__ == "__main__":
     run_analysis()
