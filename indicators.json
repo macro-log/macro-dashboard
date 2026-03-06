@@ -1,75 +1,89 @@
 {
-  "market_temp": "-11.5",
+  "market_temp": "-2.5",
   "indicators": [
     {
-      "word": "PARTICIPANTS",
-      "sentiment_score": -1.6,
-      "display_score": "-1.6",
-      "score_diff": "-0.2",
-      "type": "fomc"
-    },
-    {
-      "word": "MARKET",
-      "sentiment_score": -1.1,
-      "display_score": "-1.1",
-      "score_diff": "-0.2",
-      "type": "fomc"
-    },
-    {
       "word": "INFLATION",
-      "sentiment_score": -2.2,
-      "display_score": "-2.2",
-      "score_diff": "-0.2",
-      "type": "fomc"
+      "sentiment_score": -1.8,
+      "status": "NEUTRAL",
+      "display_score": "-1.8",
+      "count": 52
     },
     {
-      "word": "COMMITTEE",
-      "sentiment_score": -1.1,
-      "display_score": "-1.1",
-      "score_diff": "-0.2",
-      "type": "fomc"
-    },
-    {
-      "word": "FEDERAL",
-      "sentiment_score": -0.2,
-      "display_score": "-0.2",
-      "score_diff": "-0.2",
-      "type": "fomc"
+      "word": "RATE",
+      "sentiment_score": 0.4,
+      "status": "NEUTRAL",
+      "display_score": "+0.4",
+      "count": 48
     },
     {
       "word": "POLICY",
-      "sentiment_score": -2.1,
-      "display_score": "-2.1",
-      "score_diff": "-0.2",
-      "type": "fomc"
+      "sentiment_score": -0.2,
+      "status": "NEUTRAL",
+      "display_score": "-0.2",
+      "count": 34
     },
     {
-      "word": "REMAINED",
-      "sentiment_score": -2.0,
-      "display_score": "-2.0",
-      "score_diff": "-0.2",
-      "type": "fomc"
+      "word": "RISKS",
+      "sentiment_score": -0.5,
+      "status": "NEUTRAL",
+      "display_score": "-0.5",
+      "count": 21
     },
     {
-      "word": "PERCENT",
-      "sentiment_score": -0.8,
-      "display_score": "-0.8",
-      "score_diff": "-0.2",
-      "type": "fomc"
+      "word": "GROWTH",
+      "sentiment_score": -0.1,
+      "status": "NEUTRAL",
+      "display_score": "-0.1",
+      "count": 20
     },
     {
-      "word": "RESERVE",
-      "sentiment_score": 0.3,
-      "display_score": "+0.3",
-      "score_diff": "+0.3",
-      "type": "fomc"
+      "word": "LABOR",
+      "sentiment_score": -0.0,
+      "status": "NEUTRAL",
+      "display_score": "-0.0",
+      "count": 18
     },
     {
-      "word": "CONTINUED",
+      "word": "CREDIT",
+      "sentiment_score": 0.2,
+      "status": "NEUTRAL",
+      "display_score": "+0.2",
+      "count": 13
+    },
+    {
+      "word": "GDP",
+      "sentiment_score": -0.2,
+      "status": "NEUTRAL",
+      "display_score": "-0.2",
+      "count": 11
+    },
+    {
+      "word": "PRICES",
+      "sentiment_score": 0.0,
+      "status": "NEUTRAL",
+      "display_score": "0.0",
+      "count": 11
+    },
+    {
+      "word": "EMPLOYMENT",
+      "sentiment_score": -0.1,
+      "status": "NEUTRAL",
+      "display_score": "-0.1",
+      "count": 7
+    },
+    {
+      "word": "ECONOMY",
       "sentiment_score": -0.7,
+      "status": "NEUTRAL",
       "display_score": "-0.7",
-      "score_diff": "-0.2",
-      "type": "fomc"
+      "count": 5
+    },
+    {
+      "word": "STABILITY",
+      "sentiment_score": 0.0,
+      "status": "NEUTRAL",
+      "display_score": "0.0",
+      "count": 3
     }
   ]
 }
