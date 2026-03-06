@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIGNAL 9 | CORE TERMINAL</title>
+    <title>SIGNAL 9 | 투자를 위한 선택</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -81,6 +81,21 @@
             </div>
         </div>
 
+        <div class="card mb-5 h-[350px]">
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <span class="section-label">Historical Analysis</span>
+                    <h3 class="text-xl font-bold">FOMC SENTIMENT TREND (TIME-SERIES)</h3>
+                </div>
+                <div class="text-[10px] text-gray-500 font-bold border border-gray-700 px-3 py-1 rounded">
+                    PRO ACCESS: SIGNAL 9 PREDICTIVE ENGINE
+                </div>
+            </div>
+            <div class="flex-grow relative">
+                <canvas id="trendChart"></canvas>
+            </div>
+        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
             <div class="card min-h-[300px]">
                 <span class="section-label">BIG TECH</span>
@@ -101,6 +116,7 @@
     <script>
         let sentimentChart = null;
         let volumeChart = null;
+        let trendChart = null;
 
         function loadTicker(symbol) {
             const container = document.getElementById('ticker_container');
@@ -122,6 +138,57 @@
 
         function changeWidget(symbol) { loadTicker(symbol); loadChart(symbol); }
 
+        // [신규] 과거 트렌드 차트 로드 함수
+        async function loadTrendData() {
+            try {
+                const response = await fetch('historical_data.json?v=' + Date.now());
+                const historyData = await response.json();
+
+                const labels = historyData.map(d => d.date);
+                const scores = historyData.map(d => d.score);
+
+                if (trendChart) trendChart.destroy();
+                
+                const ctx = document.getElementById('trendChart').getContext('2d');
+                trendChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Sentiment Score',
+                            data: scores,
+                            borderColor: '#38bdf8',
+                            backgroundColor: 'rgba(56, 189, 248, 0.1)',
+                            borderWidth: 3,
+                            pointBackgroundColor: '#38bdf8',
+                            pointRadius: 5,
+                            pointHoverRadius: 8,
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { 
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: '#161e31',
+                                titleColor: '#38bdf8',
+                                bodyColor: '#fff',
+                                borderColor: '#262f45',
+                                borderWidth: 1
+                            }
+                        },
+                        scales: {
+                            y: { grid: { color: '#262f45' }, ticks: { color: '#94a3b8' } },
+                            x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+                        }
+                    }
+                });
+            } catch (err) { console.error("Trend Chart Error:", err); }
+        }
+
         async function updateTerminalData() {
             try {
                 const response = await fetch('indicators.json?v=' + Date.now());
@@ -133,10 +200,9 @@
                 tempElement.innerText = data.market_temp + '°';
                 tempElement.className = tempNum >= 0 ? "text-xl font-black italic text-sky-400" : "text-xl font-black italic text-red-400";
 
-                // 2. 차트 2단 업데이트 (감성 & 거래량)
+                // 2. 차트 2단 업데이트
                 const labels = data.indicators.map(i => i.word);
                 
-                // 상단: 감성 점수
                 if (sentimentChart) sentimentChart.destroy();
                 sentimentChart = new Chart(document.getElementById('sentimentChart'), {
                     type: 'bar',
@@ -154,7 +220,6 @@
                     }
                 });
 
-                // 하단: 언급 횟수 (Volume)
                 if (volumeChart) volumeChart.destroy();
                 volumeChart = new Chart(document.getElementById('volumeChart'), {
                     type: 'bar',
@@ -172,7 +237,7 @@
                     }
                 });
 
-                // 3. 리스트 업데이트 (횟수 포함)
+                // 3. 리스트 업데이트
                 const list = document.getElementById('indicator-list');
                 list.innerHTML = data.indicators.map(i => `
                     <li class="flex justify-between items-center p-3 rounded bg-[#1e293b] border-l-4 ${i.status === 'POSITIVE' ? 'border-sky-500' : (i.status === 'NEGATIVE' ? 'border-red-500' : 'border-gray-500')}">
@@ -204,8 +269,12 @@
             } catch (err) { console.error("Update Error:", err); }
         }
 
-        window.onload = () => { changeWidget('BINANCE:BTCUSDT'); updateTerminalData(); };
-        setInterval(updateTerminalData, 30000); // 30초마다 갱신
+        window.onload = () => { 
+            changeWidget('BINANCE:BTCUSDT'); 
+            updateTerminalData(); 
+            loadTrendData(); // 초기 트렌드 데이터 로드
+        };
+        setInterval(updateTerminalData, 30000); 
     </script>
 </body>
 </html>
