@@ -17,7 +17,6 @@ def get_sector_news():
             response = requests.get(url, timeout=10)
             tree = ElementTree.fromstring(response.content)
             items = []
-            # 최신 뉴스 3개만 추출
             for item in tree.findall('.//item')[:3]:
                 items.append({
                     "title": item.find('title').text,
@@ -31,9 +30,14 @@ def get_sector_news():
     return news_data
 
 def update_json_with_news():
-    target_file = 'indicators.json'
+    # [비판적 수정] 웹사이트가 읽어가는 실제 위치로 경로 변경
+    target_file = 'PROJECT/indicators.json'
     
-    # 1. 기존 indicators.json 읽기 (분석 결과 보존용)
+    # 만약 PROJECT 폴더가 없으면 에러 방지를 위해 생성
+    if not os.path.exists('PROJECT'):
+        os.makedirs('PROJECT')
+
+    # 1. 기존 데이터 읽기
     if os.path.exists(target_file):
         with open(target_file, 'r', encoding='utf-8') as f:
             try:
@@ -41,13 +45,12 @@ def update_json_with_news():
             except:
                 data = {}
     else:
-        # 파일이 아예 없으면 기본 틀 생성
         data = {"market_temp": "0.0", "indicators": []}
 
-    # 2. 뉴스 데이터만 갱신
+    # 2. 뉴스 갱신
     data["sector_news"] = get_sector_news()
 
-    # 3. 다시 저장
+    # 3. PROJECT 폴더 안의 indicators.json에 저장
     with open(target_file, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
     

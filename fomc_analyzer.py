@@ -3,14 +3,14 @@ import re
 import os
 from collections import Counter
 
-# 1. 추적할 핵심 경제 키워드 (쓰레기 단어 필터링)
+# 1. 추적할 핵심 경제 키워드 (THEIR, REMAINED 등 쓰레기 단어 완벽 차단)
 TARGET_KEYWORDS = [
     "INFLATION", "EMPLOYMENT", "RATE", "ECONOMY", "LABOR", "PRICES", "GROWTH",
     "STABILITY", "RISKS", "DEMAND", "SUPPLY", "SPENDING", "WAGES", "HOUSING",
     "ENERGY", "TIGHTENING", "EASING", "GDP", "POLICY", "BANKING", "CREDIT"
 ]
 
-# 2. [핵심] 단어별 맥락 규칙 (형님이 나중에 여기에 단어를 추가하시면 됩니다)
+# 2. 단어별 맥락 규칙
 CONTEXT_RULES = {
     "SUPPLY": {
         "INCREASED": 2.5, "RECOVERY": 2.0, "LABOR": 1.5,
@@ -30,25 +30,21 @@ CONTEXT_RULES = {
     }
 }
 
-# 3. 일반적인 긍/부정 단어 (보조 지표)
 POS_WORDS = ["MODERATE", "RESILIENT", "SUPPORTIVE", "STABLE", "GRADUAL"]
 NEG_WORDS = ["UNCERTAINTY", "VOLATILE", "CONCERNS", "WEAKENING", "DOWNSIDE"]
 
 def analyze_sentence(word, sentence):
-    """문장 내 맥락을 읽어 점수를 계산"""
     word = word.upper()
     sentence = sentence.upper()
     score = 0
     found_rule = False
 
-    # 규칙 기반 분석
     if word in CONTEXT_RULES:
         for trigger, weight in CONTEXT_RULES[word].items():
             if trigger in sentence:
                 score += weight
                 found_rule = True
     
-    # 일반 감성 분석 (보조)
     for p in POS_WORDS:
         if p in sentence: score += 1.0
     for n in NEG_WORDS:
@@ -57,7 +53,7 @@ def analyze_sentence(word, sentence):
     return score, found_rule
 
 def run_fomc_analysis():
-    # 파일 읽기
+    # [중요] 분석 대상 텍스트 파일 위치 확인
     if not os.path.exists('current_minutes.txt'):
         print("❌ current_minutes.txt 파일을 찾을 수 없습니다.")
         return
@@ -65,7 +61,6 @@ def run_fomc_analysis():
     with open('current_minutes.txt', 'r', encoding='utf-8') as f:
         text = f.read().upper()
 
-    # 단어 추출 및 필터링
     all_words = re.findall(r'\w+', text)
     filtered_words = [w for w in all_words if w in TARGET_KEYWORDS]
     top_keywords = Counter(filtered_words).most_common(12)
@@ -77,18 +72,14 @@ def run_fomc_analysis():
     for word, count in top_keywords:
         word_score = 0
         match_sents = [s for s in sentences if word in s]
-        
-        if not match_sents:
-            continue
+        if not match_sents: continue
 
         for sent in match_sents:
             score, _ = analyze_sentence(word, sent)
             word_score += score
         
-        # 문장 수로 나눠서 평균값 산출
         avg_word_score = round(word_score / len(match_sents), 1)
         
-        # [비판적 조언 적용] -2.0 ~ 2.0 사이는 'NEUTRAL(중립)'로 분류
         status = "NEUTRAL"
         if avg_word_score >= 2.0: status = "POSITIVE"
         elif avg_word_score <= -2.0: status = "NEGATIVE"
@@ -96,14 +87,18 @@ def run_fomc_analysis():
         indicators.append({
             "word": word,
             "sentiment_score": avg_word_score,
-            "status": status, # 웹에서 색깔 정할 때 사용
+            "status": status,
             "display_score": f"+{avg_word_score}" if avg_word_score > 0 else str(avg_word_score),
             "count": count
         })
         total_sentiment += avg_word_score
 
-    # 결과 저장 (기존 뉴스 데이터 보존)
-    target_file = 'indicators.json'
+    # [핵심 수정] 배포용 폴더인 PROJECT 내부의 json을 업데이트하도록 경로 변경
+    target_file = 'PROJECT/indicators.json'
+    
+    if not os.path.exists('PROJECT'):
+        os.makedirs('PROJECT')
+
     try:
         with open(target_file, 'r', encoding='utf-8') as f:
             current_data = json.load(f)
@@ -117,7 +112,7 @@ def run_fomc_analysis():
     with open(target_file, 'w', encoding='utf-8') as f:
         json.dump(current_data, f, ensure_ascii=False, indent=2)
     
-    print(f"✅ 분석 완료! 온도: {avg_temp} / 키워드 {len(indicators)}개 추출")
+    print(f"✅ 분석 완료! 결과가 {target_file}에 저장되었습니다. (온도: {avg_temp})")
 
 if __name__ == "__main__":
     run_fomc_analysis()
