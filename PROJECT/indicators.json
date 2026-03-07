@@ -138,5 +138,42 @@
         "date": "Fri, 28 Nov 2025"
       }
     ]
-  }
+  },
+  "news_list": [
+    {
+      "title": "다음 연준 회의: 3월 회의와 금리에 대한 예상 사항",
+      "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxPbmNiRy1wTFZWMllQdm5zQ3JMc28xQS0xNmxqaUY5VVFEbEx6b1k0d2ZRRHBjSnVyY2syRU15OWt4aF9rYkJKXzlDcFk0N044YVExdFU3V2x6bFA5UmVwbTltVDNPdnBNU2VuZlZTdlduYjNmSWtfYUpxNjVKd2pIMlpEVXBVLWlZcW5neW1mSXVZOGR3TklVZEVyTWM4aGFwUllCdTIxaldEeVJGLW5EVA?oc=5",
+      "date": "Tue, 03 Mar 2026 19:23:04 GMT"
+    },
+    {
+      "title": "연준 관리들은 금리가 어디로 가야 하는지에 대해 의견이 분분하다고 의사록은 밝혔습니다.",
+      "link": "https://news.google.com/rss/articles/CBMibkFVX3lxTE9PSDdsTXhUOVpjWWFVTlAtOVA1V2Y1c0xqWWdqcldDajdxTjdvVmZnVGl6RHg4cFJIQ2QtMXhXMmREeGUzNjQwODhtOEhrYUJHVEE3azZlNHY5SUxIMVcxZG1aMFMyRmZBN3BGSGpn0gFzQVVfeXFMTm9yMU5Fcm1aYnhTX01tNDdfcjNiaGNUREh4NTJqaXdraG5VOWpCZ3BRcWVLWGtJeXhwejdBVnB4WjhjUTgzVHAxRkd4dHZfM0VRaElqaFpaQUxsR09yd2ZrQ0NWcDByY2R6ZFZRbEVXRm1BVQ?oc=5",
+      "date": "Wed, 18 Feb 2026 08:00:00 GMT"
+    },
+    {
+      "title": "연준은 오늘 금리 결정을 위해 회의를 가집니다.경제학자들이 예측하는 바는 다음과 같습니다.",
+      "link": "https://news.google.com/rss/articles/CBMiowFBVV95cUxQSmhnNHRXSTBOb3l5dWRFYkd3V1FyQVNhZGNuWFlLRlNMNmp0RzZ6SWRVX3RyV3MzaXEzQkhtS0JZdXZfNGswQllkR29lZWItRll2TEtnRzFERzZtQmtYOHBTYXp2dFBTNDNiV28ySnFpcXd6Y0NNMHR5RGl2UDA2M1EzazRJOGdFQldLZjFySkFIRUg1dG85U1Jmb2tSd3JLUFFj0gGoAUFVX3lxTE94UkpzWmpDY2c0TUpUMEQ4cmdaUGpfXzJPNUpqQkhKT3dNMlpJT0Uyc1lWMldSVU5CeHVLTGk3Sm5Ma2JwUUNUSTBRYjZUeW5iYUZEbFdTc3B2ZlcwZ29lWkViSDFkeTNzXzVOeHRfUm5FRE9MM0dkM3VnRDZtRmxBUnNFaVNjdmpmZEdMb3ZzYk5aeUQ3WkdwTWZpcWZoRHJqd3doVGR1OQ?oc=5",
+      "date": "Wed, 29 Oct 2025 07:00:00 GMT"
+    },
+    {
+      "title": "연준은 고용 둔화와 인플레이션 지속 속에서 금리 정책을 조정",
+      "link": "https://news.google.com/rss/articles/CBMiswFBVV95cUxOa2V2OFo4WjFPclRZRGtjZXJvb3dsaDVUM3FjRnVCTkxfX184eHRyQjJ2NFlDc09TUlZrUDZGUzQzTjgyV1drNG9PSnc2Y0RELWZ5LVktLTlFcGFFa2s0Qm04RzRoYjNRSE9aSGw3aDljNFEyUEZJS1RNa203WlBLdmxxS2lWNmNXT0pRZGdDcGdqdEZ1YmMxN2lhci1RdVRMTEJtWE5wM3RJSFhGMXJjMjdqZw?oc=5",
+      "date": "Fri, 30 Jan 2026 08:00:00 GMT"
+    },
+    {
+      "title": "연준은 2026년부터 금리를 동결합니다: 3월에 금리 인하가 예정되어 있습니까?",
+      "link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxQclBRVmJheElTNjZMUVRPalRFeXN6LW95NjdyN29ZVk40VDZIUXdCS3NGczNBYXd4Y2ZGTWhqVC0xWmVJN2F5MkVhM2pMRXVkb1ZvYnRkU2VRVVptTEhaUENkaG5yU25jbV84SjZFem1KRkRLOC1PcGJEbElQQVBLak9pWVNLUk5MNDFIdGdUMA?oc=5",
+      "date": "Thu, 29 Jan 2026 08:00:00 GMT"
+    },
+    {
+      "title": "연준, 고용시장 활성화 위해 기준금리 인하",
+      "link": "https://news.google.com/rss/articles/CBMilAFBVV95cUxOOFJldmV4bWpmMUFsUnY3blNFeTk0T004TWY4ZEIxajUzMTVMZE44OVFTTHRIbE01YUw0SlNaT0dmbERRWl91ZG1MMmFzeFF5MHdoZWhiNDJsNkNRSjh0S0RMel83RjExTml1SXZ0Rlhja3JfX0pObDA1OW91TERaZkRkbXdwWjJQWWZfdVJZZzFURjdu?oc=5",
+      "date": "Wed, 29 Oct 2025 07:00:00 GMT"
+    },
+    {
+      "title": "연준, 노동시장 불확실성 속에 3년 연속 금리 인하",
+      "link": "https://news.google.com/rss/articles/CBMikgFBVV95cUxNQlNhbVo3Y1ZGbUdLOGN5bnljRjJoRU8zZ2FlWEZjMXBIakhEcnJBNV9LaU9aY1Vwc01xZmFDWjFkc3NULXZyYUdSM3NobmNuSGRKeUY1NVdtbXcwS1VLcUFCVTFzZFNadDJXQnM1bDZlckNJTUlPeGxiMGlZSG55NHhHaUR1T1h1MzFxaTUwYnd3Z9IBlwFBVV95cUxOSzVZMWhOckRkRjN5bmlPOWVKaEhSVlA3R0NkUjNxUGJua21hM3VVejN0ZEw0VmJDM2FRVlo2QzZYTW0tYVRrN3E2aUZ6QUZndkZFWEVtemxhaG9ndVNKb3JVdE9uU0VjNjVPUE5vZDVocDNQUzRTMm51RWlqX3FWWWNLaTdsbjZzdFVsNFJrdjMwYVNINWYw?oc=5",
+      "date": "Wed, 10 Dec 2025 08:00:00 GMT"
+    }
+  ]
 }
