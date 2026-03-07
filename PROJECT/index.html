@@ -131,24 +131,37 @@
         function loadChart(symbol) {
             document.getElementById('chart_box').innerHTML = "";
             new TradingView.widget({
-                "width": "100%", "height": 600, "symbol": symbol, "interval": "D", "theme": "dark", "style": "1", "container_id": "chart_box",
-                "overrides": { "paneProperties.topMargin": 25 }
+                "width": "100%", 
+                "height": 600, 
+                "symbol": symbol, 
+                "interval": "D", 
+                "theme": "dark", 
+                "style": "1", 
+                "container_id": "chart_box",
+                "locale": "ko",
+                // 차트 레이아웃 최적화: 우측 여백 확보 및 거래량 겹침 방지
+                "overrides": {
+                    "paneProperties.topMargin": 15,
+                    "paneProperties.bottomMargin": 15,
+                    "mainSeriesProperties.priceAxisProperties.autoScale": true,
+                    // 거래량 차트를 캔들 뒤가 아닌 아래쪽 별도 공간에 배치
+                    "volumePaneSize": "tiny"
+                },
+                "options": {
+                    "rightOffset": 5 // 주가 숫자가 잘리지 않도록 우측 여백 추가
+                }
             });
         }
 
         function changeWidget(symbol) { loadTicker(symbol); loadChart(symbol); }
 
-        // [신규] 과거 트렌드 차트 로드 함수
         async function loadTrendData() {
             try {
                 const response = await fetch('historical_data.json?v=' + Date.now());
                 const historyData = await response.json();
-
                 const labels = historyData.map(d => d.date);
                 const scores = historyData.map(d => d.score);
-
                 if (trendChart) trendChart.destroy();
-                
                 const ctx = document.getElementById('trendChart').getContext('2d');
                 trendChart = new Chart(ctx, {
                     type: 'line',
@@ -170,16 +183,7 @@
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        plugins: { 
-                            legend: { display: false },
-                            tooltip: {
-                                backgroundColor: '#161e31',
-                                titleColor: '#38bdf8',
-                                bodyColor: '#fff',
-                                borderColor: '#262f45',
-                                borderWidth: 1
-                            }
-                        },
+                        plugins: { legend: { display: false } },
                         scales: {
                             y: { grid: { color: '#262f45' }, ticks: { color: '#94a3b8' } },
                             x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
@@ -193,16 +197,11 @@
             try {
                 const response = await fetch('indicators.json?v=' + Date.now());
                 const data = await response.json();
-
-                // 1. 온도 업데이트
                 const tempNum = parseFloat(data.market_temp);
                 const tempElement = document.getElementById('temp-value');
                 tempElement.innerText = data.market_temp + '°';
                 tempElement.className = tempNum >= 0 ? "text-xl font-black italic text-sky-400" : "text-xl font-black italic text-red-400";
-
-                // 2. 차트 2단 업데이트
                 const labels = data.indicators.map(i => i.word);
-                
                 if (sentimentChart) sentimentChart.destroy();
                 sentimentChart = new Chart(document.getElementById('sentimentChart'), {
                     type: 'bar',
@@ -219,7 +218,6 @@
                         scales: { y: { min: -10, max: 10, grid: { color: '#262f45' } } }
                     }
                 });
-
                 if (volumeChart) volumeChart.destroy();
                 volumeChart = new Chart(document.getElementById('volumeChart'), {
                     type: 'bar',
@@ -236,8 +234,6 @@
                         scales: { y: { grid: { display: false }, ticks: { display: true } } }
                     }
                 });
-
-                // 3. 리스트 업데이트
                 const list = document.getElementById('indicator-list');
                 list.innerHTML = data.indicators.map(i => `
                     <li class="flex justify-between items-center p-3 rounded bg-[#1e293b] border-l-4 ${i.status === 'POSITIVE' ? 'border-sky-500' : (i.status === 'NEGATIVE' ? 'border-red-500' : 'border-gray-500')}">
@@ -248,8 +244,6 @@
                         <span class="font-mono font-bold ${i.sentiment_score >= 0 ? 'text-sky-400' : 'text-red-400'}">${i.display_score}</span>
                     </li>
                 `).join('');
-
-                // 4. 뉴스 업데이트
                 if(data.sector_news) {
                     const updateNews = (id, newsArr) => {
                         const box = document.getElementById(id);
@@ -265,14 +259,13 @@
                     updateNews('news-semicon', data.sector_news['SEMICON']);
                     updateNews('news-finance', data.sector_news['FINANCE']);
                 }
-
             } catch (err) { console.error("Update Error:", err); }
         }
 
         window.onload = () => { 
-            changeWidget('BINANCE:BTCUSDT'); 
+            changeWidget('AMEX:SPY'); // 초기 로드 시 SPY로 설정
             updateTerminalData(); 
-            loadTrendData(); // 초기 트렌드 데이터 로드
+            loadTrendData(); 
         };
         setInterval(updateTerminalData, 30000); 
     </script>
