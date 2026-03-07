@@ -1,0 +1,27 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "static/images"
+public_folder: "/images"
+
+collections:
+  - name: "indicators"
+    label: "12대 경제지표 관리"
+    files:
+      - file: "content/indicators.json"
+        label: "자동 업데이트 지표"
+        name: "all_indicators"
+        fields:
+          - {label: "비트코인", name: "비트코인", widget: "object", fields: [{label: "가격", name: "price", widget: "string"}, {label: "변동률", name: "change", widget: "string"}]}
+          - {label: "S&P500", name: "S&P500", widget: "object", fields: [{label: "가격", name: "price", widget: "string"}, {label: "변동률", name: "change", widget: "string"}]}
+          - {label: "나스닥", name: "나스닥", widget: "object", fields: [{label: "가격", name: "price", widget: "string"}, {label: "변동률", name: "change", widget: "string"}]}
+          - {label: "다우존스", name: "다우존스", widget: "object", fields: [{label: "가격", name: "price", widget: "string"}, {label: "변동률", name: "change", widget: "string"}]}
+          - {label: "원달러환율", name: "원달러환율", widget: "object", fields: [{label: "가격", name: "price", widget: "string"}, {label: "변동률", name: "change", widget: "string"}]}
+          - {label: "엔달러환율", name: "엔달러환율", widget: "object", fields: [{label: "가격", name: "price", widget: "string"}, {label: "변동률", name: "change", widget: "string"}]}
+          - {label: "미국국채10년", name: "미국국채10년", widget: "object", fields: [{label: "가격", name: "price", widget: "string"}, {label: "변동률", name: "change", widget: "string"}]}
+          - {label: "미국국채3년", name: "미국국채3년", widget: "object", fields: [{label: "가격", name: "price", widget: "string"}, {label: "변동률", name: "change", widget: "string"}]}
+          - {label: "한국국채10년", name: "한국국채10년", widget: "object", fields: [{label: "가격", name: "price", widget: "string"}, {label: "변동률", name: "change", widget: "string"}]}
+          - {label: "일본국채10년", name: "일본국채10년", widget: "object", fields: [{label: "가격", name: "price", widget: "string"}, {label: "변동률", name: "change", widget: "string"}]}
+          - {label: "금", name: "금", widget: "object", fields: [{label: "가격", name: "price", widget: "string"}, {label: "변동률", name: "change", widget: "string"}]}
+          - {label: "WTI유", name: "WTI유", widget: "object", fields: [{label: "가격", name: "price", widget: "string"}, {label: "변동률", name: "change", widget: "string"}]}

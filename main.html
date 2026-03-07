@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>MACRO INSIDER - 글로벌 거시경제 데이터 전문 분석</title>
+    <style>
+        :root { --primary: #3b82f6; --bg: #0f172a; --card: #1e293b; --text: #f1f5f9; --red: #ef4444; --blue: #3b82f6; }
+        body { font-family: 'Pretendard', -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; }
+        
+        /* 상단 바 디자인: 전문 금융 플랫폼 느낌 */
+        header { background: #020617; border-bottom: 1px solid #334155; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 18px; font-weight: 700; color: var(--primary); letter-spacing: 0.5px; }
+        .status { font-size: 12px; color: #94a3b8; }
+
+        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 24px; }
+        
+        /* 카드 디자인: 심플하고 고급스럽게 */
+        .card { background: var(--card); border-radius: 12px; border: 1px solid #334155; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        h3 { margin-top: 0; color: #fff; border-bottom: 1px solid #334155; padding-bottom: 12px; font-size: 1.1rem; font-weight: 600; }
+        
+        .info-list { list-style: none; padding: 0; margin: 15px 0; }
+        .info-item { display: flex; justify-content: space-between; padding: 10px 0; font-size: 14px; border-bottom: 1px solid #334155; }
+        .label { color: #94a3b8; }
+        .value { font-weight: 600; }
+        .up { color: var(--red); }
+        .down { color: var(--blue); }
+
+        /* 전문가 코멘트 박스 */
+        .commentary { background: #020617; padding: 15px; border-radius: 8px; margin-top: 15px; font-size: 13.5px; line-height: 1.6; border-left: 4px solid var(--primary); color: #cbd5e1; }
+
+        /* 관리자 메모장 영역 */
+        textarea { width: 100%; height: 120px; background: #0f172a; color: white; border: 1px solid #334155; border-radius: 8px; padding: 12px; margin-top: 10px; box-sizing: border-box; font-size: 14px; }
+        .btn { width: 100%; background: var(--primary); color: white; border: none; padding: 14px; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 12px; transition: 0.2s; }
+        .btn:hover { background: #2563eb; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">PRO MACRO INSIGHT</div>
+    <div class="status">실시간 시장 데이터 모니터링 중</div>
+</header>
+
+<div class="container">
+    <div class="dashboard">
+        
+        <div class="card">
+            <h3>📊 미 국채 수익률 현황 (US Treasuries)</h3>
+            <div class="info-list">
+                <div class="info-item"><span class="label">2년물 (통화정책 민감)</span><span class="value up">3.47%</span></div>
+                <div class="info-item"><span class="label">3년물</span><span class="value up">3.50%</span></div>
+                <div class="info-item"><span class="label">5년물</span><span class="value up">3.66%</span></div>
+                <div class="info-item"><span class="label">10년물 (시장 금리 기준)</span><span class="value up">4.08%</span></div>
+                <div class="info-item"><span class="label">30년물</span><span class="value up">4.71%</span></div>
+            </div>
+            <div class="commentary">
+                <b>[데스크 코멘트]</b> 인플레이션 우려가 재점화되며 전 구간 금리가 동반 상승 중입니다. 특히 10년물 4% 돌파 여부가 향후 증시 방향성의 핵심 변수가 될 것으로 보입니다.
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>📈 글로벌 주요 지수 (Market Indices)</h3>
+            <div class="info-list">
+                <div class="info-item"><span class="label">다우 산업 지수</span><span class="value up">49,776.18 (+0.07%)</span></div>
+                <div class="info-item"><span class="label">S&P 500</span><span class="value up">6,882.30 (+0.10%)</span></div>
+                <div class="info-item"><span class="label">나스닥 100 지수</span><span class="value down">24,856.24 (-0.13%)</span></div>
+            </div>
+            <div class="commentary">
+                <b>[데이터 분석]</b> 지수는 전반적으로 보합권을 유지하고 있으나, 금리 상승 영향으로 기술주 중심의 나스닥은 상대적으로 약세를 보이는 차별화 장세가 진행 중입니다.
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>📝 오늘의 투자 전략 (포스팅 초안)</h3>
+            <textarea id="adminMemo" placeholder="분석된 데이터를 바탕으로 블로그에 업로드할 핵심 내용을 정리하십시오..."></textarea>
+            <button class="btn" onclick="saveMemo()">리포트 저장</button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function saveMemo() {
+        localStorage.setItem('pro_macro_memo', document.getElementById('adminMemo').value);
+        alert('분석 데이터가 로컬 스토리지에 안전하게 저장되었습니다.');
+    }
+    window.onload = function() {
+        document.getElementById('adminMemo').value = localStorage.getItem('pro_macro_memo') || "";
+    }
+</script>
+
+</body>
+</html>

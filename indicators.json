@@ -1,0 +1,179 @@
+{
+  "market_temp": "-2.5",
+  "indicators": [
+    {
+      "word": "INFLATION",
+      "sentiment_score": -1.8,
+      "status": "NEUTRAL",
+      "display_score": "-1.8",
+      "count": 52
+    },
+    {
+      "word": "RATE",
+      "sentiment_score": 0.4,
+      "status": "NEUTRAL",
+      "display_score": "+0.4",
+      "count": 48
+    },
+    {
+      "word": "POLICY",
+      "sentiment_score": -0.2,
+      "status": "NEUTRAL",
+      "display_score": "-0.2",
+      "count": 34
+    },
+    {
+      "word": "RISKS",
+      "sentiment_score": -0.5,
+      "status": "NEUTRAL",
+      "display_score": "-0.5",
+      "count": 21
+    },
+    {
+      "word": "GROWTH",
+      "sentiment_score": -0.1,
+      "status": "NEUTRAL",
+      "display_score": "-0.1",
+      "count": 20
+    },
+    {
+      "word": "LABOR",
+      "sentiment_score": -0.0,
+      "status": "NEUTRAL",
+      "display_score": "-0.0",
+      "count": 18
+    },
+    {
+      "word": "CREDIT",
+      "sentiment_score": 0.2,
+      "status": "NEUTRAL",
+      "display_score": "+0.2",
+      "count": 13
+    },
+    {
+      "word": "GDP",
+      "sentiment_score": -0.2,
+      "status": "NEUTRAL",
+      "display_score": "-0.2",
+      "count": 11
+    },
+    {
+      "word": "PRICES",
+      "sentiment_score": 0.0,
+      "status": "NEUTRAL",
+      "display_score": "0.0",
+      "count": 11
+    },
+    {
+      "word": "EMPLOYMENT",
+      "sentiment_score": -0.1,
+      "status": "NEUTRAL",
+      "display_score": "-0.1",
+      "count": 7
+    },
+    {
+      "word": "ECONOMY",
+      "sentiment_score": -0.7,
+      "status": "NEUTRAL",
+      "display_score": "-0.7",
+      "count": 5
+    },
+    {
+      "word": "STABILITY",
+      "sentiment_score": 0.0,
+      "status": "NEUTRAL",
+      "display_score": "0.0",
+      "count": 3
+    }
+  ],
+  "sector_news": {
+    "BIG TECH": [
+      {
+        "title": "Magnificent 7 Stock Report: Apple Leads, NVIDIA Fades, Microsoft Crashes - 24/7 Wall St.",
+        "link": "https://news.google.com/rss/articles/CBMiswFBVV95cUxPc2xianU3U2JqaEhJTGoxYTVpclhQMjFkUmFuMFJZN2dFQmxzZjlaVEQzcmVkOS1EbktoVTZGVE50Um1fYm1YNUxjNUxLNWl3S0lGOTZBSWo3b20xeDl3ci1ramEzLXpBdGhrMVQyd0Zza1dvd0JRbXdRLW1rZjNGWlh2OXBqX2ktWllrODdybzBJR01UTkJKNUs5bXNGNDJLaHNMTjZRREJDUGJYcTlkZ0xKVQ?oc=5",
+        "date": "Thu, 05 Mar 2026"
+      },
+      {
+        "title": "1 Unstoppable Stock to Buy Now Before It Joins Nvidia, Apple, Alphabet, and Microsoft in the $3 Trillion Club - The Motley Fool",
+        "link": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOa1pSOG12X19jaS10RE5sNXltTjZRdjNFd3hWTTlNWW1na0JKbXFQTmJxcGFwc3czX1N2QWZ4Y1VkcmVzUFZQUC1TdE00bzZyazA3UVJmQ096TjZmaGpoRnptRGM1TVF3anVlLV9qNUJQbEZmRThZTFhzQnFLNFFjNml1VEE3MXVsZWJ5NFNreVNYNGduMVJPUA?oc=5",
+        "date": "Thu, 05 Mar 2026"
+      },
+      {
+        "title": "AI Stocks Reset In 2026. What's Next For Apple, Nvidia, Google And Microsoft? - Investor's Business Daily",
+        "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxPd0RVSXdfRmZKNjkxcjl5d0JrSHp0d0xmRkxEOXBQVlFpanBCMGxSQWQtaFh6SmpGcFJOcTBDRGJTVkNGU3l0WlhBcFRFNzVERmFKZUhiM0NIZkptdU1WNEZVR0tWX1pRaXRrcUg0cVV4cjFLTkhaemZGWVJ6VFg1eTRZdEJXWTAzR1ZIdE9keFJqbTI1UVEtLVFaWklmWFpFRVNrRkhEV21YX1FUTElqRW53MFM?oc=5",
+        "date": "Thu, 19 Feb 2026"
+      }
+    ],
+    "SEMICON": [
+      {
+        "title": "Memory chip giants spark global semiconductor rally as shortages stoke price hikes - CNBC",
+        "link": "https://news.google.com/rss/articles/CBMikgFBVV95cUxQeEE1Mm5ESzRwVThWckRwMXp0MVpBMWhGeVBNWm05WFdVd3JnbnU0SUdESnVBXzZ1NFJobkVrTXZuTGZZZ1NBQXNCNzZJT2o4Z05pYlNGSTkwVHM5NGZ2WjJpaVFFNUw2REVMUFN4dHhhU3ZGLUJTSkNUTUYwbTkwTlFveGlzSzBTNk81dU1xZklDUdIBlwFBVV95cUxPemlVY2l1ejVKUWZNM0dmYktZYWF2Y0x1WVhfanJVcURYRHpadGtKbnJpUVFiWUhZWUxmQ29wUE5RRDBrR0Etak1Rdy1wWUhQRUtyRFlEV1k5M0NWb1ZVSG02MEw4LUxsTG43cE5ISE9zc0plRTBoOGFITzRQTEZrX2xHaXM0TWVXWG5BbFA0d044MXlXR3Fr?oc=5",
+        "date": "Tue, 06 Jan 2026"
+      },
+      {
+        "title": "Better Semiconductor Stock: TSMC vs. ASML - The Motley Fool",
+        "link": "https://news.google.com/rss/articles/CBMiigFBVV95cUxNNWZONUVPSVh3U3k2Y3dsMWVpU0MtNjRfMXhIVFduU2hiZ2djTlJOa2xHY2dyMFJvVFh0V19QS3hsWjJtSk1USjlhNW5CVmVUX09fSUVJWkdLOVAydjNabmFLM2FEdHNaM3NDcTV4NVJreUE3ajJEb3JrNUktMFdpa2FXZkJiMGJVbmc?oc=5",
+        "date": "Tue, 18 Nov 2025"
+      },
+      {
+        "title": "The Only Semiconductor Stock You Need for 2026 (TSMC, Intel, ASML, or Micron?) - Nasdaq",
+        "link": "https://news.google.com/rss/articles/CBMinAFBVV95cUxQNlFvVUF6NnlOM0ZfeUFOYURxTG13QUpRbXNzbEM3cDdDV2lJZmdDblZHdTVHeENfdDhLVXFybE8tLVh4YXZvQ0ZuR3hIZXByVFVPd1l2MmNBUE5vVDVSX1NSdjZjQkpUR1VseHRSYXFoUUJSMEVMeWFhME8xMENEZ0FSRXEzRUZkYTAtdXdPX3Uta29Qbl9hVUVUUEg?oc=5",
+        "date": "Sat, 10 Jan 2026"
+      }
+    ],
+    "FINANCE": [
+      {
+        "title": "J.P. Morgan forecasts 2027 Fed hike; Barclays, Goldman postpone rate cut calls - Reuters",
+        "link": "https://news.google.com/rss/articles/CBMitwFBVV95cUxPWWFsNTdTUkRaQWdYNzc5MnNGbGFEb3p2dDRGZVg4Q1JCU0lTTkxJMkZ0ckIyUjF6bW0yazlLT0dYSEJFUFUzdWZqN3dGR3B4cXFNZHdyZUZhNGZ4UXhTdGtyalhJWGFOaG15T2FUNWFhQlBJLUhpTHNRenVaNktxQkpmSmtkSDlIRWlhU3BWOGxwaDJkX2ppaHh0RF9jdllxZHdhQWg4cEVkUTNqSGdYblh4N1MxNlk?oc=5",
+        "date": "Mon, 12 Jan 2026"
+      },
+      {
+        "title": "Big Banks Are on Fire. Why Is the Fed Eyeing More Fuel? - Bloomberg.com",
+        "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxObmpId2lKbWNmWVhxNk5JUVUtWXg5SUppYjdCOVluY3FqMWxSTXJvek5jWmNpLXVZWHkzdExhbnU2OXFkZlMxR2lkQzhhNjRQYnM1dE5LUTVYdHE0ampkcEZma2J5RVFLdzlYTWwtMTZZMm0xVDBFaC00TVJTQmY4T0FTT1UtZnRlZzN1SGJqM3BDMGZRdGY5TE1uXzY5NS1WSUJhY05ENWFKRWpZVXVwLW4ya0g?oc=5",
+        "date": "Tue, 14 Oct 2025"
+      },
+      {
+        "title": "JP Morgan, Goldman Sachs Predict Fed Will Cut Rates In December - Benzinga",
+        "link": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxOQ1MxcFgzZDhtUUttT0lvOFZ2QXZHZW9HekcxU3o0blI2VGtCR09Wb19HejNjdEluWFYtSFRBeHdGcjNLMjhaN3BuZlNkeElXazJZdXcxYVNSd29WVFJuVndaa2NJNUFCMnJYcXM4TmN2YWtoRWpfYTRJNGpVNjRscEtjcnhKc0Z6WDJRZWlfU3h4c0MwcFAzOHBXWE9YM0x4Y21tVVhUd0M3S256VUp3eDlkdC1JemJ4ekQyOEplcno1Zw?oc=5",
+        "date": "Fri, 28 Nov 2025"
+      }
+    ]
+  },
+  "news_list": [
+    {
+      "title": "다음 연준 회의: 3월 회의와 금리에 대한 예상 사항",
+      "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxPbmNiRy1wTFZWMllQdm5zQ3JMc28xQS0xNmxqaUY5VVFEbEx6b1k0d2ZRRHBjSnVyY2syRU15OWt4aF9rYkJKXzlDcFk0N044YVExdFU3V2x6bFA5UmVwbTltVDNPdnBNU2VuZlZTdlduYjNmSWtfYUpxNjVKd2pIMlpEVXBVLWlZcW5neW1mSXVZOGR3TklVZEVyTWM4aGFwUllCdTIxaldEeVJGLW5EVA?oc=5",
+      "date": "Tue, 03 Mar 2026 19:23:04 GMT"
+    },
+    {
+      "title": "연준 관리들은 금리가 어디로 가야 하는지에 대해 의견이 분분하다고 의사록은 밝혔습니다.",
+      "link": "https://news.google.com/rss/articles/CBMibkFVX3lxTE9PSDdsTXhUOVpjWWFVTlAtOVA1V2Y1c0xqWWdqcldDajdxTjdvVmZnVGl6RHg4cFJIQ2QtMXhXMmREeGUzNjQwODhtOEhrYUJHVEE3azZlNHY5SUxIMVcxZG1aMFMyRmZBN3BGSGpn0gFzQVVfeXFMTm9yMU5Fcm1aYnhTX01tNDdfcjNiaGNUREh4NTJqaXdraG5VOWpCZ3BRcWVLWGtJeXhwejdBVnB4WjhjUTgzVHAxRkd4dHZfM0VRaElqaFpaQUxsR09yd2ZrQ0NWcDByY2R6ZFZRbEVXRm1BVQ?oc=5",
+      "date": "Wed, 18 Feb 2026 08:00:00 GMT"
+    },
+    {
+      "title": "연준은 오늘 금리 결정을 위해 회의를 가집니다.경제학자들이 예측하는 바는 다음과 같습니다.",
+      "link": "https://news.google.com/rss/articles/CBMiowFBVV95cUxQSmhnNHRXSTBOb3l5dWRFYkd3V1FyQVNhZGNuWFlLRlNMNmp0RzZ6SWRVX3RyV3MzaXEzQkhtS0JZdXZfNGswQllkR29lZWItRll2TEtnRzFERzZtQmtYOHBTYXp2dFBTNDNiV28ySnFpcXd6Y0NNMHR5RGl2UDA2M1EzazRJOGdFQldLZjFySkFIRUg1dG85U1Jmb2tSd3JLUFFj0gGoAUFVX3lxTE94UkpzWmpDY2c0TUpUMEQ4cmdaUGpfXzJPNUpqQkhKT3dNMlpJT0Uyc1lWMldSVU5CeHVLTGk3Sm5Ma2JwUUNUSTBRYjZUeW5iYUZEbFdTc3B2ZlcwZ29lWkViSDFkeTNzXzVOeHRfUm5FRE9MM0dkM3VnRDZtRmxBUnNFaVNjdmpmZEdMb3ZzYk5aeUQ3WkdwTWZpcWZoRHJqd3doVGR1OQ?oc=5",
+      "date": "Wed, 29 Oct 2025 07:00:00 GMT"
+    },
+    {
+      "title": "연준은 고용 둔화와 인플레이션 지속 속에서 금리 정책을 조정",
+      "link": "https://news.google.com/rss/articles/CBMiswFBVV95cUxOa2V2OFo4WjFPclRZRGtjZXJvb3dsaDVUM3FjRnVCTkxfX184eHRyQjJ2NFlDc09TUlZrUDZGUzQzTjgyV1drNG9PSnc2Y0RELWZ5LVktLTlFcGFFa2s0Qm04RzRoYjNRSE9aSGw3aDljNFEyUEZJS1RNa203WlBLdmxxS2lWNmNXT0pRZGdDcGdqdEZ1YmMxN2lhci1RdVRMTEJtWE5wM3RJSFhGMXJjMjdqZw?oc=5",
+      "date": "Fri, 30 Jan 2026 08:00:00 GMT"
+    },
+    {
+      "title": "연준은 2026년부터 금리를 동결합니다: 3월에 금리 인하가 예정되어 있습니까?",
+      "link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxQclBRVmJheElTNjZMUVRPalRFeXN6LW95NjdyN29ZVk40VDZIUXdCS3NGczNBYXd4Y2ZGTWhqVC0xWmVJN2F5MkVhM2pMRXVkb1ZvYnRkU2VRVVptTEhaUENkaG5yU25jbV84SjZFem1KRkRLOC1PcGJEbElQQVBLak9pWVNLUk5MNDFIdGdUMA?oc=5",
+      "date": "Thu, 29 Jan 2026 08:00:00 GMT"
+    },
+    {
+      "title": "연준, 고용시장 활성화 위해 기준금리 인하",
+      "link": "https://news.google.com/rss/articles/CBMilAFBVV95cUxOOFJldmV4bWpmMUFsUnY3blNFeTk0T004TWY4ZEIxajUzMTVMZE44OVFTTHRIbE01YUw0SlNaT0dmbERRWl91ZG1MMmFzeFF5MHdoZWhiNDJsNkNRSjh0S0RMel83RjExTml1SXZ0Rlhja3JfX0pObDA1OW91TERaZkRkbXdwWjJQWWZfdVJZZzFURjdu?oc=5",
+      "date": "Wed, 29 Oct 2025 07:00:00 GMT"
+    },
+    {
+      "title": "연준, 노동시장 불확실성 속에 3년 연속 금리 인하",
+      "link": "https://news.google.com/rss/articles/CBMikgFBVV95cUxNQlNhbVo3Y1ZGbUdLOGN5bnljRjJoRU8zZ2FlWEZjMXBIakhEcnJBNV9LaU9aY1Vwc01xZmFDWjFkc3NULXZyYUdSM3NobmNuSGRKeUY1NVdtbXcwS1VLcUFCVTFzZFNadDJXQnM1bDZlckNJTUlPeGxiMGlZSG55NHhHaUR1T1h1MzFxaTUwYnd3Z9IBlwFBVV95cUxOSzVZMWhOckRkRjN5bmlPOWVKaEhSVlA3R0NkUjNxUGJua21hM3VVejN0ZEw0VmJDM2FRVlo2QzZYTW0tYVRrN3E2aUZ6QUZndkZFWEVtemxhaG9ndVNKb3JVdE9uU0VjNjVPUE5vZDVocDNQUzRTMm51RWlqX3FWWWNLaTdsbjZzdFVsNFJrdjMwYVNINWYw?oc=5",
+      "date": "Wed, 10 Dec 2025 08:00:00 GMT"
+    }
+  ]
+}
