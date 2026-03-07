@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
@@ -32,7 +32,6 @@
         </div>
         <div class="text-[11px] text-gray-500 font-bold tracking-widest">REAL-TIME MACRO TERMINAL V2.9</div>
     </header>
-
     <div class="main-layout">
         <div class="nav-group">
             <button onclick="changeWidget('BINANCE:BTCUSDT')">BITCOIN</button>
@@ -44,10 +43,8 @@
             <button onclick="changeWidget('TVC:GOLD')">GOLD (XAU)</button>
             <button onclick="changeWidget('TVC:USOIL')">WTI CRUDE</button>
         </div>
-
         <div id="ticker_container"></div>
         <div id="chart_box"></div>
-
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
             <div class="card h-[600px]">
                 <div class="flex justify-between items-start mb-4">
@@ -71,7 +68,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="card h-[600px]">
                 <div class="mb-4 border-b border-[#262f45] pb-4">
                     <span class="section-label">Metrics Breakdown</span>
@@ -80,7 +76,6 @@
                 <ul id="indicator-list" class="scroll-list space-y-2 overflow-y-auto pr-2"></ul>
             </div>
         </div>
-
         <div class="card mb-5 h-[350px]">
             <div class="flex justify-between items-center mb-4">
                 <div>
@@ -95,7 +90,6 @@
                 <canvas id="trendChart"></canvas>
             </div>
         </div>
-
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
             <div class="card min-h-[300px]">
                 <span class="section-label">빅테크 주요 뉴스</span>
@@ -111,13 +105,11 @@
             </div>
         </div>
     </div>
-
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
         let sentimentChart = null;
         let volumeChart = null;
         let trendChart = null;
-
         function loadTicker(symbol) {
             const container = document.getElementById('ticker_container');
             container.innerHTML = "";
@@ -127,7 +119,6 @@
             script.innerHTML = JSON.stringify({ "symbol": symbol, "width": "100%", "colorTheme": "dark", "isTransparent": true, "locale": "ko" });
             container.appendChild(script);
         }
-
         function loadChart(symbol) {
             document.getElementById('chart_box').innerHTML = "";
             new TradingView.widget({
@@ -139,22 +130,22 @@
                 "style": "1", 
                 "container_id": "chart_box",
                 "locale": "ko",
-                // 차트 레이아웃 최적화: 우측 여백 확보 및 거래량 겹침 방지
+                "enable_publishing": false,
+                "hide_side_toolbar": false,
+                "allow_symbol_change": true,
+                "details": true,
+                "hotlist": true,
+                "calendar": true,
+                "studies": [ "Volume@tv-basicstudies" ],
                 "overrides": {
-                    "paneProperties.topMargin": 15,
-                    "paneProperties.bottomMargin": 15,
                     "mainSeriesProperties.priceAxisProperties.autoScale": true,
-                    // 거래량 차트를 캔들 뒤가 아닌 아래쪽 별도 공간에 배치
-                    "volumePaneSize": "tiny"
-                },
-                "options": {
-                    "rightOffset": 5 // 주가 숫자가 잘리지 않도록 우측 여백 추가
+                    "paneProperties.topMargin": 20,
+                    "paneProperties.bottomMargin": 10,
+                    "paneProperties.rightMargin": 15 
                 }
             });
         }
-
         function changeWidget(symbol) { loadTicker(symbol); loadChart(symbol); }
-
         async function loadTrendData() {
             try {
                 const response = await fetch('historical_data.json?v=' + Date.now());
@@ -180,19 +171,12 @@
                             tension: 0.4
                         }]
                     },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { display: false } },
-                        scales: {
-                            y: { grid: { color: '#262f45' }, ticks: { color: '#94a3b8' } },
-                            x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
-                        }
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+                        scales: { y: { grid: { color: '#262f45' }, ticks: { color: '#94a3b8' } }, x: { grid: { display: false }, ticks: { color: '#94a3b8' } } }
                     }
                 });
             } catch (err) { console.error("Trend Chart Error:", err); }
         }
-
         async function updateTerminalData() {
             try {
                 const response = await fetch('indicators.json?v=' + Date.now());
@@ -205,42 +189,19 @@
                 if (sentimentChart) sentimentChart.destroy();
                 sentimentChart = new Chart(document.getElementById('sentimentChart'), {
                     type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Score',
-                            data: data.indicators.map(i => i.sentiment_score),
-                            backgroundColor: data.indicators.map(i => i.sentiment_score >= 0 ? 'rgba(56, 189, 248, 0.6)' : 'rgba(239, 68, 68, 0.6)'),
-                            borderRadius: 4
-                        }]
-                    },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
-                        scales: { y: { min: -10, max: 10, grid: { color: '#262f45' } } }
-                    }
+                    data: { labels: labels, datasets: [{ label: 'Score', data: data.indicators.map(i => i.sentiment_score), backgroundColor: data.indicators.map(i => i.sentiment_score >= 0 ? 'rgba(56, 189, 248, 0.6)' : 'rgba(239, 68, 68, 0.6)'), borderRadius: 4 }] },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { min: -10, max: 10, grid: { color: '#262f45' } } } }
                 });
                 if (volumeChart) volumeChart.destroy();
                 volumeChart = new Chart(document.getElementById('volumeChart'), {
                     type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Mentions',
-                            data: data.indicators.map(i => i.count),
-                            backgroundColor: 'rgba(148, 163, 184, 0.4)',
-                            borderRadius: 4
-                        }]
-                    },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
-                        scales: { y: { grid: { display: false }, ticks: { display: true } } }
-                    }
+                    data: { labels: labels, datasets: [{ label: 'Mentions', data: data.indicators.map(i => i.count), backgroundColor: 'rgba(148, 163, 184, 0.4)', borderRadius: 4 }] },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { display: false }, ticks: { display: true } } } }
                 });
                 const list = document.getElementById('indicator-list');
                 list.innerHTML = data.indicators.map(i => `
                     <li class="flex justify-between items-center p-3 rounded bg-[#1e293b] border-l-4 ${i.status === 'POSITIVE' ? 'border-sky-500' : (i.status === 'NEGATIVE' ? 'border-red-500' : 'border-gray-500')}">
-                        <div class="flex flex-col">
-                            <span class="font-bold text-white">${i.word}</span>
-                            <span class="text-[10px] text-gray-500">${i.count} MENTIONS</span>
-                        </div>
+                        <div class="flex flex-col"> <span class="font-bold text-white">${i.word}</span> <span class="text-[10px] text-gray-500">${i.count} MENTIONS</span> </div>
                         <span class="font-mono font-bold ${i.sentiment_score >= 0 ? 'text-sky-400' : 'text-red-400'}">${i.display_score}</span>
                     </li>
                 `).join('');
@@ -248,12 +209,7 @@
                     const updateNews = (id, newsArr) => {
                         const box = document.getElementById(id);
                         if(!newsArr) return;
-                        box.innerHTML = newsArr.map(n => `
-                            <div class="news-item">
-                                <a href="${n.link}" target="_blank" class="hover:text-sky-400 block mb-1">▶ ${n.title}</a>
-                                <span class="text-[9px] text-gray-600">${n.date || ''}</span>
-                            </div>
-                        `).join('');
+                        box.innerHTML = newsArr.map(n => `<div class="news-item"><a href="${n.link}" target="_blank" class="hover:text-sky-400 block mb-1">▶ ${n.title}</a><span class="text-[9px] text-gray-600">${n.date || ''}</span></div>`).join('');
                     };
                     updateNews('news-bigtech', data.sector_news['BIG TECH']);
                     updateNews('news-semicon', data.sector_news['SEMICON']);
@@ -261,12 +217,7 @@
                 }
             } catch (err) { console.error("Update Error:", err); }
         }
-
-        window.onload = () => { 
-            changeWidget('AMEX:SPY'); // 초기 로드 시 SPY로 설정
-            updateTerminalData(); 
-            loadTrendData(); 
-        };
+        window.onload = () => { changeWidget('AMEX:SPY'); updateTerminalData(); loadTrendData(); };
         setInterval(updateTerminalData, 30000); 
     </script>
 </body>
