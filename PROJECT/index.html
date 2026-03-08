@@ -15,17 +15,16 @@
         button { padding: 12px; cursor: pointer; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-dim); border-radius: 4px; font-weight: 700; font-size: 0.8rem; transition: 0.2s; }
         button:hover { background: var(--accent); color: var(--bg-main); border-color: var(--accent); }
         
-        /* 차트 박스 설정 */
         #chart_box { 
             height: 750px; 
             background: #131722; 
             border-radius: 8px; 
             border: 1px solid var(--border); 
             position: relative; 
-            overflow: hidden; 
+            overflow: hidden;
+            padding-top:8px;
         }
 
-        /* 로고 가리개 (우측 확장된 숫자판에 맞춰 너비 조정) */
         #chart_box::before { content: ""; position: absolute; bottom: 0; left: 0; width: 100px; height: 35px; background: #131722; z-index: 10; }
         #chart_box::after { content: ""; position: absolute; bottom: 0; right: 0; width: 100px; height: 35px; background: #131722; z-index: 10; }
 
@@ -104,125 +103,227 @@
         </div>
     </div>
 
-    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-    <script>
-        let sentimentChart = null, volumeChart = null, trendChart = null;
+<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+<script>
 
-        function loadChart(symbol) {
-            document.getElementById('chart_box').innerHTML = "";
-            new TradingView.widget({
-                "width": "100%", 
-                "height": 750, 
-                "symbol": symbol, 
-                "interval": "D", 
-                "theme": "dark", 
-                "style": "1", 
-                "container_id": "chart_box",
-                "hide_side_toolbar": true,      
-                "allow_symbol_change": false,   
-                "save_image": false,            
-                "details": false, 
-                "hotlist": false, 
-                "calendar": false,
-                "enable_publishing": false,     
-                "overrides": { 
-                    /* 1. 가격 표시 영역(Y축) 너비를 160px로 강제 고정 (시원해집니다) */
-                    "scalesProperties.rightAxleWidth": 160, 
-                    "scalesProperties.fontSize": 14,
-                    /* 2. 거래량을 캔들 차트와 분리하여 하단 별도 영역(Pane)에 배치 */
-                    "volumePaneSize": "medium", 
-                    "mainSeriesProperties.showCountdown": false,
-                    "paneProperties.background": "#131722",
-                    "paneProperties.vertGridProperties.color": "#262f45",
-                    "paneProperties.horzGridProperties.color": "#262f45"
-                },
-                /* 3. 거래량 지표 명시적 추가 */
-                "studies": [ "Volume@tv-basicstudies" ]
-            });
-        }
+let sentimentChart = null, volumeChart = null, trendChart = null;
 
-        function loadTicker(symbol) {
-            const container = document.getElementById('ticker_container');
-            container.innerHTML = "";
-            const script = document.createElement('script');
-            script.src = "https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js";
-            script.async = true;
-            script.innerHTML = JSON.stringify({ "symbol": symbol, "width": "100%", "colorTheme": "dark", "isTransparent": true, "locale": "ko" });
-            container.appendChild(script);
-        }
+function loadChart(symbol) {
+document.getElementById('chart_box').innerHTML = "";
 
-        function changeWidget(symbol) { loadTicker(symbol); loadChart(symbol); }
+new TradingView.widget({
+"width": "100%",
+"height": 750,
+"symbol": symbol,
+"interval": "D",
+"theme": "dark",
+"style": "1",
+"container_id": "chart_box",
+"hide_side_toolbar": true,
+"allow_symbol_change": false,
+"save_image": false,
+"details": false,
+"hotlist": false,
+"calendar": false,
+"enable_publishing": false,
 
-        async function updateTerminalData() {
-            try {
-                const response = await fetch('./indicators.json?v=' + Date.now());
-                const data = await response.json();
+"overrides": {
+"scalesProperties.rightAxleWidth": 160,
+"scalesProperties.fontSize": 14,
+"mainSeriesProperties.showCountdown": false,
+"paneProperties.background": "#131722",
+"paneProperties.vertGridProperties.color": "#262f45",
+"paneProperties.horzGridProperties.color": "#262f45"
+}
 
-                const tempNum = parseFloat(data.market_temp);
-                const tempElement = document.getElementById('temp-value');
-                tempElement.innerText = data.market_temp + '°';
-                tempElement.className = tempNum >= 0 ? "text-xl font-black italic text-sky-400" : "text-xl font-black italic text-red-400";
+});
+}
 
-                const labels = data.indicators.map(i => i.word);
-                if (sentimentChart) sentimentChart.destroy();
-                sentimentChart = new Chart(document.getElementById('sentimentChart'), {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{ label: 'Score', data: data.indicators.map(i => i.sentiment_score), backgroundColor: data.indicators.map(i => i.sentiment_score >= 0 ? 'rgba(56, 189, 248, 0.6)' : 'rgba(239, 68, 68, 0.6)'), borderRadius: 4 }]
-                    },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { min: -10, max: 10, grid: { color: '#262f45' } } } }
-                });
+function loadTicker(symbol) {
 
-                if (volumeChart) volumeChart.destroy();
-                volumeChart = new Chart(document.getElementById('volumeChart'), {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{ label: 'Mentions', data: data.indicators.map(i => i.count), backgroundColor: 'rgba(148, 163, 184, 0.4)', borderRadius: 4 }]
-                    },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { display: false } } } }
-                });
+const container = document.getElementById('ticker_container');
+container.innerHTML = "";
 
-                document.getElementById('indicator-list').innerHTML = data.indicators.map(i => `
-                    <li class="flex justify-between items-center p-3 rounded bg-[#1e293b] border-l-4 ${i.status === 'POSITIVE' ? 'border-sky-500' : (i.status === 'NEGATIVE' ? 'border-red-500' : 'border-gray-500')}">
-                        <div class="flex flex-col"><span class="font-bold text-white">${i.word}</span><span class="text-[10px] text-gray-500">${i.count} MENTIONS</span></div>
-                        <span class="font-mono font-bold ${i.sentiment_score >= 0 ? 'text-sky-400' : 'text-red-400'}">${i.display_score}</span>
-                    </li>`).join('');
+const script = document.createElement('script');
+script.src = "https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js";
+script.async = true;
 
-                if(data.sector_news) {
-                    const updateNews = (id, newsArr) => {
-                        const box = document.getElementById(id);
-                        if(!newsArr) return;
-                        box.innerHTML = newsArr.map(n => `<div class="news-item"><a href="${n.link}" target="_blank" class="hover:text-sky-400 block mb-1">▶ ${n.title}</a><span class="text-[9px] text-gray-600">${n.date || ''}</span></div>`).join('');
-                    };
-                    updateNews('news-bigtech', data.sector_news['BIG TECH']);
-                    updateNews('news-semicon', data.sector_news['SEMICON']);
-                    updateNews('news-finance', data.sector_news['FINANCE']);
-                }
-            } catch (err) { console.error(err); }
-        }
+script.innerHTML = JSON.stringify({
+"symbol": symbol,
+"width": "100%",
+"colorTheme": "dark",
+"isTransparent": true,
+"locale": "ko"
+});
 
-        async function loadTrendData() {
-            try {
-                const response = await fetch('./historical_data.json?v=' + Date.now());
-                const historyData = await response.json();
-                const labels = historyData.map(d => d.date);
-                const scores = historyData.map(d => d.score);
-                if (trendChart) trendChart.destroy();
-                trendChart = new Chart(document.getElementById('trendChart'), {
-                    type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: [{ label: 'Sentiment Score', data: scores, borderColor: '#38bdf8', backgroundColor: 'rgba(56, 189, 248, 0.1)', borderWidth: 3, fill: true, tension: 0.4 }]
-                    },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#262f45' }, ticks: { color: '#94a3b8' } }, x: { grid: { display: false }, ticks: { color: '#94a3b8' } } } }
-                });
-            } catch (err) { console.error(err); }
-        }
+container.appendChild(script);
 
-        window.onload = () => { changeWidget('BINANCE:BTCUSDT'); updateTerminalData(); loadTrendData(); };
-        setInterval(updateTerminalData, 30000); 
-    </script>
+}
+
+function changeWidget(symbol) {
+loadTicker(symbol);
+loadChart(symbol);
+}
+
+async function updateTerminalData() {
+
+try {
+
+const response = await fetch('./indicators.json?v=' + Date.now());
+const data = await response.json();
+
+const tempNum = parseFloat(data.market_temp);
+const tempElement = document.getElementById('temp-value');
+
+tempElement.innerText = data.market_temp + '°';
+tempElement.className = tempNum >= 0
+? "text-xl font-black italic text-sky-400"
+: "text-xl font-black italic text-red-400";
+
+const labels = data.indicators.map(i => i.word);
+
+if (sentimentChart) sentimentChart.destroy();
+
+sentimentChart = new Chart(
+document.getElementById('sentimentChart'),
+{
+type: 'bar',
+data: {
+labels: labels,
+datasets: [{
+label: 'Score',
+data: data.indicators.map(i => i.sentiment_score),
+backgroundColor: data.indicators.map(i =>
+i.sentiment_score >= 0
+? 'rgba(56, 189, 248, 0.6)'
+: 'rgba(239, 68, 68, 0.6)'
+),
+borderRadius: 4
+}]
+},
+options: {
+responsive: true,
+maintainAspectRatio: false,
+plugins: { legend: { display: false }},
+scales: { y: { min: -10, max: 10, grid: { color: '#262f45' }}}
+}
+});
+
+if (volumeChart) volumeChart.destroy();
+
+volumeChart = new Chart(
+document.getElementById('volumeChart'),
+{
+type: 'bar',
+data: {
+labels: labels,
+datasets: [{
+label: 'Mentions',
+data: data.indicators.map(i => i.count),
+backgroundColor: 'rgba(148, 163, 184, 0.4)',
+borderRadius: 4
+}]
+},
+options: {
+responsive: true,
+maintainAspectRatio: false,
+plugins: { legend: { display: false }},
+scales: { y: { grid: { display: false }}}
+}
+});
+
+document.getElementById('indicator-list').innerHTML =
+data.indicators.map(i => `
+<li class="flex justify-between items-center p-3 rounded bg-[#1e293b] border-l-4 ${i.status === 'POSITIVE' ? 'border-sky-500' : (i.status === 'NEGATIVE' ? 'border-red-500' : 'border-gray-500')}">
+<div class="flex flex-col">
+<span class="font-bold text-white">${i.word}</span>
+<span class="text-[10px] text-gray-500">${i.count} MENTIONS</span>
+</div>
+<span class="font-mono font-bold ${i.sentiment_score >= 0 ? 'text-sky-400' : 'text-red-400'}">${i.display_score}</span>
+</li>`).join('');
+
+if(data.sector_news){
+
+const updateNews = (id, newsArr) => {
+
+const box = document.getElementById(id);
+if(!newsArr) return;
+
+box.innerHTML = newsArr.map(n => `
+<div class="news-item">
+<a href="${n.link}" target="_blank" class="hover:text-sky-400 block mb-1">
+▶ ${n.title}
+</a>
+<span class="text-[9px] text-gray-600">${n.date || ''}</span>
+</div>`).join('');
+
+};
+
+updateNews('news-bigtech', data.sector_news['BIG TECH']);
+updateNews('news-semicon', data.sector_news['SEMICON']);
+updateNews('news-finance', data.sector_news['FINANCE']);
+
+}
+
+}catch(err){
+console.error(err);
+}
+
+}
+
+async function loadTrendData(){
+
+try{
+
+const response = await fetch('./historical_data.json?v=' + Date.now());
+const historyData = await response.json();
+
+const labels = historyData.map(d => d.date);
+const scores = historyData.map(d => d.score);
+
+if (trendChart) trendChart.destroy();
+
+trendChart = new Chart(
+document.getElementById('trendChart'),
+{
+type: 'line',
+data: {
+labels: labels,
+datasets: [{
+label: 'Sentiment Score',
+data: scores,
+borderColor: '#38bdf8',
+backgroundColor: 'rgba(56, 189, 248, 0.1)',
+borderWidth: 3,
+fill: true,
+tension: 0.4
+}]
+},
+options: {
+responsive: true,
+maintainAspectRatio: false,
+plugins: { legend: { display: false }},
+scales: {
+y: { grid: { color: '#262f45' }, ticks: { color: '#94a3b8' }},
+x: { grid: { display: false }, ticks: { color: '#94a3b8' }}
+}
+}
+});
+
+}catch(err){
+console.error(err);
+}
+
+}
+
+window.onload = () => {
+changeWidget('BINANCE:BTCUSDT');
+updateTerminalData();
+loadTrendData();
+};
+
+setInterval(updateTerminalData, 30000);
+
+</script>
 </body>
 </html>
