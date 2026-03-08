@@ -25,9 +25,7 @@
             overflow: hidden; 
         }
 
-        /* 로고 가리개 (숫자칸 확장 대응) */
-        #chart_box::before { content: ""; position: absolute; bottom: 0; left: 0; width: 100px; height: 35px; background: #131722; z-index: 10; }
-        #chart_box::after { content: ""; position: absolute; bottom: 0; right: 0; width: 50px; height: 35px; background: #131722; z-index: 10; }
+        /* 형님 요청대로 로고 가리개(before, after) 스타일만 완전히 삭제함 */
 
         #ticker_container { height: 75px; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
         .card { background: var(--bg-card); padding: 24px; border-radius: 8px; border: 1px solid var(--border); display: flex; flex-direction: column; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); }
@@ -158,8 +156,8 @@
                 "calendar": false,
                 "enable_publishing": false,     
                 "overrides": { 
-                    /* 1. 숫자칸(사이드바) 대폭 확장 */
-                    "scalesProperties.rightAxleWidth": 180, 
+                    /* 1. 가격 나오는 곳(우측 사이드바) 220px로 확장함 */
+                    "scalesProperties.rightAxleWidth": 220, 
                     "scalesProperties.fontSize": 14,
                     /* 2. 거래량 하단 독립 레이어 분리 */
                     "volumePaneSize": "medium",
@@ -174,7 +172,6 @@
 
         function changeWidget(symbol) { loadTicker(symbol); loadChart(symbol); }
 
-        /* --- 데이터 로직 복구 시작 --- */
         async function loadTrendData() {
             try {
                 const response = await fetch('./historical_data.json?v=' + Date.now());
