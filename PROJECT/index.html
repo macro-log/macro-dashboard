@@ -3,41 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIGNAL 9 | 투자를 위한 선택</title>
+    <title>SIGNAL 9 | REAL-TIME TERMINAL</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
         :root { --bg-main: #0a0f1e; --bg-card: #161e31; --accent: #38bdf8; --text-main: #f1f5f9; --text-dim: #94a3b8; --border: #262f45; }
         body { font-family: 'Pretendard', sans-serif; background-color: var(--bg-main); color: var(--text-main); margin: 0; overflow-x: hidden; }
-        
-        /* 1. 레이아웃 폭 확장 (1400px -> 1600px) */
         .main-layout { display: flex; flex-direction: column; padding: 20px; max-width: 1600px; margin: 0 auto; gap: 15px; }
-        
         .nav-group { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
         button { padding: 12px; cursor: pointer; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-dim); border-radius: 4px; font-weight: 700; font-size: 0.8rem; transition: 0.2s; }
         button:hover { background: var(--accent); color: var(--bg-main); border-color: var(--accent); }
         
-        /* 2. 차트 박스 높이 대폭 확장 (600px -> 750px) */
+        /* --- [차트 레이아웃 최적화] --- */
         #chart_box { 
             height: 750px; 
-            background: var(--bg-card); 
+            background: #131722; 
             border-radius: 8px; 
             border: 1px solid var(--border); 
             position: relative; 
             overflow: hidden; 
         }
 
-        /* 3. 로고 가리개 (위치 고정) */
-        #chart_box::before, #chart_box::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            background: #131722; 
-            z-index: 10;
-        }
-        #chart_box::before { left: 0; width: 100px; height: 35px; }
-        #chart_box::after { right: 0; width: 50px; height: 35px; }
+        /* 로고 가리개 (숫자칸 확장 대응) */
+        #chart_box::before { content: ""; position: absolute; bottom: 0; left: 0; width: 100px; height: 35px; background: #131722; z-index: 10; }
+        #chart_box::after { content: ""; position: absolute; bottom: 0; right: 0; width: 50px; height: 35px; background: #131722; z-index: 10; }
 
         #ticker_container { height: 75px; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
         .card { background: var(--bg-card); padding: 24px; border-radius: 8px; border: 1px solid var(--border); display: flex; flex-direction: column; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); }
@@ -138,9 +128,7 @@
 
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
-        let sentimentChart = null;
-        let volumeChart = null;
-        let trendChart = null;
+        let sentimentChart = null, volumeChart = null, trendChart = null;
 
         function loadTicker(symbol) {
             const container = document.getElementById('ticker_container');
@@ -156,7 +144,7 @@
             document.getElementById('chart_box').innerHTML = "";
             new TradingView.widget({
                 "width": "100%", 
-                "height": 750, /* 4. 고정 높이 확장 */
+                "height": 750, 
                 "symbol": symbol, 
                 "interval": "D", 
                 "theme": "dark", 
@@ -170,17 +158,23 @@
                 "calendar": false,
                 "enable_publishing": false,     
                 "overrides": { 
-                    "paneProperties.topMargin": 15,
-                    "scalesProperties.rightAxleWidth": 110,
+                    /* 1. 숫자칸(사이드바) 대폭 확장 */
+                    "scalesProperties.rightAxleWidth": 180, 
+                    "scalesProperties.fontSize": 14,
+                    /* 2. 거래량 하단 독립 레이어 분리 */
+                    "volumePaneSize": "medium",
                     "mainSeriesProperties.showCountdown": false,
-                    /* 5. 거래량 지표 영역 분리 및 시인성 조절 */
-                    "volumePaneSize": "medium" 
-                }
+                    "paneProperties.background": "#131722",
+                    "paneProperties.vertGridProperties.color": "#262f45",
+                    "paneProperties.horzGridProperties.color": "#262f45"
+                },
+                "studies": [ { "id": "Volume@tv-basicstudies" } ]
             });
         }
 
         function changeWidget(symbol) { loadTicker(symbol); loadChart(symbol); }
 
+        /* --- 데이터 로직 복구 시작 --- */
         async function loadTrendData() {
             try {
                 const response = await fetch('./historical_data.json?v=' + Date.now());
@@ -199,8 +193,6 @@
                             borderColor: '#38bdf8',
                             backgroundColor: 'rgba(56, 189, 248, 0.1)',
                             borderWidth: 3,
-                            pointBackgroundColor: '#38bdf8',
-                            pointRadius: 5,
                             fill: true,
                             tension: 0.4
                         }]
@@ -209,7 +201,7 @@
                         scales: { y: { grid: { color: '#262f45' }, ticks: { color: '#94a3b8' } }, x: { grid: { display: false }, ticks: { color: '#94a3b8' } } }
                     }
                 });
-            } catch (err) { console.error("Trend Chart Error:", err); }
+            } catch (err) { console.error(err); }
         }
 
         async function updateTerminalData() {
@@ -276,14 +268,10 @@
                     updateNews('news-semicon', data.sector_news['SEMICON']);
                     updateNews('news-finance', data.sector_news['FINANCE']);
                 }
-            } catch (err) { console.error("Update Error:", err); }
+            } catch (err) { console.error(err); }
         }
 
-        window.onload = () => { 
-            changeWidget('BINANCE:BTCUSDT'); 
-            updateTerminalData(); 
-            loadTrendData(); 
-        };
+        window.onload = () => { changeWidget('BINANCE:BTCUSDT'); updateTerminalData(); loadTrendData(); };
         setInterval(updateTerminalData, 30000); 
     </script>
 </body>
