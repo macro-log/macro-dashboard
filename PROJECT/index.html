@@ -62,7 +62,7 @@ color:#000;
 border-color:var(--accent);
 }
 
-/* TradingView container */
+/* 🔥 TradingView container FIXED */
 
 #chart_box{
 height:600px;
@@ -73,8 +73,6 @@ position:relative;
 overflow:visible;
 }
 
-/* ticker */
-
 #ticker_container{
 height:75px;
 background:var(--bg-card);
@@ -82,8 +80,6 @@ border-radius:8px;
 border:1px solid var(--border);
 overflow:hidden;
 }
-
-/* cards */
 
 .card{
 background:var(--bg-card);
@@ -105,14 +101,8 @@ margin-bottom:4px;
 display:block;
 }
 
-.scroll-list::-webkit-scrollbar{
-width:4px;
-}
-
-.scroll-list::-webkit-scrollbar-thumb{
-background:var(--border);
-border-radius:10px;
-}
+.scroll-list::-webkit-scrollbar{width:4px}
+.scroll-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px}
 
 .news-item{
 border-bottom:1px solid var(--border);
@@ -120,9 +110,7 @@ padding:8px 0;
 transition:.2s;
 }
 
-.news-item:hover{
-background:#1e293b;
-}
+.news-item:hover{background:#1e293b}
 
 </style>
 </head>
@@ -142,22 +130,20 @@ REAL-TIME MACRO TERMINAL V2.9
 <div class="main-layout">
 
 <div class="nav-group">
-
 <button onclick="changeWidget('BINANCE:BTCUSDT')">BITCOIN</button>
-<button onclick="changeWidget('AMEX:SPY')">S&P 500</button>
+<button onclick="changeWidget('AMEX:SPY')">S&P 500 (SPY)</button>
 <button onclick="changeWidget('NASDAQ:QQQ')">NASDAQ 100</button>
-<button onclick="changeWidget('AMEX:DIA')">DOW</button>
-<button onclick="changeWidget('TVC:US10Y')">US 10Y</button>
-<button onclick="changeWidget('TVC:US02Y')">US 2Y</button>
-<button onclick="changeWidget('TVC:GOLD')">GOLD</button>
-<button onclick="changeWidget('TVC:USOIL')">OIL</button>
-
+<button onclick="changeWidget('AMEX:DIA')">DOW JONES</button>
+<button onclick="changeWidget('TVC:US10Y')">US 10Y BOND</button>
+<button onclick="changeWidget('TVC:US02Y')">US 2Y BOND</button>
+<button onclick="changeWidget('TVC:GOLD')">GOLD (XAU)</button>
+<button onclick="changeWidget('TVC:USOIL')">WTI CRUDE</button>
 </div>
 
 <div id="ticker_container"></div>
 <div id="chart_box"></div>
 
-<!-- 나머지 UI는 기존 그대로 유지 -->
+<!-- 나머지 UI 그대로 유지 -->
 
 </div>
 
@@ -165,111 +151,82 @@ REAL-TIME MACRO TERMINAL V2.9
 
 <script>
 
-/* =======================
-TradingView chart loader
-======================= */
+let sentimentChart=null,volumeChart=null,trendChart=null;
 
-let tvWidget = null;
+/* TradingView chart */
 
 function loadChart(symbol){
 
-const container = document.getElementById("chart_box");
+document.getElementById("chart_box").innerHTML="";
 
-/* 기존 차트 제거 */
-
-container.innerHTML = "";
-
-if(tvWidget){
-tvWidget = null;
-}
-
-/* 새 차트 생성 */
-
-tvWidget = new TradingView.widget({
+new TradingView.widget({
 
 autosize:true,
 symbol:symbol,
 interval:"D",
-
 container_id:"chart_box",
 
 theme:"dark",
 style:"1",
 
-locale:"ko",
-
 allow_symbol_change:false,
 hide_side_toolbar:true,
 
-studies:[
-"Volume@tv-basicstudies"
-],
+studies:["Volume@tv-basicstudies"],
 
 overrides:{
 "paneProperties.background":"#131722",
 "paneProperties.vertGridProperties.color":"#262f45",
 "paneProperties.horzGridProperties.color":"#262f45",
 
-"mainSeriesProperties.candleStyle.upColor":"#26a69a",
-"mainSeriesProperties.candleStyle.downColor":"#ef5350",
+"paneProperties.topMargin":30,
+"paneProperties.bottomMargin":15,
 
-"scalesProperties.textColor":"#94a3b8"
+"scalesProperties.fontSize":14
 }
 
 });
 
 }
 
-/* =======================
-ticker
-======================= */
+/* ticker */
 
 function loadTicker(symbol){
 
 const container=document.getElementById("ticker_container");
-
 container.innerHTML="";
 
 const script=document.createElement("script");
 
 script.src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js";
-
 script.async=true;
 
 script.innerHTML=JSON.stringify({
-
 symbol:symbol,
 width:"100%",
 colorTheme:"dark",
 isTransparent:true,
-locale:"en"
-
+locale:"ko"
 });
 
 container.appendChild(script);
 
 }
 
-/* =======================
-symbol change
-======================= */
-
 function changeWidget(symbol){
-
 loadTicker(symbol);
 loadChart(symbol);
-
 }
 
-/* =======================
-init
-======================= */
+/* 기존 분석 시스템 그대로 */
 
 window.onload=()=>{
-
 changeWidget("BINANCE:BTCUSDT");
-
+updateTerminalData();
+loadTrendData();
 };
+
+setInterval(updateTerminalData,30000);
 
 </script>
 
