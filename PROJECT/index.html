@@ -131,13 +131,26 @@
         function loadChart(symbol) {
             document.getElementById('chart_box').innerHTML = "";
             new TradingView.widget({
-                "width": "100%", "height": 600, "symbol": symbol, "interval": "D", "theme": "dark", "style": "1", "container_id": "chart_box",
+                "width": "100%", 
+                "height": 600, 
+                "symbol": symbol, 
+                "interval": "D", 
+                "theme": "dark", 
+                "style": "1", 
+                "container_id": "chart_box",
+                "hide_side_toolbar": true,      // 사이드바 숨김
+                "allow_symbol_change": false,   // 심볼 변경 제한 (더 깔끔함)
+                "save_image": false,            // 우측 상단 카메라 버튼 제거
+                "details": false, 
+                "hotlist": false, 
+                "calendar": false,
+                "enable_publishing": false,     // 트레이딩뷰 로고 버튼 최소화
                 "overrides": { 
                     "paneProperties.topMargin": 25,
-                    "scalesProperties.rightAxleWidth": 90
+                    "scalesProperties.rightAxleWidth": 110  // 110으로 더 늘려 안정성 확보
                 },
                 "studies_overrides": {
-                    "volume.volume.height": 15
+                    "volume.volume.height": 12
                 }
             });
         }
