@@ -10,14 +10,17 @@
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
         :root { --bg-main: #0a0f1e; --bg-card: #161e31; --accent: #38bdf8; --text-main: #f1f5f9; --text-dim: #94a3b8; --border: #262f45; }
         body { font-family: 'Pretendard', sans-serif; background-color: var(--bg-main); color: var(--text-main); margin: 0; overflow-x: hidden; }
-        .main-layout { display: flex; flex-direction: column; padding: 20px; max-width: 1400px; margin: 0 auto; gap: 15px; }
+        
+        /* 1. 레이아웃 폭 확장 (1400px -> 1600px) */
+        .main-layout { display: flex; flex-direction: column; padding: 20px; max-width: 1600px; margin: 0 auto; gap: 15px; }
+        
         .nav-group { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
         button { padding: 12px; cursor: pointer; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-dim); border-radius: 4px; font-weight: 700; font-size: 0.8rem; transition: 0.2s; }
         button:hover { background: var(--accent); color: var(--bg-main); border-color: var(--accent); }
         
-        /* --- [차트 박스 및 로고 가리기 핵심 설정] --- */
+        /* 2. 차트 박스 높이 대폭 확장 (600px -> 750px) */
         #chart_box { 
-            height: 600px; /* 높이 다시 600px로 고정 */
+            height: 750px; 
             background: var(--bg-card); 
             border-radius: 8px; 
             border: 1px solid var(--border); 
@@ -25,30 +28,16 @@
             overflow: hidden; 
         }
 
-        /* 왼쪽 하단 TradingView 로고 가리기 */
-        #chart_box::before {
+        /* 3. 로고 가리개 (위치 고정) */
+        #chart_box::before, #chart_box::after {
             content: "";
             position: absolute;
             bottom: 0;
-            left: 0;
-            width: 80px;  /* 로고 사이즈에 맞춤 */
-            height: 35px;
-            background: #131722; /* 차트 내부 배경색과 일치시켜 자연스럽게 가림 */
+            background: #131722; 
             z-index: 10;
         }
-
-        /* 오른쪽 하단 작은 워터마크 가리기 */
-        #chart_box::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            width: 40px;
-            height: 30px;
-            background: #131722;
-            z-index: 10;
-        }
-        /* -------------------------------------- */
+        #chart_box::before { left: 0; width: 100px; height: 35px; }
+        #chart_box::after { right: 0; width: 50px; height: 35px; }
 
         #ticker_container { height: 75px; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
         .card { background: var(--bg-card); padding: 24px; border-radius: 8px; border: 1px solid var(--border); display: flex; flex-direction: column; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); }
@@ -167,7 +156,7 @@
             document.getElementById('chart_box').innerHTML = "";
             new TradingView.widget({
                 "width": "100%", 
-                "height": 600, /* 높이 다시 고정 */
+                "height": 750, /* 4. 고정 높이 확장 */
                 "symbol": symbol, 
                 "interval": "D", 
                 "theme": "dark", 
@@ -183,7 +172,9 @@
                 "overrides": { 
                     "paneProperties.topMargin": 15,
                     "scalesProperties.rightAxleWidth": 110,
-                    "mainSeriesProperties.showCountdown": false
+                    "mainSeriesProperties.showCountdown": false,
+                    /* 5. 거래량 지표 영역 분리 및 시인성 조절 */
+                    "volumePaneSize": "medium" 
                 }
             });
         }
