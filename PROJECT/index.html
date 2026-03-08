@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIGNAL 9 | REAL-TIME TERMINAL</title>
+    <title>SIGNAL 9 | 투자를 위한 선택</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -14,16 +14,7 @@
         .nav-group { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
         button { padding: 12px; cursor: pointer; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-dim); border-radius: 4px; font-weight: 700; font-size: 0.8rem; transition: 0.2s; }
         button:hover { background: var(--accent); color: var(--bg-main); border-color: var(--accent); }
-        
-        #chart_box { 
-            height: 500px; 
-            background: #131722; 
-            border-radius: 8px; 
-            border: 1px solid var(--border); 
-            position: relative; 
-            overflow: hidden; 
-        }
-
+        #chart_box { height: 500px; background: #131722; border-radius: 8px; border: 1px solid var(--border); position: relative; overflow: hidden; }
         #ticker_container { height: 100px; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
         .card { background: var(--bg-card); padding: 24px; border-radius: 8px; border: 1px solid var(--border); display: flex; flex-direction: column; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); }
         .section-label { color: var(--accent); font-weight: 800; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; display: block; }
@@ -31,9 +22,6 @@
         .scroll-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
         .news-item { border-bottom: 1px solid var(--border); padding: 8px 0; transition: 0.2s; }
         .news-item:hover { background: #1e293b; }
-
-        .event-card { transition: 0.2s; border-left: 4px solid var(--border); }
-        .event-card:hover { background: #1e293b; transform: translateY(-2px); }
     </style>
 </head>
 <body>
@@ -60,30 +48,17 @@
         <div id="ticker_container"></div>
         <div id="chart_box"></div>
 
-        <div class="card mb-5 h-[450px]">
+        <div class="card mb-5 h-[550px]">
             <div class="flex justify-between items-center mb-4">
                 <div>
-                    <span class="section-label">Economic Indicators</span>
-                    <h3 class="text-xl font-bold">주요 경제 지표 발표</h3>
+                    <span class="section-label">Investing.com Korean Data</span>
+                    <h3 class="text-xl font-bold">실시간 주요 경제 지표 (한글/별점)</h3>
                 </div>
-                <div id="sync-status" class="text-[10px] text-sky-400 font-bold border border-sky-900 px-3 py-1 rounded">
-                    LIVE DATA ACTIVE
-                </div>
+                <div id="sync-status" class="text-[10px] text-sky-400 font-bold border border-sky-900 px-3 py-1 rounded">LIVE SYNC</div>
             </div>
-            <div class="tradingview-widget-container" style="height: 100%; width: 100%;">
-                <div class="tradingview-widget-container__widget"></div>
-                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-events.js" async>
-                {
-                  "colorTheme": "dark",
-                  "isTransparent": true,
-                  "width": "100%",
-                  "height": "100%",
-                  "locale": "ko",
-                  "importanceFilter": "0,1",
-                  "currencyFilter": "USD,KRW",
-                  "displayMode": "regular"
-                }
-                </script>
+            <div class="w-full h-full overflow-hidden rounded-lg border border-gray-800">
+                <iframe src="https://sslecal2.investing.com?columns=exc_flags,exc_currency,exc_importance,exc_actual,exc_forecast,exc_previous&category=_unspecified,_employment,_economicActivity,_inflation,_credit,_centralBanks,_confidenceIndex,_balanceOfPayments&importance=2,3&features=datepicker,timezone&countries=5,11,22,35,43&calType=day&timeZone=88&lang=18" 
+                    width="100%" height="100%" frameborder="0" allowtransparency="true" marginwidth="0" marginheight="0"></iframe>
             </div>
         </div>
 
@@ -102,15 +77,10 @@
                     </div>
                 </div>
                 <div class="flex-grow flex flex-col gap-4">
-                    <div class="h-3/5 border-b border-gray-800 pb-2">
-                        <canvas id="sentimentChart"></canvas>
-                    </div>
-                    <div class="h-2/5 pt-2">
-                        <canvas id="volumeChart"></canvas>
-                    </div>
+                    <div class="h-3/5 border-b border-gray-800 pb-2"><canvas id="sentimentChart"></canvas></div>
+                    <div class="h-2/5 pt-2"><canvas id="volumeChart"></canvas></div>
                 </div>
             </div>
-
             <div class="card h-[600px]">
                 <div class="mb-4 border-b border-[#262f45] pb-4">
                     <span class="section-label">Metrics Breakdown</span>
@@ -124,15 +94,10 @@
             <div class="flex justify-between items-center mb-4">
                 <div>
                     <span class="section-label">Historical Analysis</span>
-                    <h3 class="text-xl font-bold">실시간 연준위원 정책 시그널(TIME-SERIES)</h3>
-                </div>
-                <div class="text-[10px] text-gray-500 font-bold border border-gray-700 px-3 py-1 rounded">
-                    PRO 전용: SIGNAL 9 예측 프로그램
+                    <h3 class="text-xl font-bold">실시간 연준위원 정책 시그널</h3>
                 </div>
             </div>
-            <div class="flex-grow relative">
-                <canvas id="trendChart"></canvas>
-            </div>
+            <div class="flex-grow relative"><canvas id="trendChart"></canvas></div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
@@ -154,153 +119,71 @@
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
         let sentimentChart = null, volumeChart = null, trendChart = null;
-
         function loadTicker(symbol) {
-            const container = document.getElementById('ticker_container');
-            container.innerHTML = "";
-            const script = document.createElement('script');
-            script.src = "https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js";
-            script.async = true;
-            script.innerHTML = JSON.stringify({ "symbol": symbol, "width": "100%", "colorTheme": "dark", "isTransparent": true, "locale": "ko" });
+            const container = document.getElementById('ticker_container'); container.innerHTML = "";
+            const script = document.createElement('script'); script.src = "https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js";
+            script.async = true; script.innerHTML = JSON.stringify({ "symbol": symbol, "width": "100%", "colorTheme": "dark", "isTransparent": true, "locale": "ko" });
             container.appendChild(script);
         }
-
         function loadChart(symbol) {
             document.getElementById('chart_box').innerHTML = "";
             new TradingView.widget({
-                "width": "100%", 
-                "height": 500, 
-                "symbol": symbol, 
-                "interval": "D", 
-                "theme": "dark", 
-                "style": "1", 
-                "container_id": "chart_box",
-                "hide_side_toolbar": true,      
-                "allow_symbol_change": false,   
-                "save_image": false,            
-                "details": false, 
-                "hotlist": false, 
-                "calendar": false,
-                "enable_publishing": false,     
-                "overrides": { 
-                    "scalesProperties.rightAxleWidth": 220, 
-                    "scalesProperties.fontSize": 14,
-                    "volumePaneSize": "medium",
-                    "mainSeriesProperties.showCountdown": false,
-                    "paneProperties.background": "#131722",
-                    "paneProperties.vertGridProperties.color": "#262f45",
-                    "paneProperties.horzGridProperties.color": "#262f45"
-                },
+                "width": "100%", "height": 500, "symbol": symbol, "interval": "D", "theme": "dark", "style": "1", "container_id": "chart_box",
+                "hide_side_toolbar": true, "allow_symbol_change": false, "save_image": false, "details": false, "hotlist": false, "calendar": false, "enable_publishing": false,
+                "overrides": { "paneProperties.background": "#131722", "paneProperties.vertGridProperties.color": "#262f45", "paneProperties.horzGridProperties.color": "#262f45" },
                 "studies": [ { "id": "Volume@tv-basicstudies" } ]
             });
         }
-
         function changeWidget(symbol) { loadTicker(symbol); loadChart(symbol); }
-
-        async function updateCalendar() {
-            console.log("Calendar widget is handled by TradingView.");
-        }
-
         async function loadTrendData() {
             try {
                 const response = await fetch('./historical_data.json?v=' + Date.now());
                 const historyData = await response.json();
-                const labels = historyData.map(d => d.date);
-                const scores = historyData.map(d => d.score);
+                const labels = historyData.map(d => d.date); const scores = historyData.map(d => d.score);
                 if (trendChart) trendChart.destroy();
                 const ctx = document.getElementById('trendChart').getContext('2d');
                 trendChart = new Chart(ctx, {
                     type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Sentiment Score',
-                            data: scores,
-                            borderColor: '#38bdf8',
-                            backgroundColor: 'rgba(56, 189, 248, 0.1)',
-                            borderWidth: 3,
-                            fill: true,
-                            tension: 0.4
-                        }]
-                    },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
-                        scales: { y: { grid: { color: '#262f45' }, ticks: { color: '#94a3b8' } }, x: { grid: { display: false }, ticks: { color: '#94a3b8' } } }
-                    }
+                    data: { labels: labels, datasets: [{ label: 'Sentiment Score', data: scores, borderColor: '#38bdf8', backgroundColor: 'rgba(56, 189, 248, 0.1)', borderWidth: 3, fill: true, tension: 0.4 }] },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#262f45' } }, x: { grid: { display: false } } } }
                 });
             } catch (err) { console.error(err); }
         }
-
         async function updateTerminalData() {
             try {
-                const response = await fetch('./indicators.json?v=' + Date.now());
-                const data = await response.json();
+                const response = await fetch('./indicators.json?v=' + Date.now()); const data = await response.json();
                 const tempNum = parseFloat(data.market_temp);
-                const tempElement = document.getElementById('temp-value');
-                tempElement.innerText = data.market_temp + '°';
-                tempElement.className = tempNum >= 0 ? "text-xl font-black italic text-sky-400" : "text-xl font-black italic text-red-400";
+                document.getElementById('temp-value').innerText = data.market_temp + '°';
+                document.getElementById('temp-value').className = tempNum >= 0 ? "text-xl font-black italic text-sky-400" : "text-xl font-black italic text-red-400";
                 const labels = data.indicators.map(i => i.word);
                 if (sentimentChart) sentimentChart.destroy();
                 sentimentChart = new Chart(document.getElementById('sentimentChart'), {
                     type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Score',
-                            data: data.indicators.map(i => i.sentiment_score),
-                            backgroundColor: data.indicators.map(i => i.sentiment_score >= 0 ? 'rgba(56, 189, 248, 0.6)' : 'rgba(239, 68, 68, 0.6)'),
-                            borderRadius: 4
-                        }]
-                    },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
-                        scales: { y: { min: -10, max: 10, grid: { color: '#262f45' } } }
-                    }
+                    data: { labels: labels, datasets: [{ label: 'Score', data: data.indicators.map(i => i.sentiment_score), backgroundColor: data.indicators.map(i => i.sentiment_score >= 0 ? 'rgba(56, 189, 248, 0.6)' : 'rgba(239, 68, 68, 0.6)'), borderRadius: 4 }] },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { min: -10, max: 10, grid: { color: '#262f45' } } } }
                 });
                 if (volumeChart) volumeChart.destroy();
                 volumeChart = new Chart(document.getElementById('volumeChart'), {
                     type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Mentions',
-                            data: data.indicators.map(i => i.count),
-                            backgroundColor: 'rgba(148, 163, 184, 0.4)',
-                            borderRadius: 4
-                        }]
-                    },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
-                        scales: { y: { grid: { display: false } } }
-                    }
+                    data: { labels: labels, datasets: [{ label: 'Mentions', data: data.indicators.map(i => i.count), backgroundColor: 'rgba(148, 163, 184, 0.4)', borderRadius: 4 }] },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { display: false } } } }
                 });
                 document.getElementById('indicator-list').innerHTML = data.indicators.map(i => `
                     <li class="flex justify-between items-center p-3 rounded bg-[#1e293b] border-l-4 ${i.status === 'POSITIVE' ? 'border-sky-500' : (i.status === 'NEGATIVE' ? 'border-red-500' : 'border-gray-500')}">
                         <div class="flex flex-col"><span class="font-bold text-white">${i.word}</span><span class="text-[10px] text-gray-500">${i.count} MENTIONS</span></div>
                         <span class="font-mono font-bold ${i.sentiment_score >= 0 ? 'text-sky-400' : 'text-red-400'}">${i.display_score}</span>
-                    </li>
-                `).join('');
+                    </li>`).join('');
                 if(data.sector_news) {
                     const updateNews = (id, newsArr) => {
-                        const box = document.getElementById(id);
-                        if(!newsArr) return;
-                        box.innerHTML = newsArr.map(n => `
-                            <div class="news-item"><a href="${n.link}" target="_blank" class="hover:text-sky-400 block mb-1">▶ ${n.title}</a><span class="text-[9px] text-gray-600">${n.date || ''}</span></div>
-                        `).join('');
+                        const box = document.getElementById(id); if(!newsArr) return;
+                        box.innerHTML = newsArr.map(n => `<div class="news-item"><a href="${n.link}" target="_blank" class="hover:text-sky-400 block mb-1">▶ ${n.title}</a><span class="text-[9px] text-gray-600">${n.date || ''}</span></div>`).join('');
                     };
-                    updateNews('news-bigtech', data.sector_news['BIG TECH']);
-                    updateNews('news-semicon', data.sector_news['SEMICON']);
-                    updateNews('news-finance', data.sector_news['FINANCE']);
+                    updateNews('news-bigtech', data.sector_news['BIG TECH']); updateNews('news-semicon', data.sector_news['SEMICON']); updateNews('news-finance', data.sector_news['FINANCE']);
                 }
             } catch (err) { console.error(err); }
         }
-
-        window.onload = () => { 
-            changeWidget('BINANCE:BTCUSDT'); 
-            updateTerminalData(); 
-            loadTrendData(); 
-        };
-
-        setInterval(() => {
-            updateTerminalData();
-        }, 30000); 
+        window.onload = () => { changeWidget('BINANCE:BTCUSDT'); updateTerminalData(); loadTrendData(); };
+        setInterval(() => { updateTerminalData(); }, 30000); 
     </script>
 </body>
 </html>
