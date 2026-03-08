@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIGNAL 9 | REAL-TIME TERMINAL</title>
+    <title>SIGNAL 9 | REAL-TIME MACRO TERMINAL</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -15,7 +15,7 @@
         button { padding: 12px; cursor: pointer; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-dim); border-radius: 4px; font-weight: 700; font-size: 0.8rem; transition: 0.2s; }
         button:hover { background: var(--accent); color: var(--bg-main); border-color: var(--accent); }
         
-        /* --- [차트 레이아웃 최적화] --- */
+        /* 차트 박스 설정 */
         #chart_box { 
             height: 750px; 
             background: #131722; 
@@ -25,9 +25,9 @@
             overflow: hidden; 
         }
 
-        /* 로고 가리개 (숫자칸 확장 대응) */
+        /* 로고 가리개 (우측 확장된 숫자판에 맞춰 너비 조정) */
         #chart_box::before { content: ""; position: absolute; bottom: 0; left: 0; width: 100px; height: 35px; background: #131722; z-index: 10; }
-        #chart_box::after { content: ""; position: absolute; bottom: 0; right: 0; width: 50px; height: 35px; background: #131722; z-index: 10; }
+        #chart_box::after { content: ""; position: absolute; bottom: 0; right: 0; width: 100px; height: 35px; background: #131722; z-index: 10; }
 
         #ticker_container { height: 75px; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
         .card { background: var(--bg-card); padding: 24px; border-radius: 8px; border: 1px solid var(--border); display: flex; flex-direction: column; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); }
@@ -77,12 +77,8 @@
                     </div>
                 </div>
                 <div class="flex-grow flex flex-col gap-4">
-                    <div class="h-3/5 border-b border-gray-800 pb-2">
-                        <canvas id="sentimentChart"></canvas>
-                    </div>
-                    <div class="h-2/5 pt-2">
-                        <canvas id="volumeChart"></canvas>
-                    </div>
+                    <div class="h-3/5 border-b border-gray-800 pb-2"><canvas id="sentimentChart"></canvas></div>
+                    <div class="h-2/5 pt-2"><canvas id="volumeChart"></canvas></div>
                 </div>
             </div>
 
@@ -96,49 +92,21 @@
         </div>
 
         <div class="card mb-5 h-[350px]">
-            <div class="flex justify-between items-center mb-4">
-                <div>
-                    <span class="section-label">Historical Analysis</span>
-                    <h3 class="text-xl font-bold">실시간 연준위원 정책 시그널(TIME-SERIES)</h3>
-                </div>
-                <div class="text-[10px] text-gray-500 font-bold border border-gray-700 px-3 py-1 rounded">
-                    PRO 전용: SIGNAL 9 예측 프로그램
-                </div>
-            </div>
-            <div class="flex-grow relative">
-                <canvas id="trendChart"></canvas>
-            </div>
+            <span class="section-label">Historical Analysis</span>
+            <h3 class="text-xl font-bold mb-4">실시간 연준위원 정책 시그널(TIME-SERIES)</h3>
+            <div class="flex-grow relative"><canvas id="trendChart"></canvas></div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
-            <div class="card min-h-[300px]">
-                <span class="section-label">빅테크 주요 뉴스</span>
-                <div id="news-bigtech" class="text-xs scroll-list overflow-y-auto"></div>
-            </div>
-            <div class="card min-h-[300px]">
-                <span class="section-label">반도체/AI 섹터 소식</span>
-                <div id="news-semicon" class="text-xs scroll-list overflow-y-auto"></div>
-            </div>
-            <div class="card min-h-[300px]">
-                <span class="section-label">금융/연준 소식</span>
-                <div id="news-finance" class="text-xs scroll-list overflow-y-auto"></div>
-            </div>
+            <div class="card min-h-[300px]"><span class="section-label">빅테크 뉴스</span><div id="news-bigtech" class="text-xs scroll-list overflow-y-auto"></div></div>
+            <div class="card min-h-[300px]"><span class="section-label">반도체/AI 소식</span><div id="news-semicon" class="text-xs scroll-list overflow-y-auto"></div></div>
+            <div class="card min-h-[300px]"><span class="section-label">금융/연준 소식</span><div id="news-finance" class="text-xs scroll-list overflow-y-auto"></div></div>
         </div>
     </div>
 
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
         let sentimentChart = null, volumeChart = null, trendChart = null;
-
-        function loadTicker(symbol) {
-            const container = document.getElementById('ticker_container');
-            container.innerHTML = "";
-            const script = document.createElement('script');
-            script.src = "https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js";
-            script.async = true;
-            script.innerHTML = JSON.stringify({ "symbol": symbol, "width": "100%", "colorTheme": "dark", "isTransparent": true, "locale": "ko" });
-            container.appendChild(script);
-        }
 
         function loadChart(symbol) {
             document.getElementById('chart_box').innerHTML = "";
@@ -158,51 +126,32 @@
                 "calendar": false,
                 "enable_publishing": false,     
                 "overrides": { 
-                    /* 1. 숫자칸(사이드바) 대폭 확장 */
-                    "scalesProperties.rightAxleWidth": 180, 
+                    /* 1. 가격 표시 영역(Y축) 너비를 160px로 강제 고정 (시원해집니다) */
+                    "scalesProperties.rightAxleWidth": 160, 
                     "scalesProperties.fontSize": 14,
-                    /* 2. 거래량 하단 독립 레이어 분리 */
-                    "volumePaneSize": "medium",
+                    /* 2. 거래량을 캔들 차트와 분리하여 하단 별도 영역(Pane)에 배치 */
+                    "volumePaneSize": "medium", 
                     "mainSeriesProperties.showCountdown": false,
                     "paneProperties.background": "#131722",
                     "paneProperties.vertGridProperties.color": "#262f45",
                     "paneProperties.horzGridProperties.color": "#262f45"
                 },
-                "studies": [ { "id": "Volume@tv-basicstudies" } ]
+                /* 3. 거래량 지표 명시적 추가 */
+                "studies": [ "Volume@tv-basicstudies" ]
             });
         }
 
-        function changeWidget(symbol) { loadTicker(symbol); loadChart(symbol); }
-
-        /* --- 데이터 로직 복구 시작 --- */
-        async function loadTrendData() {
-            try {
-                const response = await fetch('./historical_data.json?v=' + Date.now());
-                const historyData = await response.json();
-                const labels = historyData.map(d => d.date);
-                const scores = historyData.map(d => d.score);
-                if (trendChart) trendChart.destroy();
-                const ctx = document.getElementById('trendChart').getContext('2d');
-                trendChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Sentiment Score',
-                            data: scores,
-                            borderColor: '#38bdf8',
-                            backgroundColor: 'rgba(56, 189, 248, 0.1)',
-                            borderWidth: 3,
-                            fill: true,
-                            tension: 0.4
-                        }]
-                    },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
-                        scales: { y: { grid: { color: '#262f45' }, ticks: { color: '#94a3b8' } }, x: { grid: { display: false }, ticks: { color: '#94a3b8' } } }
-                    }
-                });
-            } catch (err) { console.error(err); }
+        function loadTicker(symbol) {
+            const container = document.getElementById('ticker_container');
+            container.innerHTML = "";
+            const script = document.createElement('script');
+            script.src = "https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js";
+            script.async = true;
+            script.innerHTML = JSON.stringify({ "symbol": symbol, "width": "100%", "colorTheme": "dark", "isTransparent": true, "locale": "ko" });
+            container.appendChild(script);
         }
+
+        function changeWidget(symbol) { loadTicker(symbol); loadChart(symbol); }
 
         async function updateTerminalData() {
             try {
@@ -220,16 +169,9 @@
                     type: 'bar',
                     data: {
                         labels: labels,
-                        datasets: [{
-                            label: 'Score',
-                            data: data.indicators.map(i => i.sentiment_score),
-                            backgroundColor: data.indicators.map(i => i.sentiment_score >= 0 ? 'rgba(56, 189, 248, 0.6)' : 'rgba(239, 68, 68, 0.6)'),
-                            borderRadius: 4
-                        }]
+                        datasets: [{ label: 'Score', data: data.indicators.map(i => i.sentiment_score), backgroundColor: data.indicators.map(i => i.sentiment_score >= 0 ? 'rgba(56, 189, 248, 0.6)' : 'rgba(239, 68, 68, 0.6)'), borderRadius: 4 }]
                     },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
-                        scales: { y: { min: -10, max: 10, grid: { color: '#262f45' } } }
-                    }
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { min: -10, max: 10, grid: { color: '#262f45' } } } }
                 });
 
                 if (volumeChart) volumeChart.destroy();
@@ -237,37 +179,45 @@
                     type: 'bar',
                     data: {
                         labels: labels,
-                        datasets: [{
-                            label: 'Mentions',
-                            data: data.indicators.map(i => i.count),
-                            backgroundColor: 'rgba(148, 163, 184, 0.4)',
-                            borderRadius: 4
-                        }]
+                        datasets: [{ label: 'Mentions', data: data.indicators.map(i => i.count), backgroundColor: 'rgba(148, 163, 184, 0.4)', borderRadius: 4 }]
                     },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
-                        scales: { y: { grid: { display: false } } }
-                    }
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { display: false } } } }
                 });
 
                 document.getElementById('indicator-list').innerHTML = data.indicators.map(i => `
                     <li class="flex justify-between items-center p-3 rounded bg-[#1e293b] border-l-4 ${i.status === 'POSITIVE' ? 'border-sky-500' : (i.status === 'NEGATIVE' ? 'border-red-500' : 'border-gray-500')}">
                         <div class="flex flex-col"><span class="font-bold text-white">${i.word}</span><span class="text-[10px] text-gray-500">${i.count} MENTIONS</span></div>
                         <span class="font-mono font-bold ${i.sentiment_score >= 0 ? 'text-sky-400' : 'text-red-400'}">${i.display_score}</span>
-                    </li>
-                `).join('');
+                    </li>`).join('');
 
                 if(data.sector_news) {
                     const updateNews = (id, newsArr) => {
                         const box = document.getElementById(id);
                         if(!newsArr) return;
-                        box.innerHTML = newsArr.map(n => `
-                            <div class="news-item"><a href="${n.link}" target="_blank" class="hover:text-sky-400 block mb-1">▶ ${n.title}</a><span class="text-[9px] text-gray-600">${n.date || ''}</span></div>
-                        `).join('');
+                        box.innerHTML = newsArr.map(n => `<div class="news-item"><a href="${n.link}" target="_blank" class="hover:text-sky-400 block mb-1">▶ ${n.title}</a><span class="text-[9px] text-gray-600">${n.date || ''}</span></div>`).join('');
                     };
                     updateNews('news-bigtech', data.sector_news['BIG TECH']);
                     updateNews('news-semicon', data.sector_news['SEMICON']);
                     updateNews('news-finance', data.sector_news['FINANCE']);
                 }
+            } catch (err) { console.error(err); }
+        }
+
+        async function loadTrendData() {
+            try {
+                const response = await fetch('./historical_data.json?v=' + Date.now());
+                const historyData = await response.json();
+                const labels = historyData.map(d => d.date);
+                const scores = historyData.map(d => d.score);
+                if (trendChart) trendChart.destroy();
+                trendChart = new Chart(document.getElementById('trendChart'), {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{ label: 'Sentiment Score', data: scores, borderColor: '#38bdf8', backgroundColor: 'rgba(56, 189, 248, 0.1)', borderWidth: 3, fill: true, tension: 0.4 }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#262f45' }, ticks: { color: '#94a3b8' } }, x: { grid: { display: false }, ticks: { color: '#94a3b8' } } } }
+                });
             } catch (err) { console.error(err); }
         }
 
