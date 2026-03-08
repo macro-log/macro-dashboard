@@ -15,7 +15,6 @@
         button { padding: 12px; cursor: pointer; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-dim); border-radius: 4px; font-weight: 700; font-size: 0.8rem; transition: 0.2s; }
         button:hover { background: var(--accent); color: var(--bg-main); border-color: var(--accent); }
         
-        /* --- [차트 레이아웃 최적화] --- */
         #chart_box { 
             height: 500px; 
             background: #131722; 
@@ -25,8 +24,6 @@
             overflow: hidden; 
         }
 
-        /* 형님 요청대로 로고 가리개(before, after) 스타일만 완전히 삭제함 */
-
         #ticker_container { height: 100px; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
         .card { background: var(--bg-card); padding: 24px; border-radius: 8px; border: 1px solid var(--border); display: flex; flex-direction: column; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); }
         .section-label { color: var(--accent); font-weight: 800; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; display: block; }
@@ -34,6 +31,9 @@
         .scroll-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
         .news-item { border-bottom: 1px solid var(--border); padding: 8px 0; transition: 0.2s; }
         .news-item:hover { background: #1e293b; }
+
+        .event-card { transition: 0.2s; border-left: 4px solid var(--border); }
+        .event-card:hover { background: #1e293b; transform: translateY(-2px); }
     </style>
 </head>
 <body>
@@ -59,6 +59,32 @@
 
         <div id="ticker_container"></div>
         <div id="chart_box"></div>
+
+        <div class="card mb-5 h-[450px]">
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <span class="section-label">Global Economic Calendar</span>
+                    <h3 class="text-xl font-bold">실시간 글로벌 경제 지표 (자동)</h3>
+                </div>
+                <div id="sync-status" class="text-[10px] text-sky-400 font-bold border border-sky-900 px-3 py-1 rounded">
+                    LIVE DATA ACTIVE
+                </div>
+            </div>
+            <div class="tradingview-widget-container" style="height: 100%; width: 100%;">
+                <div class="tradingview-widget-container__widget"></div>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-events.js" async>
+                {
+                  "colorTheme": "dark",
+                  "isTransparent": true,
+                  "width": "100%",
+                  "height": "100%",
+                  "locale": "ko",
+                  "importanceFilter": "-1,0,1",
+                  "currencyFilter": "USD,EUR,JPY,GBP,KRW"
+                }
+                </script>
+            </div>
+        </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
             <div class="card h-[600px]">
@@ -142,7 +168,7 @@
             document.getElementById('chart_box').innerHTML = "";
             new TradingView.widget({
                 "width": "100%", 
-                "height": 750, 
+                "height": 500, 
                 "symbol": symbol, 
                 "interval": "D", 
                 "theme": "dark", 
@@ -156,10 +182,8 @@
                 "calendar": false,
                 "enable_publishing": false,     
                 "overrides": { 
-                    /* 1. 가격 나오는 곳(우측 사이드바) 220px로 확장함 */
                     "scalesProperties.rightAxleWidth": 220, 
                     "scalesProperties.fontSize": 14,
-                    /* 2. 거래량 하단 독립 레이어 분리 */
                     "volumePaneSize": "medium",
                     "mainSeriesProperties.showCountdown": false,
                     "paneProperties.background": "#131722",
@@ -171,6 +195,11 @@
         }
 
         function changeWidget(symbol) { loadTicker(symbol); loadChart(symbol); }
+
+        async function updateCalendar() {
+            // 이제 위젯이 데이터를 관리하므로, 이 함수는 호환성을 위해 이름만 유지합니다.
+            console.log("Calendar widget is handled by TradingView.");
+        }
 
         async function loadTrendData() {
             try {
@@ -205,12 +234,10 @@
             try {
                 const response = await fetch('./indicators.json?v=' + Date.now());
                 const data = await response.json();
-
                 const tempNum = parseFloat(data.market_temp);
                 const tempElement = document.getElementById('temp-value');
                 tempElement.innerText = data.market_temp + '°';
                 tempElement.className = tempNum >= 0 ? "text-xl font-black italic text-sky-400" : "text-xl font-black italic text-red-400";
-
                 const labels = data.indicators.map(i => i.word);
                 if (sentimentChart) sentimentChart.destroy();
                 sentimentChart = new Chart(document.getElementById('sentimentChart'), {
@@ -228,7 +255,6 @@
                         scales: { y: { min: -10, max: 10, grid: { color: '#262f45' } } }
                     }
                 });
-
                 if (volumeChart) volumeChart.destroy();
                 volumeChart = new Chart(document.getElementById('volumeChart'), {
                     type: 'bar',
@@ -245,14 +271,12 @@
                         scales: { y: { grid: { display: false } } }
                     }
                 });
-
                 document.getElementById('indicator-list').innerHTML = data.indicators.map(i => `
                     <li class="flex justify-between items-center p-3 rounded bg-[#1e293b] border-l-4 ${i.status === 'POSITIVE' ? 'border-sky-500' : (i.status === 'NEGATIVE' ? 'border-red-500' : 'border-gray-500')}">
                         <div class="flex flex-col"><span class="font-bold text-white">${i.word}</span><span class="text-[10px] text-gray-500">${i.count} MENTIONS</span></div>
                         <span class="font-mono font-bold ${i.sentiment_score >= 0 ? 'text-sky-400' : 'text-red-400'}">${i.display_score}</span>
                     </li>
                 `).join('');
-
                 if(data.sector_news) {
                     const updateNews = (id, newsArr) => {
                         const box = document.getElementById(id);
@@ -268,8 +292,15 @@
             } catch (err) { console.error(err); }
         }
 
-        window.onload = () => { changeWidget('BINANCE:BTCUSDT'); updateTerminalData(); loadTrendData(); };
-        setInterval(updateTerminalData, 30000); 
+        window.onload = () => { 
+            changeWidget('BINANCE:BTCUSDT'); 
+            updateTerminalData(); 
+            loadTrendData(); 
+        };
+
+        setInterval(() => {
+            updateTerminalData();
+        }, 30000); 
     </script>
 </body>
 </html>
