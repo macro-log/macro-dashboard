@@ -131,25 +131,8 @@
         function loadChart(symbol) {
             document.getElementById('chart_box').innerHTML = "";
             new TradingView.widget({
-                "width": "100%", 
-                "height": 600, 
-                "symbol": symbol, 
-                "interval": "D", 
-                "theme": "dark", 
-                "style": "1", 
-                "container_id": "chart_box",
-                "locale": "ko",
-                // 차트 레이아웃 최적화: 우측 여백 확보 및 거래량 겹침 방지
-                "overrides": {
-                    "paneProperties.topMargin": 15,
-                    "paneProperties.bottomMargin": 15,
-                    "mainSeriesProperties.priceAxisProperties.autoScale": true,
-                    // 거래량 차트를 캔들 뒤가 아닌 아래쪽 별도 공간에 배치
-                    "volumePaneSize": "tiny"
-                },
-                "options": {
-                    "rightOffset": 5 // 주가 숫자가 잘리지 않도록 우측 여백 추가
-                }
+                "width": "100%", "height": 600, "symbol": symbol, "interval": "D", "theme": "dark", "style": "1", "container_id": "chart_box",
+                "overrides": { "paneProperties.topMargin": 25 }
             });
         }
 
@@ -157,7 +140,8 @@
 
         async function loadTrendData() {
             try {
-                const response = await fetch('historical_data.json?v=' + Date.now());
+                // 현재 폴더의 historical_data.json 로드
+                const response = await fetch('./historical_data.json?v=' + Date.now());
                 const historyData = await response.json();
                 const labels = historyData.map(d => d.date);
                 const scores = historyData.map(d => d.score);
@@ -175,19 +159,12 @@
                             borderWidth: 3,
                             pointBackgroundColor: '#38bdf8',
                             pointRadius: 5,
-                            pointHoverRadius: 8,
                             fill: true,
                             tension: 0.4
                         }]
                     },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { display: false } },
-                        scales: {
-                            y: { grid: { color: '#262f45' }, ticks: { color: '#94a3b8' } },
-                            x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
-                        }
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+                        scales: { y: { grid: { color: '#262f45' }, ticks: { color: '#94a3b8' } }, x: { grid: { display: false }, ticks: { color: '#94a3b8' } } }
                     }
                 });
             } catch (err) { console.error("Trend Chart Error:", err); }
@@ -195,12 +172,15 @@
 
         async function updateTerminalData() {
             try {
-                const response = await fetch('indicators.json?v=' + Date.now());
+                // 현재 폴더의 indicators.json 로드
+                const response = await fetch('./indicators.json?v=' + Date.now());
                 const data = await response.json();
+
                 const tempNum = parseFloat(data.market_temp);
                 const tempElement = document.getElementById('temp-value');
                 tempElement.innerText = data.market_temp + '°';
                 tempElement.className = tempNum >= 0 ? "text-xl font-black italic text-sky-400" : "text-xl font-black italic text-red-400";
+
                 const labels = data.indicators.map(i => i.word);
                 if (sentimentChart) sentimentChart.destroy();
                 sentimentChart = new Chart(document.getElementById('sentimentChart'), {
@@ -218,6 +198,7 @@
                         scales: { y: { min: -10, max: 10, grid: { color: '#262f45' } } }
                     }
                 });
+
                 if (volumeChart) volumeChart.destroy();
                 volumeChart = new Chart(document.getElementById('volumeChart'), {
                     type: 'bar',
@@ -231,28 +212,23 @@
                         }]
                     },
                     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
-                        scales: { y: { grid: { display: false }, ticks: { display: true } } }
+                        scales: { y: { grid: { display: false } } }
                     }
                 });
-                const list = document.getElementById('indicator-list');
-                list.innerHTML = data.indicators.map(i => `
+
+                document.getElementById('indicator-list').innerHTML = data.indicators.map(i => `
                     <li class="flex justify-between items-center p-3 rounded bg-[#1e293b] border-l-4 ${i.status === 'POSITIVE' ? 'border-sky-500' : (i.status === 'NEGATIVE' ? 'border-red-500' : 'border-gray-500')}">
-                        <div class="flex flex-col">
-                            <span class="font-bold text-white">${i.word}</span>
-                            <span class="text-[10px] text-gray-500">${i.count} MENTIONS</span>
-                        </div>
+                        <div class="flex flex-col"><span class="font-bold text-white">${i.word}</span><span class="text-[10px] text-gray-500">${i.count} MENTIONS</span></div>
                         <span class="font-mono font-bold ${i.sentiment_score >= 0 ? 'text-sky-400' : 'text-red-400'}">${i.display_score}</span>
                     </li>
                 `).join('');
+
                 if(data.sector_news) {
                     const updateNews = (id, newsArr) => {
                         const box = document.getElementById(id);
                         if(!newsArr) return;
                         box.innerHTML = newsArr.map(n => `
-                            <div class="news-item">
-                                <a href="${n.link}" target="_blank" class="hover:text-sky-400 block mb-1">▶ ${n.title}</a>
-                                <span class="text-[9px] text-gray-600">${n.date || ''}</span>
-                            </div>
+                            <div class="news-item"><a href="${n.link}" target="_blank" class="hover:text-sky-400 block mb-1">▶ ${n.title}</a><span class="text-[9px] text-gray-600">${n.date || ''}</span></div>
                         `).join('');
                     };
                     updateNews('news-bigtech', data.sector_news['BIG TECH']);
@@ -263,7 +239,7 @@
         }
 
         window.onload = () => { 
-            changeWidget('AMEX:SPY'); // 초기 로드 시 SPY로 설정
+            changeWidget('BINANCE:BTCUSDT'); 
             updateTerminalData(); 
             loadTrendData(); 
         };
