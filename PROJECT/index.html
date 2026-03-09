@@ -27,15 +27,17 @@
 
         .event-card { min-width: 300px; flex-shrink: 0; transition: 0.2s; border-left: 4px solid var(--border); margin-top: 5px;}
         .event-card:hover { background: #1e293b; transform: translateY(-4px); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);}
-        #calendar-container { scroll-behavior: smooth; padding-top: 10px; /* 카드가 위로 올라가도 안 잘리게 여유 공간 생성 */}
+        #calendar-container { scroll-behavior: smooth; padding-top: 10px; }
 
-        /* 알림 전용 애니메이션 */
         @keyframes alert-blink {
             0% { background-color: var(--danger); }
             50% { background-color: #f59e0b; }
             100% { background-color: var(--danger); }
         }
         .alert-active { animation: alert-blink 0.5s infinite; color: white !important; cursor: pointer; border-radius: 8px; }
+
+        #alert-modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; width: 320px; background: var(--bg-card); border: 1px solid var(--accent); border-radius: 8px; padding: 20px; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 999; }
     </style>
 </head>
 <body>
@@ -46,14 +48,32 @@
         </div>
 
         <div id="alert-bar" class="flex items-center gap-4 bg-[#0a0f1e] px-4 py-2 rounded border border-[#262f45] transition-all">
-            <span class="text-[10px] font-bold text-gray-500">PRICE ALERT</span>
-            <input id="alert-price" type="number" placeholder="목표가 입력" class="bg-transparent border-b border-[#262f45] text-xs text-sky-400 focus:outline-none w-24">
-            <button id="alert-btn" onclick="toggleAlert()" class="py-1 px-3 text-[10px] bg-sky-900 text-sky-300 border-none hover:bg-sky-600 rounded">설정</button>
-            <span id="current-btc" class="text-[10px] font-mono text-gray-400">BTC LOADING...</span>
+            <select id="alert-symbol" class="bg-transparent text-[10px] text-sky-400 font-bold focus:outline-none">
+                <option value="BINANCE:BTCUSDT">BTC</option>
+                <option value="AMEX:SPY">SPY</option>
+                <option value="NASDAQ:QQQ">QQQ</option>
+                <option value="TVC:GOLD">GOLD</option>
+                <option value="TVC:USOIL">WTI</option>
+            </select>
+            <input id="alert-price" type="number" placeholder="목표가" class="bg-transparent border-b border-[#262f45] text-xs text-sky-400 focus:outline-none w-20">
+            <button id="alert-btn" onclick="addAlert()" class="py-1 px-3 text-[10px] bg-sky-900 text-sky-300 border-none hover:bg-sky-600 rounded">추가</button>
+            <button onclick="toggleModal(true)" class="py-1 px-3 text-[10px] bg-gray-800 text-gray-300 border-none hover:bg-gray-700 rounded">🔔 목록</button>
+            <span id="current-btc" class="text-[10px] font-mono text-gray-400">LOADING...</span>
         </div>
 
-        <div class="text-[11px] text-gray-500 font-bold tracking-widest uppercase">Real-Time Macro Terminal</div>
+        <div class="text-[11px] text-gray-500 font-bold tracking-widest uppercase">투자를 위한 선택</div>
     </header>
+
+    <div id="modal-overlay" class="modal-overlay" onclick="toggleModal(false)"></div>
+    <div id="alert-modal">
+        <div class="flex justify-between items-center mb-4 border-b border-[#262f45] pb-2">
+            <h4 class="text-sm font-bold text-sky-400">설정된 알림 목록</h4>
+            <button onclick="toggleModal(false)" class="text-xs text-gray-500">닫기</button>
+        </div>
+        <ul id="active-alert-list" class="space-y-2 max-h-[250px] overflow-y-auto text-xs">
+            <li class="text-gray-500 text-center py-4">설정된 알림이 없습니다.</li>
+        </ul>
+    </div>
 
     <div class="main-layout">
         <div class="nav-group">
@@ -72,10 +92,7 @@
 
         <div class="card mb-5">
             <div class="flex justify-between items-center mb-4">
-                <div>
-                    <span class="section-label">Economic Calendar</span>
-                    <h3 class="text-xl font-bold">주요 매크로 일정</h3>
-                </div>
+                <div><span class="section-label">Economic Calendar</span><h3 class="text-xl font-bold">주요 매크로 일정</h3></div>
                 <div id="sync-status" class="text-[10px] text-gray-500 font-bold border border-gray-700 px-3 py-1 rounded">WAITING...</div>
             </div>
             <div id="calendar-container" class="flex gap-4 overflow-x-auto pb-4 scroll-list"></div>
@@ -84,10 +101,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
             <div class="card h-[600px]">
                 <div class="flex justify-between items-start mb-4">
-                    <div>
-                        <span class="section-label">Dual Analytics</span>
-                        <h3 class="text-xl font-bold">실시간 연준 심리 분석</h3>
-                    </div>
+                    <div><span class="section-label">Dual Analytics</span><h3 class="text-xl font-bold">실시간 연준 심리 분석</h3></div>
                     <div class="flex items-center gap-3 bg-[#0a0f1e] px-4 py-2 rounded-lg border border-[#262f45]">
                         <div class="flex flex-col text-right">
                             <span class="text-[9px] text-gray-500 font-bold">MARKET TEMP</span>
@@ -100,22 +114,15 @@
                     <div class="h-2/5 pt-2"><canvas id="volumeChart"></canvas></div>
                 </div>
             </div>
-
             <div class="card h-[600px]">
-                <div class="mb-4 border-b border-[#262f45] pb-4">
-                    <span class="section-label">Metrics Breakdown</span>
-                    <h3 class="text-lg font-bold">분석 데이터 상세 리스트</h3>
-                </div>
+                <div class="mb-4 border-b border-[#262f45] pb-4"><span class="section-label">Metrics Breakdown</span><h3 class="text-lg font-bold">분석 데이터 상세 리스트</h3></div>
                 <ul id="indicator-list" class="scroll-list space-y-2 overflow-y-auto pr-2"></ul>
             </div>
         </div>
 
         <div class="card mb-5 h-[350px]">
             <div class="flex justify-between items-center mb-4">
-                <div>
-                    <span class="section-label">Historical Analysis</span>
-                    <h3 class="text-xl font-bold">연준 정책 시그널 트렌드</h3>
-                </div>
+                <div><span class="section-label">Historical Analysis</span><h3 class="text-xl font-bold">연준 정책 시그널 트렌드</h3></div>
             </div>
             <div class="flex-grow relative"><canvas id="trendChart"></canvas></div>
         </div>
@@ -130,39 +137,85 @@
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
         let sentimentChart = null, volumeChart = null, trendChart = null;
-        let targetPrice = null;
-        let isAlertOn = false;
+        let alertList = [];
+        let lastBtcPrice = 0;
 
-        // 가격 체크 엔진
+        function requestNotificationPermission() {
+            if ("Notification" in window && Notification.permission === "default") {
+                Notification.requestPermission();
+            }
+        }
+
+        function addAlert() {
+            const select = document.getElementById('alert-symbol');
+            const symbol = select.value;
+            const name = select.options[select.selectedIndex].text;
+            const price = parseFloat(document.getElementById('alert-price').value);
+            if (!price) return alert("가격을 입력하세요!");
+            const direction = price > lastBtcPrice ? 'UP' : 'DOWN';
+            alertList.push({ id: Date.now(), symbol: symbol, name: name, target: price, direction: direction });
+            document.getElementById('alert-price').value = "";
+            renderAlertList();
+            alert(`${name} $${price.toLocaleString()} 알림 설정 완료!`);
+        }
+
+        function renderAlertList() {
+            const listEl = document.getElementById('active-alert-list');
+            if (alertList.length === 0) {
+                listEl.innerHTML = `<li class="text-gray-500 text-center py-4">설정된 알림이 없습니다.</li>`;
+                return;
+            }
+            listEl.innerHTML = alertList.map(a => `
+                <li class="flex justify-between items-center p-2 bg-[#1e293b] rounded border-l-2 border-sky-500">
+                    <span class="text-white"><b class="text-sky-400">${a.name}</b> $${a.target.toLocaleString()}</span>
+                    <button onclick="removeAlert(${a.id})" class="p-1 text-red-500 hover:text-white bg-transparent border-none text-[10px]">삭제</button>
+                </li>`).join('');
+        }
+
+        function removeAlert(id) {
+            alertList = alertList.filter(a => a.id !== id);
+            renderAlertList();
+        }
+
+        function toggleModal(show) {
+            document.getElementById('alert-modal').style.display = show ? 'block' : 'none';
+            document.getElementById('modal-overlay').style.display = show ? 'block' : 'none';
+        }
+
         async function checkPrice() {
             try {
                 const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
                 const data = await res.json();
                 const currentPrice = parseFloat(data.price);
                 document.getElementById('current-btc').innerText = `BTC: $${currentPrice.toLocaleString()}`;
-                if (isAlertOn && targetPrice && currentPrice >= targetPrice) triggerAlert();
+                alertList.forEach((a, index) => {
+                    if (a.symbol === "BINANCE:BTCUSDT") {
+                        let isTriggered = false;
+                        if (a.direction === 'UP' && currentPrice >= a.target) isTriggered = true;
+                        if (a.direction === 'DOWN' && currentPrice <= a.target) isTriggered = true;
+                        if (isTriggered) {
+                            triggerPushAlert(a.name, a.target, currentPrice);
+                            alertList.splice(index, 1);
+                            renderAlertList();
+                        }
+                    }
+                });
+                lastBtcPrice = currentPrice;
             } catch (e) { console.error("Price check failed"); }
         }
 
-        function toggleAlert() {
-            const input = document.getElementById('alert-price');
-            const btn = document.getElementById('alert-btn');
-            if (!isAlertOn) {
-                targetPrice = parseFloat(input.value);
-                if (!targetPrice) return alert("가격을 입력하세요!");
-                isAlertOn = true; btn.innerText = "해제"; btn.classList.replace('bg-sky-900', 'bg-red-900'); input.disabled = true;
-            } else { stopAlert(); }
+        function triggerPushAlert(name, target, current) {
+            const bar = document.getElementById('alert-bar');
+            bar.classList.add('alert-active');
+            setTimeout(() => bar.classList.remove('alert-active'), 5000);
+            if (Notification.permission === "granted") {
+                new Notification(`🚨 [SIGNAL 9] ${name} 목표가 도달!`, {
+                    body: `${name} 설정가 $${target.toLocaleString()}에 도달했습니다.\n현재가: $${current.toLocaleString()}`,
+                    icon: "https://cdn-icons-png.flaticon.com/512/1001/1001022.png"
+                });
+            }
         }
 
-        function triggerAlert() { document.getElementById('alert-bar').classList.add('alert-active'); document.getElementById('alert-bar').onclick = stopAlert; }
-        function stopAlert() {
-            isAlertOn = false; targetPrice = null;
-            const bar = document.getElementById('alert-bar'); bar.classList.remove('alert-active'); bar.onclick = null;
-            const btn = document.getElementById('alert-btn'); btn.innerText = "설정"; btn.classList.replace('bg-red-900', 'bg-sky-900');
-            const input = document.getElementById('alert-price'); input.disabled = false; input.value = "";
-        }
-
-        // TV 위젯 로직
         function loadTicker(symbol) {
             const container = document.getElementById('ticker_container'); container.innerHTML = "";
             const script = document.createElement('script');
@@ -172,21 +225,25 @@
             container.appendChild(script);
         }
 
+        // [수정된 차트 로드 함수] 거래량 겹침 해결
         function loadChart(symbol) {
             document.getElementById('chart_box').innerHTML = "";
             new TradingView.widget({
                 "width": "100%", "height": 500, "symbol": symbol, "interval": "D", "theme": "dark", "style": "1", "container_id": "chart_box",
                 "hide_side_toolbar": true, "allow_symbol_change": false, "save_image": false, "details": false, "hotlist": false, "calendar": false,
-                "enable_publishing": false, "overrides": { 
-                    "paneProperties.background": "#131722", "paneProperties.vertGridProperties.color": "#262f45", "paneProperties.horzGridProperties.color": "#262f45"
+                "enable_publishing": false,
+                "overrides": { 
+                    "paneProperties.background": "#131722", "paneProperties.vertGridProperties.color": "#262f45", "paneProperties.horzGridProperties.color": "#262f45",
+                    "volumePaneSize": "medium" // 거래량 영역의 크기 조절
                 },
-                "studies": [ { "id": "Volume@tv-basicstudies" } ]
+                "studies": [
+                    { "id": "Volume@tv-basicstudies", "forceOverlay": false } // forceOverlay를 false로 설정하여 겹침 방지
+                ]
             });
         }
 
         function changeWidget(symbol) { loadTicker(symbol); loadChart(symbol); }
 
-        // 캘린더 렌더링
         async function updateCalendar() {
             try {
                 const response = await fetch('./economic_events.json?v=' + Date.now());
@@ -198,10 +255,10 @@
                     { "date": "2026-03-12 21:30", "name": "미국 CPI 발표", "importance": "CRITICAL" },
                     { "date": "2026-03-19 03:00", "name": "FOMC 금리 결정", "importance": "CRITICAL" },
                     { "date": "2026-03-21 21:30", "name": "신규 실업수당 청구", "importance": "HIGH" },
-                    { "date": "2026-03-25 22:00", "name": "신규 주택 판매", "importance": "MEDIUM" }
+                    { "date": "2026-03-25 22:00", "name": "신규 주택 판매", "importance": "MEDIUM" },
+                    { "date": "2026-03-31 23:00", "name": "소비자 신뢰지수", "importance": "HIGH" }
                 ];
                 renderCalendar(dummy);
-                document.getElementById('sync-status').innerText = "MARKET WATCHING";
             }
         }
 
@@ -217,43 +274,32 @@
             }).join('');
         }
 
-        // 터미널 데이터 업데이트 (심리 분석 및 뉴스)
         async function updateTerminalData() {
             try {
                 const response = await fetch('./indicators.json?v=' + Date.now());
                 const data = await response.json();
-                
-                // 마켓 온도
                 const tempNum = parseFloat(data.market_temp);
                 const tempElement = document.getElementById('temp-value');
                 tempElement.innerText = data.market_temp + '°';
-                tempElement.className = tempNum >= 0 ? "text-xl font-black italic text-sky-400" : "text-xl font-black italic text-red-400";
-
+                tempNum >= 0 ? tempElement.className = "text-xl font-black italic text-sky-400" : tempElement.className = "text-xl font-black italic text-red-400";
                 const labels = data.indicators.map(i => i.word);
-                // 심리 점수 차트
                 if (sentimentChart) sentimentChart.destroy();
                 sentimentChart = new Chart(document.getElementById('sentimentChart'), {
                     type: 'bar',
                     data: { labels: labels, datasets: [{ label: 'Score', data: data.indicators.map(i => i.sentiment_score), backgroundColor: data.indicators.map(i => i.sentiment_score >= 0 ? 'rgba(56, 189, 248, 0.6)' : 'rgba(239, 68, 68, 0.6)'), borderRadius: 4 }] },
                     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { min: -10, max: 10, grid: { color: '#262f45' } } } }
                 });
-
-                // 언급량 차트
                 if (volumeChart) volumeChart.destroy();
                 volumeChart = new Chart(document.getElementById('volumeChart'), {
                     type: 'bar',
                     data: { labels: labels, datasets: [{ label: 'Mentions', data: data.indicators.map(i => i.count), backgroundColor: 'rgba(148, 163, 184, 0.4)', borderRadius: 4 }] },
                     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { display: false } } } }
                 });
-
-                // 리스트 업데이트
                 document.getElementById('indicator-list').innerHTML = data.indicators.map(i => `
                     <li class="flex justify-between items-center p-3 rounded bg-[#1e293b] border-l-4 ${i.status === 'POSITIVE' ? 'border-sky-500' : 'border-red-500'}">
                         <div class="flex flex-col"><span class="font-bold text-white">${i.word}</span><span class="text-[10px] text-gray-500">${i.count} MENTIONS</span></div>
                         <span class="font-mono font-bold ${i.sentiment_score >= 0 ? 'text-sky-400' : 'text-red-400'}">${i.display_score}</span>
                     </li>`).join('');
-
-                // 뉴스 업데이트
                 if(data.sector_news) {
                     const updateNews = (id, newsArr) => {
                         const box = document.getElementById(id); if(!newsArr) return;
@@ -280,9 +326,6 @@
             } catch (err) { console.error(err); }
         }
 
-        const calScroll = document.getElementById('calendar-container');
-        calScroll.addEventListener('wheel', (e) => { e.preventDefault(); calScroll.scrollLeft += e.deltaY; });
-
         window.onload = () => { 
             changeWidget('BINANCE:BTCUSDT'); 
             updateTerminalData(); 
@@ -291,6 +334,7 @@
             setInterval(checkPrice, 2000); 
             setInterval(updateTerminalData, 30000);
             setInterval(updateCalendar, 30000);
+            requestNotificationPermission();
         };
     </script>
 </body>
