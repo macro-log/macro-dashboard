@@ -465,8 +465,8 @@
                 document.getElementById('home-ai-summary').innerText = (data.ai_summary || "").substring(0, 100) + "...";
                 
                 // 0~100 환산용 임시 로직 (market_temp가 -10 ~ +10 이라면)
-                let gaugeScore = Math.round(((tempNum + 10) / 20) * 100); 
-                initMasterGauge(gaugeScore || 50); // 게이지 렌더링
+                let gaugeScore = data.master_score || 50; 
+                initMasterGauge(gaugeScore); // 게이지 렌더링
 
                 const labels = data.indicators.map(i => i.word);
                 if (sentimentChart) sentimentChart.destroy();

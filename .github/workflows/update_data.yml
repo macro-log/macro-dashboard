@@ -1,7 +1,7 @@
 name: Financial Data Update
 on:
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '0 * * * *'  # 5분은 너무 잦아서 차단 위험이 있으니 1시간(정각)을 권장합니다.
   workflow_dispatch:
 
 jobs:
@@ -26,35 +26,58 @@ jobs:
           import json
           import os
 
-          tickers = {
-              "비트코인": "BTC-USD", "S&P500": "^GSPC", "나스닥": "^IXIC", "다우존스": "^DJI",
-              "원달러 환율": "KRW=X", "엔달러 환율": "JPY=X", "미국 국채 10년": "^TNX",
-              "미국 국채 5년": "^FVX", "한국 국채 10년": "KR10YT=RR", "일본 국채 10년": "JG10Y.T",
-              "금 (Gold)": "GC=F", "WTI 유가": "CL=F"
-          }
+          # 1. 기존 데이터 불러오기 (보존용)
+          file_path = 'indicators.json'
+          data = {"market_temp": 0, "master_score": 50, "ai_summary": "", "indicators": []}
+          if os.path.exists(file_path):
+              with open(file_path, 'r', encoding='utf-8') as f:
+                  try: data = json.load(f)
+                  except: pass
 
-          results = {}
+          # 2. 마스터 게이지 점수 계산 (VIX + 모멘텀)
+          try:
+              vix = yf.Ticker("^VIX").history(period="1d")['Close'].iloc[-1]
+              vix_score = max(0, min(100, 100 - ((vix - 10) * (100 / 30))))
+              spy = yf.Ticker("SPY").history(period="150d")
+              ratio = (spy['Close'].iloc[-1] / spy['Close'].rolling(window=125).mean().iloc[-1]) * 100
+              momentum_score = max(0, min(100, (ratio - 90) * 5))
+              data['master_score'] = int((vix_score * 0.5) + (momentum_score * 0.5))
+          except:
+              data['master_score'] = data.get('master_score', 50)
+
+          # 3. 개별 지표 가격 수집 (형님의 기존 기능 유지)
+          tickers = {
+              "BTC": "BTC-USD", "SPY": "^GSPC", "QQQ": "^IXIC", "DIA": "^DJI",
+              "USDKRW": "KRW=X", "US10Y": "^TNX", "GOLD": "GC=F", "OIL": "CL=F"
+          }
+          
+          price_results = []
           for name, ticker in tickers.items():
               try:
                   t = yf.Ticker(ticker)
-                  data = t.history(period="2d")
-                  if not data.empty:
-                      curr = data['Close'].iloc[-1]
-                      prev = t.info.get('previousClose', data['Close'].iloc[0])
-                      change = ((curr - prev) / prev) * 100
-                      results[name] = {"price": f"{curr:,.2f}", "change": f"{'+' if change >= 0 else ''}{change:.2f}%"}
-              except:
-                  results[name] = {"price": "점검중", "change": "-"}
-
-          os.makedirs('content', exist_ok=True)
-          with open('content/indicators.json', 'w', encoding='utf-8') as f:
-              json.dump(results, f, indent=4, ensure_ascii=False)
+                  hist = t.history(period="2d")
+                  curr = hist['Close'].iloc[-1]
+                  prev = hist['Close'].iloc[0]
+                  change = ((curr - prev) / prev) * 100
+                  price_results.append({
+                      "symbol": name,
+                      "price": f"{curr:,.2f}",
+                      "change": f"{change:+.2f}%"
+                  })
+              except: pass
+          
+          # 4. 데이터 합치기 (기존 필드는 유지하고 마스터 점수와 가격 리스트만 업데이트)
+          data['live_prices'] = price_results
+          
+          # 5. 저장 (경로는 root의 indicators.json으로 통일)
+          with open(file_path, 'w', encoding='utf-8') as f:
+              json.dump(data, f, indent=4, ensure_ascii=False)
           END
 
       - name: Commit and Push
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add content/indicators.json
-          git commit -m "지표 업데이트 [skip netlify]" || echo "No changes"
+          git add indicators.json
+          git commit -m "지표 및 마스터 점수 업데이트 [skip ci]" || echo "No changes"
           git push
