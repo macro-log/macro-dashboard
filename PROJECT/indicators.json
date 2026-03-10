@@ -1,144 +1,144 @@
 {
-  "master_score":85,
-  "market_temp": "-2.5",
-  "indicators": [
-    {
-      "word": "INFLATION",
-      "sentiment_score": -1.8,
-      "status": "NEUTRAL",
-      "display_score": "-1.8",
-      "count": 52
-    },
-    {
-      "word": "RATE",
-      "sentiment_score": 0.4,
-      "status": "NEUTRAL",
-      "display_score": "+0.4",
-      "count": 48
-    },
-    {
-      "word": "POLICY",
-      "sentiment_score": -0.2,
-      "status": "NEUTRAL",
-      "display_score": "-0.2",
-      "count": 34
-    },
-    {
-      "word": "RISKS",
-      "sentiment_score": -0.5,
-      "status": "NEUTRAL",
-      "display_score": "-0.5",
-      "count": 21
-    },
-    {
-      "word": "GROWTH",
-      "sentiment_score": -0.1,
-      "status": "NEUTRAL",
-      "display_score": "-0.1",
-      "count": 20
-    },
-    {
-      "word": "LABOR",
-      "sentiment_score": -0.0,
-      "status": "NEUTRAL",
-      "display_score": "-0.0",
-      "count": 18
-    },
-    {
-      "word": "CREDIT",
-      "sentiment_score": 0.2,
-      "status": "NEUTRAL",
-      "display_score": "+0.2",
-      "count": 13
-    },
-    {
-      "word": "GDP",
-      "sentiment_score": -0.2,
-      "status": "NEUTRAL",
-      "display_score": "-0.2",
-      "count": 11
-    },
-    {
-      "word": "PRICES",
-      "sentiment_score": 0.0,
-      "status": "NEUTRAL",
-      "display_score": "0.0",
-      "count": 11
-    },
-    {
-      "word": "EMPLOYMENT",
-      "sentiment_score": -0.1,
-      "status": "NEUTRAL",
-      "display_score": "-0.1",
-      "count": 7
-    },
-    {
-      "word": "ECONOMY",
-      "sentiment_score": -0.7,
-      "status": "NEUTRAL",
-      "display_score": "-0.7",
-      "count": 5
-    },
-    {
-      "word": "STABILITY",
-      "sentiment_score": 0.0,
-      "status": "NEUTRAL",
-      "display_score": "0.0",
-      "count": 3
-    }
-  ],
-  "sector_news": {
-    "BIG TECH": [
-      {
-        "title": "Magnificent 7 Stock Report: Apple Leads, NVIDIA Fades, Microsoft Crashes - 24/7 Wall St.",
-        "link": "https://news.google.com/rss/articles/CBMiswFBVV95cUxPc2xianU3U2JqaEhJTGoxYTVpclhQMjFkUmFuMFJZN2dFQmxzZjlaVEQzcmVkOS1EbktoVTZGVE50Um1fYm1YNUxjNUxLNWl3S0lGOTZBSWo3b20xeDl3ci1ramEzLXpBdGhrMVQyd0Zza1dvd0JRbXdRLW1rZjNGWlh2OXBqX2ktWllrODdybzBJR01UTkJKNUs5bXNGNDJLaHNMTjZRREJDUGJYcTlkZ0xKVQ?oc=5",
-        "date": "Thu, 05 Mar 2026"
-      },
-      {
-        "title": "1 Unstoppable Stock to Buy Now Before It Joins Nvidia, Apple, Alphabet, and Microsoft in the $3 Trillion Club - The Motley Fool",
-        "link": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOa1pSOG12X19jaS10RE5sNXltTjZRdjNFd3hWTTlNWW1na0JKbXFQTmJxcGFwc3czX1N2QWZ4Y1VkcmVzUFZQUC1TdE00bzZyazA3UVJmQ096TjZmaGpoRnptRGM1TVF3anVlLV9qNUJQbEZmRThZTFhzQnFLNFFjNml1VEE3MXVsZWJ5NFNreVNYNGduMVJPUA?oc=5",
-        "date": "Thu, 05 Mar 2026"
-      },
-      {
-        "title": "AI Stocks Reset In 2026. What's Next For Apple, Nvidia, Google And Microsoft? - Investor's Business Daily",
-        "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxPd0RVSXdfRmZKNjkxcjl5d0JrSHp0d0xmRkxEOXBQVlFpanBCMGxSQWQtaFh6SmpGcFJOcTBDRGJTVkNGU3l0WlhBcFRFNzVERmFKZUhiM0NIZkptdU1WNEZVR0tWX1pRaXRrcUg0cVV4cjFLTkhaemZGWVJ6VFg1eTRZdEJXWTAzR1ZIdE9keFJqbTI1UVEtLVFaWklmWFpFRVNrRkhEV21YX1FUTElqRW53MFM?oc=5",
-        "date": "Thu, 19 Feb 2026"
-      }
+    "master_score": 51,
+    "market_temp": "-2.5",
+    "indicators": [
+        {
+            "word": "INFLATION",
+            "sentiment_score": -1.8,
+            "status": "NEUTRAL",
+            "display_score": "-1.8",
+            "count": 52
+        },
+        {
+            "word": "RATE",
+            "sentiment_score": 0.4,
+            "status": "NEUTRAL",
+            "display_score": "+0.4",
+            "count": 48
+        },
+        {
+            "word": "POLICY",
+            "sentiment_score": -0.2,
+            "status": "NEUTRAL",
+            "display_score": "-0.2",
+            "count": 34
+        },
+        {
+            "word": "RISKS",
+            "sentiment_score": -0.5,
+            "status": "NEUTRAL",
+            "display_score": "-0.5",
+            "count": 21
+        },
+        {
+            "word": "GROWTH",
+            "sentiment_score": -0.1,
+            "status": "NEUTRAL",
+            "display_score": "-0.1",
+            "count": 20
+        },
+        {
+            "word": "LABOR",
+            "sentiment_score": -0.0,
+            "status": "NEUTRAL",
+            "display_score": "-0.0",
+            "count": 18
+        },
+        {
+            "word": "CREDIT",
+            "sentiment_score": 0.2,
+            "status": "NEUTRAL",
+            "display_score": "+0.2",
+            "count": 13
+        },
+        {
+            "word": "GDP",
+            "sentiment_score": -0.2,
+            "status": "NEUTRAL",
+            "display_score": "-0.2",
+            "count": 11
+        },
+        {
+            "word": "PRICES",
+            "sentiment_score": 0.0,
+            "status": "NEUTRAL",
+            "display_score": "0.0",
+            "count": 11
+        },
+        {
+            "word": "EMPLOYMENT",
+            "sentiment_score": -0.1,
+            "status": "NEUTRAL",
+            "display_score": "-0.1",
+            "count": 7
+        },
+        {
+            "word": "ECONOMY",
+            "sentiment_score": -0.7,
+            "status": "NEUTRAL",
+            "display_score": "-0.7",
+            "count": 5
+        },
+        {
+            "word": "STABILITY",
+            "sentiment_score": 0.0,
+            "status": "NEUTRAL",
+            "display_score": "0.0",
+            "count": 3
+        }
     ],
-    "SEMICON": [
-      {
-        "title": "Memory chip giants spark global semiconductor rally as shortages stoke price hikes - CNBC",
-        "link": "https://news.google.com/rss/articles/CBMikgFBVV95cUxQeEE1Mm5ESzRwVThWckRwMXp0MVpBMWhGeVBNWm05WFdVd3JnbnU0SUdESnVBXzZ1NFJobkVrTXZuTGZZZ1NBQXNCNzZJT2o4Z05pYlNGSTkwVHM5NGZ2WjJpaVFFNUw2REVMUFN4dHhhU3ZGLUJTSkNUTUYwbTkwTlFveGlzSzBTNk81dU1xZklDUdIBlwFBVV95cUxPemlVY2l1ejVKUWZNM0dmYktZYWF2Y0x1WVhfanJVcURYRHpadGtKbnJpUVFiWUhZWUxmQ29wUE5RRDBrR0Etak1Rdy1wWUhQRUtyRFlEV1k5M0NWb1ZVSG02MEw4LUxsTG43cE5ISE9zc0plRTBoOGFITzRQTEZrX2xHaXM0TWVXWG5BbFA0d044MXlXR3Fr?oc=5",
-        "date": "Tue, 06 Jan 2026"
-      },
-      {
-        "title": "Better Semiconductor Stock: TSMC vs. ASML - The Motley Fool",
-        "link": "https://news.google.com/rss/articles/CBMiigFBVV95cUxNNWZONUVPSVh3U3k2Y3dsMWVpU0MtNjRfMXhIVFduU2hiZ2djTlJOa2xHY2dyMFJvVFh0V19QS3hsWjJtSk1USjlhNW5CVmVUX09fSUVJWkdLOVAydjNabmFLM2FEdHNaM3NDcTV4NVJreUE3ajJEb3JrNUktMFdpa2FXZkJiMGJVbmc?oc=5",
-        "date": "Tue, 18 Nov 2025"
-      },
-      {
-        "title": "The Only Semiconductor Stock You Need for 2026 (TSMC, Intel, ASML, or Micron?) - Nasdaq",
-        "link": "https://news.google.com/rss/articles/CBMinAFBVV95cUxQNlFvVUF6NnlOM0ZfeUFOYURxTG13QUpRbXNzbEM3cDdDV2lJZmdDblZHdTVHeENfdDhLVXFybE8tLVh4YXZvQ0ZuR3hIZXByVFVPd1l2MmNBUE5vVDVSX1NSdjZjQkpUR1VseHRSYXFoUUJSMEVMeWFhME8xMENEZ0FSRXEzRUZkYTAtdXdPX3Uta29Qbl9hVUVUUEg?oc=5",
-        "date": "Sat, 10 Jan 2026"
-      }
-    ],
-    "FINANCE": [
-      {
-        "title": "J.P. Morgan forecasts 2027 Fed hike; Barclays, Goldman postpone rate cut calls - Reuters",
-        "link": "https://news.google.com/rss/articles/CBMitwFBVV95cUxPWWFsNTdTUkRaQWdYNzc5MnNGbGFEb3p2dDRGZVg4Q1JCU0lTTkxJMkZ0ckIyUjF6bW0yazlLT0dYSEJFUFUzdWZqN3dGR3B4cXFNZHdyZUZhNGZ4UXhTdGtyalhJWGFOaG15T2FUNWFhQlBJLUhpTHNRenVaNktxQkpmSmtkSDlIRWlhU3BWOGxwaDJkX2ppaHh0RF9jdllxZHdhQWg4cEVkUTNqSGdYblh4N1MxNlk?oc=5",
-        "date": "Mon, 12 Jan 2026"
-      },
-      {
-        "title": "Big Banks Are on Fire. Why Is the Fed Eyeing More Fuel? - Bloomberg.com",
-        "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxObmpId2lKbWNmWVhxNk5JUVUtWXg5SUppYjdCOVluY3FqMWxSTXJvek5jWmNpLXVZWHkzdExhbnU2OXFkZlMxR2lkQzhhNjRQYnM1dE5LUTVYdHE0ampkcEZma2J5RVFLdzlYTWwtMTZZMm0xVDBFaC00TVJTQmY4T0FTT1UtZnRlZzN1SGJqM3BDMGZRdGY5TE1uXzY5NS1WSUJhY05ENWFKRWpZVXVwLW4ya0g?oc=5",
-        "date": "Tue, 14 Oct 2025"
-      },
-      {
-        "title": "JP Morgan, Goldman Sachs Predict Fed Will Cut Rates In December - Benzinga",
-        "link": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxOQ1MxcFgzZDhtUUttT0lvOFZ2QXZHZW9HekcxU3o0blI2VGtCR09Wb19HejNjdEluWFYtSFRBeHdGcjNLMjhaN3BuZlNkeElXazJZdXcxYVNSd29WVFJuVndaa2NJNUFCMnJYcXM4TmN2YWtoRWpfYTRJNGpVNjRscEtjcnhKc0Z6WDJRZWlfU3h4c0MwcFAzOHBXWE9YM0x4Y21tVVhUd0M3S256VUp3eDlkdC1JemJ4ekQyOEplcno1Zw?oc=5",
-        "date": "Fri, 28 Nov 2025"
-      }
-    ]
-  },
-  "news_list": []
+    "sector_news": {
+        "BIG TECH": [
+            {
+                "title": "Magnificent 7 Stock Report: Apple Leads, NVIDIA Fades, Microsoft Crashes - 24/7 Wall St.",
+                "link": "https://news.google.com/rss/articles/CBMiswFBVV95cUxPc2xianU3U2JqaEhJTGoxYTVpclhQMjFkUmFuMFJZN2dFQmxzZjlaVEQzcmVkOS1EbktoVTZGVE50Um1fYm1YNUxjNUxLNWl3S0lGOTZBSWo3b20xeDl3ci1ramEzLXpBdGhrMVQyd0Zza1dvd0JRbXdRLW1rZjNGWlh2OXBqX2ktWllrODdybzBJR01UTkJKNUs5bXNGNDJLaHNMTjZRREJDUGJYcTlkZ0xKVQ?oc=5",
+                "date": "Thu, 05 Mar 2026"
+            },
+            {
+                "title": "1 Unstoppable Stock to Buy Now Before It Joins Nvidia, Apple, Alphabet, and Microsoft in the $3 Trillion Club - The Motley Fool",
+                "link": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOa1pSOG12X19jaS10RE5sNXltTjZRdjNFd3hWTTlNWW1na0JKbXFQTmJxcGFwc3czX1N2QWZ4Y1VkcmVzUFZQUC1TdE00bzZyazA3UVJmQ096TjZmaGpoRnptRGM1TVF3anVlLV9qNUJQbEZmRThZTFhzQnFLNFFjNml1VEE3MXVsZWJ5NFNreVNYNGduMVJPUA?oc=5",
+                "date": "Thu, 05 Mar 2026"
+            },
+            {
+                "title": "AI Stocks Reset In 2026. What's Next For Apple, Nvidia, Google And Microsoft? - Investor's Business Daily",
+                "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxPd0RVSXdfRmZKNjkxcjl5d0JrSHp0d0xmRkxEOXBQVlFpanBCMGxSQWQtaFh6SmpGcFJOcTBDRGJTVkNGU3l0WlhBcFRFNzVERmFKZUhiM0NIZkptdU1WNEZVR0tWX1pRaXRrcUg0cVV4cjFLTkhaemZGWVJ6VFg1eTRZdEJXWTAzR1ZIdE9keFJqbTI1UVEtLVFaWklmWFpFRVNrRkhEV21YX1FUTElqRW53MFM?oc=5",
+                "date": "Thu, 19 Feb 2026"
+            }
+        ],
+        "SEMICON": [
+            {
+                "title": "Memory chip giants spark global semiconductor rally as shortages stoke price hikes - CNBC",
+                "link": "https://news.google.com/rss/articles/CBMikgFBVV95cUxQeEE1Mm5ESzRwVThWckRwMXp0MVpBMWhGeVBNWm05WFdVd3JnbnU0SUdESnVBXzZ1NFJobkVrTXZuTGZZZ1NBQXNCNzZJT2o4Z05pYlNGSTkwVHM5NGZ2WjJpaVFFNUw2REVMUFN4dHhhU3ZGLUJTSkNUTUYwbTkwTlFveGlzSzBTNk81dU1xZklDUdIBlwFBVV95cUxPemlVY2l1ejVKUWZNM0dmYktZYWF2Y0x1WVhfanJVcURYRHpadGtKbnJpUVFiWUhZWUxmQ29wUE5RRDBrR0Etak1Rdy1wWUhQRUtyRFlEV1k5M0NWb1ZVSG02MEw4LUxsTG43cE5ISE9zc0plRTBoOGFITzRQTEZrX2xHaXM0TWVXWG5BbFA0d044MXlXR3Fr?oc=5",
+                "date": "Tue, 06 Jan 2026"
+            },
+            {
+                "title": "Better Semiconductor Stock: TSMC vs. ASML - The Motley Fool",
+                "link": "https://news.google.com/rss/articles/CBMiigFBVV95cUxNNWZONUVPSVh3U3k2Y3dsMWVpU0MtNjRfMXhIVFduU2hiZ2djTlJOa2xHY2dyMFJvVFh0V19QS3hsWjJtSk1USjlhNW5CVmVUX09fSUVJWkdLOVAydjNabmFLM2FEdHNaM3NDcTV4NVJreUE3ajJEb3JrNUktMFdpa2FXZkJiMGJVbmc?oc=5",
+                "date": "Tue, 18 Nov 2025"
+            },
+            {
+                "title": "The Only Semiconductor Stock You Need for 2026 (TSMC, Intel, ASML, or Micron?) - Nasdaq",
+                "link": "https://news.google.com/rss/articles/CBMinAFBVV95cUxQNlFvVUF6NnlOM0ZfeUFOYURxTG13QUpRbXNzbEM3cDdDV2lJZmdDblZHdTVHeENfdDhLVXFybE8tLVh4YXZvQ0ZuR3hIZXByVFVPd1l2MmNBUE5vVDVSX1NSdjZjQkpUR1VseHRSYXFoUUJSMEVMeWFhME8xMENEZ0FSRXEzRUZkYTAtdXdPX3Uta29Qbl9hVUVUUEg?oc=5",
+                "date": "Sat, 10 Jan 2026"
+            }
+        ],
+        "FINANCE": [
+            {
+                "title": "J.P. Morgan forecasts 2027 Fed hike; Barclays, Goldman postpone rate cut calls - Reuters",
+                "link": "https://news.google.com/rss/articles/CBMitwFBVV95cUxPWWFsNTdTUkRaQWdYNzc5MnNGbGFEb3p2dDRGZVg4Q1JCU0lTTkxJMkZ0ckIyUjF6bW0yazlLT0dYSEJFUFUzdWZqN3dGR3B4cXFNZHdyZUZhNGZ4UXhTdGtyalhJWGFOaG15T2FUNWFhQlBJLUhpTHNRenVaNktxQkpmSmtkSDlIRWlhU3BWOGxwaDJkX2ppaHh0RF9jdllxZHdhQWg4cEVkUTNqSGdYblh4N1MxNlk?oc=5",
+                "date": "Mon, 12 Jan 2026"
+            },
+            {
+                "title": "Big Banks Are on Fire. Why Is the Fed Eyeing More Fuel? - Bloomberg.com",
+                "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxObmpId2lKbWNmWVhxNk5JUVUtWXg5SUppYjdCOVluY3FqMWxSTXJvek5jWmNpLXVZWHkzdExhbnU2OXFkZlMxR2lkQzhhNjRQYnM1dE5LUTVYdHE0ampkcEZma2J5RVFLdzlYTWwtMTZZMm0xVDBFaC00TVJTQmY4T0FTT1UtZnRlZzN1SGJqM3BDMGZRdGY5TE1uXzY5NS1WSUJhY05ENWFKRWpZVXVwLW4ya0g?oc=5",
+                "date": "Tue, 14 Oct 2025"
+            },
+            {
+                "title": "JP Morgan, Goldman Sachs Predict Fed Will Cut Rates In December - Benzinga",
+                "link": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxOQ1MxcFgzZDhtUUttT0lvOFZ2QXZHZW9HekcxU3o0blI2VGtCR09Wb19HejNjdEluWFYtSFRBeHdGcjNLMjhaN3BuZlNkeElXazJZdXcxYVNSd29WVFJuVndaa2NJNUFCMnJYcXM4TmN2YWtoRWpfYTRJNGpVNjRscEtjcnhKc0Z6WDJRZWlfU3h4c0MwcFAzOHBXWE9YM0x4Y21tVVhUd0M3S256VUp3eDlkdC1JemJ4ekQyOEplcno1Zw?oc=5",
+                "date": "Fri, 28 Nov 2025"
+            }
+        ]
+    },
+    "news_list": []
 }
