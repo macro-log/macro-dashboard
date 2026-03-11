@@ -67,7 +67,7 @@ def calculate_master_score():
         return 50
 
 def get_ai_analysis(score):
-    print("📰 뉴스 수집 및 AI 요약 중...")
+    print("📰 뉴스 및 데이터 통합 AI 분석 중...")
     try:
         # 뉴스 가져오기
         spy = yf.Ticker("SPY")
@@ -79,15 +79,21 @@ def get_ai_analysis(score):
             formatted_news.append({"title": n['title'], "url": n['link']})
             news_text_for_ai += f"- {n['title']}\n"
 
-        # Gemini AI 분석
+        # Gemini AI 분석 (시상 상황 분석 로직 강화)
         model = genai.GenerativeModel('gemini-1.5-flash')
         prompt = f"""
-        현재 시장 점수: {score}/100 (0:공포, 100:탐욕)
-        최신 뉴스:
+        [시장 데이터 분석 요청]
+        1. 현재 시장 종합 점수: {score}/100 (0점에 가까울수록 공포, 100점에 가까울수록 탐욕)
+        2. 주요 최신 뉴스:
         {news_text_for_ai}
         
-        위 데이터를 바탕으로 현재 시장 상황을 한국어로 3줄 요약해줘. 
-        형님에게 보고하듯 씩씩하고 위트 있는 말투로 써줘.
+        위 데이터를 바탕으로 **'현재 시장 상황에 대한 전문적인 분석'**을 수행해줘.
+        단순히 뉴스를 요약하지 말고, 점수와 뉴스를 결합해 지금 시장의 '심리 상태'와 '위험도'가 어떤지 분석하는 것이 핵심이야.
+
+        [보고 형식]
+        - 현재 상황을 한 줄로 정의 (예: "폭풍 전야의 고요함입니다")
+        - 데이터 기반 상황 분석 2줄 (지금 형님이 공격할 때인지 수비할 때인지 포함)
+        - 씩씩하고 위트 있는 '형님' 말투로, 한국어로 작성해줘.
         """
         response = model.generate_content(prompt)
         return formatted_news, response.text
@@ -97,13 +103,12 @@ def get_ai_analysis(score):
 
 def save_all(score, news, summary):
     file_path = 'PROJECT/indicators.json'
-    # 기존 데이터 구조 유지
     data = {
         "master_score": score,
         "market_temp": score,
         "ai_summary": summary,
         "indicators": news,
-        "sector_news": {} # 필요시 확장용
+        "sector_news": {} 
     }
     with open(file_path, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
