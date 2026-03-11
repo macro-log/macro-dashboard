@@ -1,8 +1,8 @@
 name: Financial Data Update
 on:
   schedule:
-    - cron: '0 * * * *'
-  workflow_dispatch:
+    - cron: '0 * * * *'  # 매시간 정각 실행
+  workflow_dispatch:      # 수동 실행 버튼 활성화
 
 jobs:
   update:
@@ -17,48 +17,82 @@ jobs:
           python-version: '3.9'
 
       - name: Install dependencies
-        run: pip install yfinance pandas
+        # [수정] AI 라이브러리(google-generativeai)를 추가로 설치합니다.
+        run: pip install yfinance pandas google-generativeai
 
       - name: Run Update Script
+        # [중요] AI를 깨우기 위한 비밀번호(API KEY)를 로봇에게 넘겨줍니다.
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           python << END
           import yfinance as yf
           import json
           import os
+          import google.generativeai as genai
 
-          # [수정 1] 거실이 아니라 'PROJECT' 폴더 안방에 있는 파일을 찾으라고 지시!
-          file_path = 'PROJECT/indicators.json'
-          
-          # 1. 기존 데이터 읽기
-          if os.path.exists(file_path):
-              with open(file_path, 'r', encoding='utf-8') as f:
-                  data = json.load(f)
-          else:
-              data = {"market_temp": 0, "indicators": [], "sector_news": {}}
+          # 0. AI 설정
+          api_key = os.getenv("GEMINI_API_KEY")
+          genai.configure(api_key=api_key)
 
-          # 2. 마스터 점수 계산
+          def get_score(val, low, high, reverse=False):
+              score = ((val - low) / (high - low)) * 100
+              score = max(0, min(100, score))
+              return 100 - score if reverse else score
+
+          # 1. 7대 엔진 가중치 계산
+          print("🚀 7대 엔진 분석 시작...")
+          tickers = {
+              "VIX": "^VIX", "SPY": "SPY", "HYG": "HYG", 
+              "IEF": "IEF", "GOLD": "GC=F", "UUP": "UUP", 
+              "QQQ": "QQQ", "DIA": "DIA", "BTC": "BTC-USD"
+          }
+          raw_data = {k: yf.Ticker(v).history(period="150d") for k, v in tickers.items()}
+
+          # 점수 산출 로직
+          s1 = get_score(raw_data["VIX"]['Close'].iloc[-1], 12, 35, reverse=True)
+          s2 = get_score(raw_data["SPY"]['Close'].iloc[-1] / raw_data["SPY"]['Close'].rolling(window=125).mean().iloc[-1], 0.9, 1.1)
+          s3 = get_score(raw_data["HYG"]['Close'].iloc[-1] / raw_data["IEF"]['Close'].iloc[-1], 0.7, 0.9)
+          s4 = get_score(raw_data["UUP"]['Close'].iloc[-1] / raw_data["UUP"]['Close'].rolling(window=125).mean().iloc[-1], 0.95, 1.1, reverse=True)
+          s5 = get_score(raw_data["QQQ"]['Close'].iloc[-1] / raw_data["DIA"]['Close'].iloc[-1], 1.0, 1.3)
+          s6 = get_score(raw_data["GOLD"]['Close'].iloc[-1] / raw_data["GOLD"]['Close'].rolling(window=125).mean().iloc[-1], 0.95, 1.15, reverse=True)
+          s7 = get_score(raw_data["BTC"]['Close'].iloc[-1] / raw_data["BTC"]['Close'].rolling(window=20).mean().iloc[-1], 0.8, 1.2)
+
+          # 최종 가중치 합산
+          final_score = int((s1*0.2) + (s2*0.2) + (s3*0.2) + (s4*0.15) + (s5*0.15) + (s6*0.05) + (s7*0.05))
+
+          # 2. 뉴스 수집 및 AI 요약
+          print("📰 뉴스 분석 중...")
+          news_list = yf.Ticker("SPY").news[:5]
+          formatted_news = [{"title": n['title'], "url": n['link']} for n in news_list]
+          news_text = "\n".join([n['title'] for n in news_list])
+
+          ai_summary = "뉴스를 요약하는 중입니다..."
           try:
-              vix = yf.Ticker("^VIX").history(period="1d")['Close'].iloc[-1]
-              vix_score = max(0, min(100, 100 - ((vix - 10) * (100 / 30))))
-              spy = yf.Ticker("SPY").history(period="150d")
-              ratio = (spy['Close'].iloc[-1] / spy['Close'].rolling(window=125).mean().iloc[-1]) * 100
-              momentum_score = max(0, min(100, (ratio - 90) * 5))
-              data['master_score'] = int((vix_score * 0.5) + (momentum_score * 0.5))
-          except:
-              data['master_score'] = data.get('master_score', 50)
+              model = genai.GenerativeModel('gemini-1.5-flash')
+              prompt = f"현재 시장 점수 {final_score}/100점. 뉴스 제목들:\n{news_text}\n이 데이터를 바탕으로 시장 상황을 한국어로 3줄 요약해줘. 형님께 보고하듯 씩씩하고 위트 있게!"
+              response = model.generate_content(prompt)
+              ai_summary = response.text
+          except Exception as e:
+              print(f"AI 에러: {e}")
 
           # 3. 데이터 저장
+          file_path = 'PROJECT/indicators.json'
+          data = {
+              "master_score": final_score,
+              "market_temp": final_score,
+              "ai_summary": ai_summary,
+              "indicators": formatted_news,
+              "sector_news": {}
+          }
           with open(file_path, 'w', encoding='utf-8') as f:
-              json.dump(data, f, indent=4, ensure_ascii=False)
+              json.dump(data, f, ensure_ascii=False, indent=4)
           END
 
       - name: Commit and Push
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
-          # [수정 2] 올릴 때도 반드시 'PROJECT' 폴더 내부 파일을 챙기라고 지시!
           git add PROJECT/indicators.json
-          
-          git commit -m "PROJECT 내부 지표 업데이트 [skip ci]" || echo "No changes"
+          git commit -m "7대 엔진 & AI 뉴스 업데이트 [skip ci]" || echo "No changes"
           git push
