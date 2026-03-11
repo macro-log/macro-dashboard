@@ -17,19 +17,20 @@ jobs:
           python-version: '3.9'
 
       - name: Install dependencies
-        # [수정] AI 라이브러리(google-generativeai)를 추가로 설치합니다.
-        run: pip install yfinance pandas google-generativeai
+        # [수정] RSS 뉴스를 가져오기 위해 'requests' 라이브러리 추가!
+        run: pip install yfinance pandas google-generativeai requests
 
       - name: Run Update Script
-        # [중요] AI를 깨우기 위한 비밀번호(API KEY)를 로봇에게 넘겨줍니다.
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
-          python << END
+          python << 'EOF'
           import yfinance as yf
           import json
           import os
+          import requests
           import google.generativeai as genai
+          from xml.etree import ElementTree
 
           # 0. AI 설정
           api_key = os.getenv("GEMINI_API_KEY")
@@ -37,62 +38,91 @@ jobs:
 
           def get_score(val, low, high, reverse=False):
               score = ((val - low) / (high - low)) * 100
-              score = max(0, min(100, score))
-              return 100 - score if reverse else score
+              return max(0, min(100, 100 - score if reverse else score))
 
           # 1. 7대 엔진 가중치 계산
           print("🚀 7대 엔진 분석 시작...")
-          tickers = {
-              "VIX": "^VIX", "SPY": "SPY", "HYG": "HYG", 
-              "IEF": "IEF", "GOLD": "GC=F", "UUP": "UUP", 
-              "QQQ": "QQQ", "DIA": "DIA", "BTC": "BTC-USD"
-          }
-          raw_data = {k: yf.Ticker(v).history(period="150d") for k, v in tickers.items()}
-
-          # 점수 산출 로직
-          s1 = get_score(raw_data["VIX"]['Close'].iloc[-1], 12, 35, reverse=True)
-          s2 = get_score(raw_data["SPY"]['Close'].iloc[-1] / raw_data["SPY"]['Close'].rolling(window=125).mean().iloc[-1], 0.9, 1.1)
-          s3 = get_score(raw_data["HYG"]['Close'].iloc[-1] / raw_data["IEF"]['Close'].iloc[-1], 0.7, 0.9)
-          s4 = get_score(raw_data["UUP"]['Close'].iloc[-1] / raw_data["UUP"]['Close'].rolling(window=125).mean().iloc[-1], 0.95, 1.1, reverse=True)
-          s5 = get_score(raw_data["QQQ"]['Close'].iloc[-1] / raw_data["DIA"]['Close'].iloc[-1], 1.0, 1.3)
-          s6 = get_score(raw_data["GOLD"]['Close'].iloc[-1] / raw_data["GOLD"]['Close'].rolling(window=125).mean().iloc[-1], 0.95, 1.15, reverse=True)
-          s7 = get_score(raw_data["BTC"]['Close'].iloc[-1] / raw_data["BTC"]['Close'].rolling(window=20).mean().iloc[-1], 0.8, 1.2)
-
-          # 최종 가중치 합산
-          final_score = int((s1*0.2) + (s2*0.2) + (s3*0.2) + (s4*0.15) + (s5*0.15) + (s6*0.05) + (s7*0.05))
-
-          # 2. 뉴스 수집 및 AI 요약
-          print("📰 뉴스 분석 중...")
-          news_list = yf.Ticker("SPY").news[:5]
-          formatted_news = [{"title": n['title'], "url": n['link']} for n in news_list]
-          news_text = "\n".join([n['title'] for n in news_list])
-
-          ai_summary = "뉴스를 요약하는 중입니다..."
           try:
+              tickers = {
+                  "VIX": "^VIX", "SPY": "SPY", "HYG": "HYG", 
+                  "IEF": "IEF", "UUP": "UUP", "QQQ": "QQQ", 
+                  "DIA": "DIA", "GOLD": "GC=F", "BTC": "BTC-USD"
+              }
+              raw_data = {k: yf.Ticker(v).history(period="150d") for k, v in tickers.items()}
+
+              s1 = get_score(raw_data["VIX"]['Close'].iloc[-1], 12, 35, reverse=True)
+              s2 = get_score(raw_data["SPY"]['Close'].iloc[-1] / raw_data["SPY"]['Close'].rolling(window=125).mean().iloc[-1], 0.9, 1.1)
+              s3 = get_score(raw_data["HYG"]['Close'].iloc[-1] / raw_data["IEF"]['Close'].iloc[-1], 0.7, 0.9)
+              s4 = get_score(raw_data["UUP"]['Close'].iloc[-1] / raw_data["UUP"]['Close'].rolling(window=125).mean().iloc[-1], 0.95, 1.1, reverse=True)
+              s7 = get_score(raw_data["BTC"]['Close'].iloc[-1] / raw_data["BTC"]['Close'].rolling(window=20).mean().iloc[-1], 0.8, 1.2)
+
+              final_score = int((s1*0.2) + (s2*0.2) + (s3*0.2) + (s4*0.15) + (s7*0.05))
+
+              # [중요 수정] HTML 차트가 읽을 수 있는 형태로 점수 데이터 포장
+              chart_data = [
+                  {"word": "시장 공포(VIX)", "sentiment_score": round((s1-50)/5, 1), "display_score": f"{int(s1)}점", "count": "Market"},
+                  {"word": "가격 추세(SPY)", "sentiment_score": round((s2-50)/5, 1), "display_score": f"{int(s2)}점", "count": "Price"},
+                  {"word": "기업 신용(HYG)", "sentiment_score": round((s3-50)/5, 1), "display_score": f"{int(s3)}점", "count": "Credit"},
+                  {"word": "달러 강세(UUP)", "sentiment_score": round((s4-50)/5, 1), "display_score": f"{int(s4)}점", "count": "Cash"},
+                  {"word": "코인 열기(BTC)", "sentiment_score": round((s7-50)/5, 1), "display_score": f"{int(s7)}점", "count": "Crypto"}
+              ]
+          except Exception as e:
+              print(f"❌ 계산 에러: {e}")
+              final_score, chart_data = 50, []
+
+          # 2. 섹터별 글로벌 뉴스 수집 (news_crawler 흡수)
+          print("📰 섹터별 뉴스 수집 중...")
+          sectors = {
+              "BIG TECH": "https://news.google.com/rss/search?q=Apple+Nvidia+Microsoft+Stock&hl=en-US&gl=US&ceid=US:en",
+              "SEMICON": "https://news.google.com/rss/search?q=Semiconductor+TSMC+ASML&hl=en-US&gl=US&ceid=US:en",
+              "FINANCE": "https://news.google.com/rss/search?q=JPMorgan+Goldman+Sachs+FED&hl=en-US&gl=US&ceid=US:en"
+          }
+          sector_news_data = {}
+          for name, url in sectors.items():
+              try:
+                  response = requests.get(url, timeout=10)
+                  tree = ElementTree.fromstring(response.content)
+                  items = [{"title": item.find('title').text, "link": item.find('link').text, "date": item.find('pubDate').text[:16]} for item in tree.findall('.//item')[:4]]
+                  sector_news_data[name] = items
+              except Exception as e:
+                  print(f"❌ {name} 뉴스 수집 에러: {e}")
+                  sector_news_data[name] = []
+
+          # 3. AI 번역 및 3줄 요약
+          print("🤖 AI 요약 작성 중...")
+          ai_summary = "데이터를 분석 중입니다..."
+          try:
+              top_titles = [n['title'] for n in sector_news_data.get("BIG TECH", [])[:2] + sector_news_data.get("FINANCE", [])[:2]]
+              news_text = "\n".join(top_titles)
+              
               model = genai.GenerativeModel('gemini-1.5-flash')
-              prompt = f"현재 시장 점수 {final_score}/100점. 뉴스 제목들:\n{news_text}\n이 데이터를 바탕으로 시장 상황을 한국어로 3줄 요약해줘. 형님께 보고하듯 씩씩하고 위트 있게!"
+              prompt = f"현재 시장 점수 {final_score}/100점. 핵심 뉴스:\n{news_text}\n이 뉴스를 바탕으로 현재 시장 상황을 한국어로 3줄 요약해줘. 형님께 보고하듯 씩씩하고 위트 있게!"
               response = model.generate_content(prompt)
               ai_summary = response.text
           except Exception as e:
-              print(f"AI 에러: {e}")
+              print(f"❌ AI 에러: {e}")
 
-          # 3. 데이터 저장
+          # 4. 데이터 완벽 포장 및 저장
+          os.makedirs('PROJECT', exist_ok=True)
           file_path = 'PROJECT/indicators.json'
+          
+          # [핵심] HTML이 요구하는 모든 구조를 딱 맞춰서 넣음
           data = {
               "master_score": final_score,
               "market_temp": final_score,
               "ai_summary": ai_summary,
-              "indicators": formatted_news,
-              "sector_news": {}
+              "indicators": chart_data,
+              "sector_news": sector_news_data
           }
+          
           with open(file_path, 'w', encoding='utf-8') as f:
               json.dump(data, f, ensure_ascii=False, indent=4)
-          END
+          EOF
 
       - name: Commit and Push
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add PROJECT/indicators.json
-          git commit -m "7대 엔진 & AI 뉴스 업데이트 [skip ci]" || echo "No changes"
+          git commit -m "올인원 통합 시스템 완성 🚀 [skip ci]" || echo "No changes"
           git push
