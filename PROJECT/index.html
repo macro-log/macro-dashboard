@@ -452,7 +452,7 @@
 
         async function updateTerminalData() {
             try {
-                const response = await fetch('./indicators.json?v=' + Date.now());
+                const response = await fetch('./PROJECT/indicators.json?v=' + Date.now());
                 const data = await response.json();
                 
                 // 기존 AI 탭 데이터 업데이트
