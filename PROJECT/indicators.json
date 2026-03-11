@@ -1,5 +1,5 @@
 {
-    "master_score": 60,
+    "master_score": 61,
     "market_temp": "-2.5",
     "ai_summary": "데이터 분석 완료.",
     "fomc_indicators": [
@@ -91,9 +91,9 @@
     "engine_indicators": [
         {
             "word": "시장 공포(VIX)",
-            "display_score": "38점",
+            "display_score": "41점",
             "count": "Market",
-            "sentiment_score": -2.3
+            "sentiment_score": -1.7
         },
         {
             "word": "가격 추세(SPY)",
@@ -129,7 +129,7 @@
             "word": "코인 열기(BTC)",
             "display_score": "55점",
             "count": "Crypto",
-            "sentiment_score": 1.2
+            "sentiment_score": 1.1
         }
     ],
     "sector_news": {
@@ -152,7 +152,7 @@
         ],
         "SEMICON": [
             {
-                "title": "TSMC가 ASML 투자자들에게 놀라운 소식을 전했습니다 - The Motley Fool<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>TSMC는 ASML 투자자들에게 놀라운 소식을 전달했습니다&nbsp;&nbsp;The Motley Fool...</span>",
+                "title": "TSMC가 ASML 투자자들에게 놀라운 소식을 전했습니다 - The Motley Fool<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>TSMC는 ASML 투자자들에게 놀라운 소식을 전했습니다&nbsp;&nbsp;The Motley Fool...</span>",
                 "link": "https://news.google.com/rss/articles/CBMikwFBVV95cUxQenp6RDJtQ3ZyZkJiWVhOaFh6TmgxWGpsay1nT3hJSlB6MmhVYkxEX0dsLWRLQkFSVUxWNWdHY245WWphOXA0aDRLaGVlVVdFMHQ0d3YwbXRUUkxLX0FteW9aTEppMnlKQmlXYjNpTzQwdTF0ZHJ5UEloTDE2THNGLUZiMllGYzUyMWFIZHhxVVFpZjA?oc=5",
                 "date": "Thu, 22 Jan 2026"
             },
@@ -174,14 +174,14 @@
                 "date": "Mon, 12 Jan 2026"
             },
             {
-                "title": "대형 은행에 불이 붙었습니다. 연준이 더 많은 연료를 주목하는 이유는 무엇입니까? - 블룸버그<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>대형 은행에 불이 붙었습니다. 연준이 더 많은 연료를 주목하는 이유는 무엇입니까?&nbsp;&nbsp;블룸버그...</span>",
+                "title": "대형 은행에 불이 붙었습니다. 연준이 더 많은 연료를 주목하는 이유는 무엇입니까? - Bloomberg.com<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>대형 은행에 불이 붙었습니다. 연준이 더 많은 연료를 주목하는 이유는 무엇입니까?&nbsp;&nbsp;Bloomberg.com...</span>",
                 "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxObmpId2lKbWNmWVhxNk5JUVUtWXg5SUppYjdCOVluY3FqMWxSTXJvek5jWmNpLXVZWHkzdExhbnU2OXFkZlMxR2lkQzhhNjRQYnM1dE5LUTVYdHE0ampkcEZma2J5RVFLdzlYTWwtMTZZMm0xVDBFaC00TVJTQmY4T0FTT1UtZnRlZzN1SGJqM3BDMGZRdGY5TE1uXzY5NS1WSUJhY05ENWFKRWpZVXVwLW4ya0g?oc=5",
                 "date": "Tue, 14 Oct 2025"
             },
             {
-                "title": "연준, 고용 냉각으로 12월 금리 인하 전망 - Goldman Sachs<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>골드만삭스, 고용 냉각으로 연준은 12월 금리 인하 예상...</span>",
-                "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxNYm1ENHlIckgwNTlpcGVzUnQ0cUtuUU9EYWctbUNkX1pKQnJMYWhaQWVxdGVHV25EVUptNjk2ZlZFNHFpaGlyX3QyXzBHZDhubnJZOXhJalE2dWhQbEh6UW1yc2E0LVBiSGl0eHJBZzUtQjdXOXJGZVZMaXV0YnBrSkVyV0tRVmVfZW05VDViT1dhblJjRTVNM3ZSdlJYbTdQa0FnZEZ5NmdtQlNEQmdEXw?oc=5",
-                "date": "Wed, 05 Nov 2025"
+                "title": "J.P. Morgan은 Fed의 다음 조치는 인상이 될 것이라고 말했습니다 - mpamag.com<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>J.P. Morgan은 연준의 다음 조치는 인상이 될 것이라고 말했습니다.&nbsp;&nbsp;mpamag.com...</span>",
+                "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxPVndxMERyTEd2VDBPdHJCUVNELXJVczU5R3UxZEZ1cnFMd09rS1BnSjRva0pSYVR4U2xJZGJqMkJsYksxamZLdnlTTkl4bjd6OVVmeXdBX1Z5QjFFT2thQm1ZNEVBOG1lT05EQWtqR0dRRTJKTEhhWTR2MlhmeG9RU1ZqR2x1SUo1Mmx3dkJScWV1YjhwaDBWVmJWVDRKa1ZUUDEyNGdrTW9iWGgzaVY4bw?oc=5",
+                "date": "Mon, 12 Jan 2026"
             }
         ]
     }
