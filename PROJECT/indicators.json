@@ -1,5 +1,5 @@
 {
-    "master_score": 61,
+    "master_score": 60,
     "market_temp": "-2.5",
     "ai_summary": "데이터 분석 완료.",
     "fomc_indicators": [
@@ -91,9 +91,9 @@
     "engine_indicators": [
         {
             "word": "시장 공포(VIX)",
-            "display_score": "43점",
+            "display_score": "38점",
             "count": "Market",
-            "sentiment_score": -1.3
+            "sentiment_score": -2.3
         },
         {
             "word": "가격 추세(SPY)",
@@ -127,9 +127,9 @@
         },
         {
             "word": "코인 열기(BTC)",
-            "display_score": "56점",
+            "display_score": "55점",
             "count": "Crypto",
-            "sentiment_score": 1.4
+            "sentiment_score": 1.2
         }
     ],
     "sector_news": {
@@ -140,8 +140,8 @@
                 "date": "Thu, 05 Mar 2026"
             },
             {
-                "title": "Peter Thiel은 Nvidia를 버리고 Microsoft와 Apple에 4,500만 달러를 투자했습니다. 이는 AI 경쟁에서 누가 승리할 것인지에 대한 강력한 신호를 보냈습니다. - Yahoo Finance<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>Peter Thiel은 Nvidia를 버리고 Microsoft와 Apple에 4,500만 달러를 투자했습니다. 이는 누가 승리할 것인지에 대한 강력한 신호를 보내는 것입니다....</span>",
-                "link": "https://news.google.com/rss/articles/CBMihwFBVV95cUxOemZGVnh2a1ZCRm5aX0NpeF9YUF80aVdza2UwaGRxSy0yYXlqOXpnQk12QTctSzByUVVxVlVLSnJQYXNhQjRoQ1IzQ19xa08zaFNfbWRLT2FlbHQyMUZyeFJwWGVucXpRTXhVNkRFd1lNazlDbFlVdGlHZTV3cXQ3TE42ZEtvTjQ?oc=5",
+                "title": "Peter Thiel이 Apple과 Microsoft를 위해 Nvidia 주식을 투매한 것이 AI 경쟁에 대해 말하는 것 - Fortune<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>Peter Thiel이 Apple과 Microsoft를 위해 Nvidia 주식을 투매한 것이 AI 경쟁에 대해 말하는 것&nbsp;&nbsp;Fortune...</span>",
+                "link": "https://news.google.com/rss/articles/CBMikgFBVV95cUxNOUJ6dzdUYVhGU3NRMUU2RXRtV3l0dm8wQ01sODBXOXhadUFUQ3MwQWlNYzJuV3hWOUh4Vi16cTlJRmJLNmVDZnM3cUtaZDFGMnIyM0hzODVadGczLXZleUwzV3BOSy1PVXp2Y0FuN2NoMkIxN1c0SFl1OGtDb3hEVTlpU0JHLW10UmxJY3FjaHhDQQ?oc=5",
                 "date": "Tue, 10 Mar 2026"
             },
             {
@@ -152,7 +152,7 @@
         ],
         "SEMICON": [
             {
-                "title": "TSMC는 ASML 투자자들에게 놀라운 소식을 전했습니다 - The Motley Fool<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>TSMC는 ASML 투자자들에게 놀라운 소식을 전했습니다&nbsp;&nbsp;The Motley Fool...</span>",
+                "title": "TSMC가 ASML 투자자들에게 놀라운 소식을 전했습니다 - The Motley Fool<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>TSMC는 ASML 투자자들에게 놀라운 소식을 전달했습니다&nbsp;&nbsp;The Motley Fool...</span>",
                 "link": "https://news.google.com/rss/articles/CBMikwFBVV95cUxQenp6RDJtQ3ZyZkJiWVhOaFh6TmgxWGpsay1nT3hJSlB6MmhVYkxEX0dsLWRLQkFSVUxWNWdHY245WWphOXA0aDRLaGVlVVdFMHQ0d3YwbXRUUkxLX0FteW9aTEppMnlKQmlXYjNpTzQwdTF0ZHJ5UEloTDE2THNGLUZiMllGYzUyMWFIZHhxVVFpZjA?oc=5",
                 "date": "Thu, 22 Jan 2026"
             },
