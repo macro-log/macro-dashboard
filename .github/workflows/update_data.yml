@@ -1,8 +1,12 @@
 name: Financial Data Update
 on:
   schedule:
-    - cron: '0 * * * *'  # 매시간 정각 실행
-  workflow_dispatch:      # 수동 실행 버튼 활성화 (중요!)
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+# [마법의 치트키] 깃허브 시스템아, 이 로봇한테 무조건 파일 덮어쓸 권한을 줘라!
+permissions:
+  contents: write
 
 jobs:
   update:
@@ -17,7 +21,6 @@ jobs:
           python-version: '3.9'
 
       - name: Install dependencies
-        # [핵심] deep-translator를 설치해서 뉴스 제목을 전부 한글로 번역합니다!
         run: pip install yfinance pandas google-generativeai requests deep-translator
 
       - name: Run Update Script
@@ -33,16 +36,14 @@ jobs:
           from xml.etree import ElementTree
           from deep_translator import GoogleTranslator
 
-          # AI & 번역기 세팅
           api_key = os.getenv("GEMINI_API_KEY")
           genai.configure(api_key=api_key)
-          translator = GoogleTranslator(source='auto', target='ko') # 한글 번역기 장전!
+          translator = GoogleTranslator(source='auto', target='ko')
 
           def get_score(val, low, high, reverse=False):
               score = ((val - low) / (high - low)) * 100
               return max(0, min(100, 100 - score if reverse else score))
 
-          print("🚀 1. 7대 엔진 분석 시작...")
           try:
               tickers = {"VIX": "^VIX", "SPY": "SPY", "HYG": "HYG", "IEF": "IEF", "UUP": "UUP", "QQQ": "QQQ", "DIA": "DIA", "GOLD": "GC=F", "BTC": "BTC-USD"}
               raw_data = {k: yf.Ticker(v).history(period="150d") for k, v in tickers.items()}
@@ -65,7 +66,6 @@ jobs:
           except Exception as e:
               final_score, chart_data = 50, []
 
-          print("📰 2. 섹터별 글로벌 뉴스 수집 및 한글 번역 중...")
           sectors = {
               "BIG TECH": "https://news.google.com/rss/search?q=Apple+Nvidia+Microsoft+Stock&hl=en-US&gl=US&ceid=US:en",
               "SEMICON": "https://news.google.com/rss/search?q=Semiconductor+TSMC+ASML&hl=en-US&gl=US&ceid=US:en",
@@ -78,25 +78,16 @@ jobs:
                   tree = ElementTree.fromstring(response.content)
                   items = []
                   for item in tree.findall('.//item')[:3]:
-                      en_title = item.find('title').text
-                      # [핵심] 여기서 영어 제목을 한글로 싹 바꿔줍니다!
-                      ko_title = translator.translate(en_title) 
-                      items.append({
-                          "title": ko_title,
-                          "link": item.find('link').text,
-                          "date": item.find('pubDate').text[:16]
-                      })
+                      ko_title = translator.translate(item.find('title').text) 
+                      items.append({"title": ko_title, "link": item.find('link').text, "date": item.find('pubDate').text[:16]})
                   sector_news_data[name] = items
               except Exception as e:
                   sector_news_data[name] = []
 
-          print("🤖 3. AI 3줄 요약 작성 중...")
           ai_summary = "데이터 분석 완료."
           try:
               top_titles = [n['title'] for n in sector_news_data.get("BIG TECH", [])[:2] + sector_news_data.get("FINANCE", [])[:2]]
               news_text = "\n".join(top_titles)
-              
-              model = genai.GenerativeModel('gemini-1.5-flash')
               prompt = f"현재 시장 점수 {final_score}/100점. 핵심 뉴스:\n{news_text}\n이 뉴스를 바탕으로 현재 시장 상황을 한국어로 3줄 요약해줘. 형님께 보고하듯 씩씩하고 위트 있게!"
               response = model.generate_content(prompt)
               ai_summary = response.text
@@ -120,6 +111,6 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add PROJECT/indicators.json
-          git commit -m "뉴스 한글 번역 패치 완료 🚀 [skip ci]" || echo "No changes"
+          git add .
+          git commit -m "강제 권한 부여 및 한글 뉴스 업데이트 완료 🚀" || echo "No changes"
           git push
