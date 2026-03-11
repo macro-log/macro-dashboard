@@ -91,33 +91,33 @@
     "engine_indicators": [
         {
             "word": "시장 공포(VIX)",
-            "display_score": "41점",
+            "display_score": "39점",
             "count": "Market",
-            "sentiment_score": -1.7
+            "sentiment_score": -2.0
         },
         {
             "word": "가격 추세(SPY)",
-            "display_score": "49점",
+            "display_score": "48점",
             "count": "Price",
-            "sentiment_score": -0.0
+            "sentiment_score": -0.2
         },
         {
             "word": "기업 신용(HYG)",
-            "display_score": "64점",
+            "display_score": "65점",
             "count": "Credit",
-            "sentiment_score": 3.0
+            "sentiment_score": 3.2
         },
         {
             "word": "달러 강세(UUP)",
-            "display_score": "56점",
+            "display_score": "54점",
             "count": "Cash",
-            "sentiment_score": 1.2
+            "sentiment_score": 0.8
         },
         {
             "word": "기술주 선호(QQQ)",
-            "display_score": "90점",
+            "display_score": "94점",
             "count": "Tech",
-            "sentiment_score": 8.2
+            "sentiment_score": 8.8
         },
         {
             "word": "안전자산(GOLD)",
@@ -127,9 +127,9 @@
         },
         {
             "word": "코인 열기(BTC)",
-            "display_score": "55점",
+            "display_score": "59점",
             "count": "Crypto",
-            "sentiment_score": 1.1
+            "sentiment_score": 2.0
         }
     ],
     "sector_news": {
@@ -152,7 +152,7 @@
         ],
         "SEMICON": [
             {
-                "title": "TSMC가 ASML 투자자들에게 놀라운 소식을 전했습니다 - The Motley Fool<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>TSMC는 ASML 투자자들에게 놀라운 소식을 전했습니다&nbsp;&nbsp;The Motley Fool...</span>",
+                "title": "TSMC는 ASML 투자자들에게 놀라운 소식을 전했습니다 - The Motley Fool<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>TSMC는 ASML 투자자들에게 놀라운 소식을 전했습니다&nbsp;&nbsp;The Motley Fool...</span>",
                 "link": "https://news.google.com/rss/articles/CBMikwFBVV95cUxQenp6RDJtQ3ZyZkJiWVhOaFh6TmgxWGpsay1nT3hJSlB6MmhVYkxEX0dsLWRLQkFSVUxWNWdHY245WWphOXA0aDRLaGVlVVdFMHQ0d3YwbXRUUkxLX0FteW9aTEppMnlKQmlXYjNpTzQwdTF0ZHJ5UEloTDE2THNGLUZiMllGYzUyMWFIZHhxVVFpZjA?oc=5",
                 "date": "Thu, 22 Jan 2026"
             },
@@ -179,7 +179,7 @@
                 "date": "Tue, 14 Oct 2025"
             },
             {
-                "title": "J.P. Morgan은 Fed의 다음 조치는 인상이 될 것이라고 말했습니다 - mpamag.com<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>J.P. Morgan은 연준의 다음 조치는 인상이 될 것이라고 말했습니다.&nbsp;&nbsp;mpamag.com...</span>",
+                "title": "J.P. Morgan은 연준의 다음 조치는 인상이 될 것이라고 말했습니다 - mpamag.com<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>J.P. Morgan은 연준의 다음 조치는 인상이 될 것이라고 말했습니다.&nbsp;&nbsp;mpamag.com...</span>",
                 "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxPVndxMERyTEd2VDBPdHJCUVNELXJVczU5R3UxZEZ1cnFMd09rS1BnSjRva0pSYVR4U2xJZGJqMkJsYksxamZLdnlTTkl4bjd6OVVmeXdBX1Z5QjFFT2thQm1ZNEVBOG1lT05EQWtqR0dRRTJKTEhhWTR2MlhmeG9RU1ZqR2x1SUo1Mmx3dkJScWV1YjhwaDBWVmJWVDRKa1ZUUDEyNGdrTW9iWGgzaVY4bw?oc=5",
                 "date": "Mon, 12 Jan 2026"
             }
