@@ -1,5 +1,5 @@
 {
-    "master_score": 61,
+    "master_score": 62,
     "market_temp": "-2.5",
     "ai_summary": "데이터 분석 완료.",
     "fomc_indicators": [
@@ -91,21 +91,21 @@
     "engine_indicators": [
         {
             "word": "시장 공포(VIX)",
-            "display_score": "43점",
+            "display_score": "46점",
             "count": "Market",
-            "sentiment_score": -1.4
+            "sentiment_score": -0.6
         },
         {
             "word": "가격 추세(SPY)",
-            "display_score": "48점",
+            "display_score": "49점",
             "count": "Price",
-            "sentiment_score": -0.3
+            "sentiment_score": -0.2
         },
         {
             "word": "기업 신용(HYG)",
             "display_score": "65점",
             "count": "Credit",
-            "sentiment_score": 3.1
+            "sentiment_score": 3.2
         },
         {
             "word": "달러 강세(UUP)",
@@ -127,9 +127,9 @@
         },
         {
             "word": "코인 열기(BTC)",
-            "display_score": "59점",
+            "display_score": "60점",
             "count": "Crypto",
-            "sentiment_score": 2.0
+            "sentiment_score": 2.1
         }
     ],
     "sector_news": {
@@ -145,9 +145,9 @@
                 "date": "Tue, 10 Mar 2026"
             },
             {
-                "title": "2028년까지 애플보다 가치가 더 높아질 2가지 주식 - The Motley Fool<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>2028년까지 Apple보다 가치가 더 높아질 2가지 주식&nbsp;&nbsp;The Motley Fool...</span>",
-                "link": "https://news.google.com/rss/articles/CBMilgFBVV95cUxQVW9weFMteVlkamFwVnlxbVNWUC02dDdvU1BjaDJmZFpQTXhpVzJrRXVsQXR3VUs2c2ZHQ1NYQTBOYnZKbS1ERTdKcnJOVERRcHV3cG5taUZPemtjMlBKVktpQWg3NDhmVWJUQWZXMGRneWp4WFk1cWxmUkJPV29POEozV1k0dGkzaHJyNXJUcnpZYUEwT3c?oc=5",
-                "date": "Wed, 11 Mar 2026"
+                "title": "3조 달러 클럽에 엔비디아, 애플, 알파벳, 마이크로소프트에 합류하기 전에 지금 사야 할 멈출 수 없는 주식 1개 - The Motley Fool<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>Nvidia, Apple, Alphabet 및 Microsoft가 3조 달러 클럽에 합류하기 전에 지금 구매해야 할 멈출 수 없는 주식 1개&nbsp;&nbsp...</span>",
+                "link": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOa1pSOG12X19jaS10RE5sNXltTjZRdjNFd3hWTTlNWW1na0JKbXFQTmJxcGFwc3czX1N2QWZ4Y1VkcmVzUFZQUC1TdE00bzZyazA3UVJmQ096TjZmaGpoRnptRGM1TVF3anVlLV9qNUJQbEZmRThZTFhzQnFLNFFjNml1VEE3MXVsZWJ5NFNreVNYNGduMVJPUA?oc=5",
+                "date": "Thu, 05 Mar 2026"
             }
         ],
         "SEMICON": [
