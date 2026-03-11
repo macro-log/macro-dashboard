@@ -1,144 +1,90 @@
 {
-    "master_score": 50,
-    "market_temp": "-2.5",
+    "master_score": 43,
+    "market_temp": 43,
+    "ai_summary": "데이터 분석 완료.",
     "indicators": [
         {
-            "word": "INFLATION",
-            "sentiment_score": -1.8,
-            "status": "NEUTRAL",
-            "display_score": "-1.8",
-            "count": 52
+            "word": "시장 공포(VIX)",
+            "sentiment_score": -1.2,
+            "display_score": "43점",
+            "count": "Market"
         },
         {
-            "word": "RATE",
-            "sentiment_score": 0.4,
-            "status": "NEUTRAL",
-            "display_score": "+0.4",
-            "count": 48
-        },
-        {
-            "word": "POLICY",
-            "sentiment_score": -0.2,
-            "status": "NEUTRAL",
-            "display_score": "-0.2",
-            "count": 34
-        },
-        {
-            "word": "RISKS",
-            "sentiment_score": -0.5,
-            "status": "NEUTRAL",
-            "display_score": "-0.5",
-            "count": 21
-        },
-        {
-            "word": "GROWTH",
-            "sentiment_score": -0.1,
-            "status": "NEUTRAL",
-            "display_score": "-0.1",
-            "count": 20
-        },
-        {
-            "word": "LABOR",
+            "word": "가격 추세(SPY)",
             "sentiment_score": -0.0,
-            "status": "NEUTRAL",
-            "display_score": "-0.0",
-            "count": 18
+            "display_score": "49점",
+            "count": "Price"
         },
         {
-            "word": "CREDIT",
-            "sentiment_score": 0.2,
-            "status": "NEUTRAL",
-            "display_score": "+0.2",
-            "count": 13
+            "word": "기업 신용(HYG)",
+            "sentiment_score": 3.0,
+            "display_score": "64점",
+            "count": "Credit"
         },
         {
-            "word": "GDP",
-            "sentiment_score": -0.2,
-            "status": "NEUTRAL",
-            "display_score": "-0.2",
-            "count": 11
+            "word": "달러 강세(UUP)",
+            "sentiment_score": 1.2,
+            "display_score": "56점",
+            "count": "Cash"
         },
         {
-            "word": "PRICES",
-            "sentiment_score": 0.0,
-            "status": "NEUTRAL",
-            "display_score": "0.0",
-            "count": 11
-        },
-        {
-            "word": "EMPLOYMENT",
-            "sentiment_score": -0.1,
-            "status": "NEUTRAL",
-            "display_score": "-0.1",
-            "count": 7
-        },
-        {
-            "word": "ECONOMY",
-            "sentiment_score": -0.7,
-            "status": "NEUTRAL",
-            "display_score": "-0.7",
-            "count": 5
-        },
-        {
-            "word": "STABILITY",
-            "sentiment_score": 0.0,
-            "status": "NEUTRAL",
-            "display_score": "0.0",
-            "count": 3
+            "word": "코인 열기(BTC)",
+            "sentiment_score": 1.5,
+            "display_score": "57점",
+            "count": "Crypto"
         }
     ],
     "sector_news": {
         "BIG TECH": [
             {
-                "title": "Magnificent 7 Stock Report: Apple Leads, NVIDIA Fades, Microsoft Crashes - 24/7 Wall St.",
+                "title": "Magnificent 7 주식 보고서: Apple 선두, NVIDIA Fades, Microsoft 충돌 - 연중무휴 월스트리트",
                 "link": "https://news.google.com/rss/articles/CBMiswFBVV95cUxPc2xianU3U2JqaEhJTGoxYTVpclhQMjFkUmFuMFJZN2dFQmxzZjlaVEQzcmVkOS1EbktoVTZGVE50Um1fYm1YNUxjNUxLNWl3S0lGOTZBSWo3b20xeDl3ci1ramEzLXpBdGhrMVQyd0Zza1dvd0JRbXdRLW1rZjNGWlh2OXBqX2ktWllrODdybzBJR01UTkJKNUs5bXNGNDJLaHNMTjZRREJDUGJYcTlkZ0xKVQ?oc=5",
                 "date": "Thu, 05 Mar 2026"
             },
             {
-                "title": "1 Unstoppable Stock to Buy Now Before It Joins Nvidia, Apple, Alphabet, and Microsoft in the $3 Trillion Club - The Motley Fool",
-                "link": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOa1pSOG12X19jaS10RE5sNXltTjZRdjNFd3hWTTlNWW1na0JKbXFQTmJxcGFwc3czX1N2QWZ4Y1VkcmVzUFZQUC1TdE00bzZyazA3UVJmQ096TjZmaGpoRnptRGM1TVF3anVlLV9qNUJQbEZmRThZTFhzQnFLNFFjNml1VEE3MXVsZWJ5NFNreVNYNGduMVJPUA?oc=5",
-                "date": "Thu, 05 Mar 2026"
+                "title": "Peter Thiel이 Apple과 Microsoft를 위해 Nvidia 주식을 투매한 것이 AI 경쟁에 대해 말하는 것 - Fortune",
+                "link": "https://news.google.com/rss/articles/CBMikgFBVV95cUxNOUJ6dzdUYVhGU3NRMUU2RXRtV3l0dm8wQ01sODBXOXhadUFUQ3MwQWlNYzJuV3hWOUh4Vi16cTlJRmJLNmVDZnM3cUtaZDFGMnIyM0hzODVadGczLXZleUwzV3BOSy1PVXp2Y0FuN2NoMkIxN1c0SFl1OGtDb3hEVTlpU0JHLW10UmxJY3FjaHhDQQ?oc=5",
+                "date": "Tue, 10 Mar 2026"
             },
             {
-                "title": "AI Stocks Reset In 2026. What's Next For Apple, Nvidia, Google And Microsoft? - Investor's Business Daily",
-                "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxPd0RVSXdfRmZKNjkxcjl5d0JrSHp0d0xmRkxEOXBQVlFpanBCMGxSQWQtaFh6SmpGcFJOcTBDRGJTVkNGU3l0WlhBcFRFNzVERmFKZUhiM0NIZkptdU1WNEZVR0tWX1pRaXRrcUg0cVV4cjFLTkhaemZGWVJ6VFg1eTRZdEJXWTAzR1ZIdE9keFJqbTI1UVEtLVFaWklmWFpFRVNrRkhEV21YX1FUTElqRW53MFM?oc=5",
-                "date": "Thu, 19 Feb 2026"
+                "title": "3조 달러 클럽에 엔비디아, 애플, 알파벳, 마이크로소프트에 합류하기 전에 지금 사야 할 멈출 수 없는 주식 1개 - The Motley Fool",
+                "link": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOa1pSOG12X19jaS10RE5sNXltTjZRdjNFd3hWTTlNWW1na0JKbXFQTmJxcGFwc3czX1N2QWZ4Y1VkcmVzUFZQUC1TdE00bzZyazA3UVJmQ096TjZmaGpoRnptRGM1TVF3anVlLV9qNUJQbEZmRThZTFhzQnFLNFFjNml1VEE3MXVsZWJ5NFNreVNYNGduMVJPUA?oc=5",
+                "date": "Thu, 05 Mar 2026"
             }
         ],
         "SEMICON": [
             {
-                "title": "Memory chip giants spark global semiconductor rally as shortages stoke price hikes - CNBC",
+                "title": "TSMC는 ASML 투자자들에게 놀라운 소식을 전했습니다 - The Motley Fool",
+                "link": "https://news.google.com/rss/articles/CBMikwFBVV95cUxQenp6RDJtQ3ZyZkJiWVhOaFh6TmgxWGpsay1nT3hJSlB6MmhVYkxEX0dsLWRLQkFSVUxWNWdHY245WWphOXA0aDRLaGVlVVdFMHQ0d3YwbXRUUkxLX0FteW9aTEppMnlKQmlXYjNpTzQwdTF0ZHJ5UEloTDE2THNGLUZiMllGYzUyMWFIZHhxVVFpZjA?oc=5",
+                "date": "Thu, 22 Jan 2026"
+            },
+            {
+                "title": "메모리 칩 거대 기업, 부족으로 인한 가격 인상으로 글로벌 반도체 랠리 촉발 - CNBC",
                 "link": "https://news.google.com/rss/articles/CBMikgFBVV95cUxQeEE1Mm5ESzRwVThWckRwMXp0MVpBMWhGeVBNWm05WFdVd3JnbnU0SUdESnVBXzZ1NFJobkVrTXZuTGZZZ1NBQXNCNzZJT2o4Z05pYlNGSTkwVHM5NGZ2WjJpaVFFNUw2REVMUFN4dHhhU3ZGLUJTSkNUTUYwbTkwTlFveGlzSzBTNk81dU1xZklDUdIBlwFBVV95cUxPemlVY2l1ejVKUWZNM0dmYktZYWF2Y0x1WVhfanJVcURYRHpadGtKbnJpUVFiWUhZWUxmQ29wUE5RRDBrR0Etak1Rdy1wWUhQRUtyRFlEV1k5M0NWb1ZVSG02MEw4LUxsTG43cE5ISE9zc0plRTBoOGFITzRQTEZrX2xHaXM0TWVXWG5BbFA0d044MXlXR3Fr?oc=5",
                 "date": "Tue, 06 Jan 2026"
             },
             {
-                "title": "Better Semiconductor Stock: TSMC vs. ASML - The Motley Fool",
-                "link": "https://news.google.com/rss/articles/CBMiigFBVV95cUxNNWZONUVPSVh3U3k2Y3dsMWVpU0MtNjRfMXhIVFduU2hiZ2djTlJOa2xHY2dyMFJvVFh0V19QS3hsWjJtSk1USjlhNW5CVmVUX09fSUVJWkdLOVAydjNabmFLM2FEdHNaM3NDcTV4NVJreUE3ajJEb3JrNUktMFdpa2FXZkJiMGJVbmc?oc=5",
-                "date": "Tue, 18 Nov 2025"
-            },
-            {
-                "title": "The Only Semiconductor Stock You Need for 2026 (TSMC, Intel, ASML, or Micron?) - Nasdaq",
-                "link": "https://news.google.com/rss/articles/CBMinAFBVV95cUxQNlFvVUF6NnlOM0ZfeUFOYURxTG13QUpRbXNzbEM3cDdDV2lJZmdDblZHdTVHeENfdDhLVXFybE8tLVh4YXZvQ0ZuR3hIZXByVFVPd1l2MmNBUE5vVDVSX1NSdjZjQkpUR1VseHRSYXFoUUJSMEVMeWFhME8xMENEZ0FSRXEzRUZkYTAtdXdPX3Uta29Qbl9hVUVUUEg?oc=5",
-                "date": "Sat, 10 Jan 2026"
+                "title": "더 나은 인공지능 주식: ASML 대 TSMC - Nasdaq",
+                "link": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxOMldBN1h6U0ltNk41V1hLTi0taEtQcFpib0pkRlVjeS1LUHR0Z3lwdmcyQ3k1dHEtM1dXZjc2RzZEdi1wRk9tb0lSc0JlVGdBVXM2Vl9wU1hpRWFSNUxMc216X0o3b0Q2TGFQOF9FN1E0eDNobFJ2bU1qbnZlVDltQlpGdWs0bTdT?oc=5",
+                "date": "Mon, 15 Dec 2025"
             }
         ],
         "FINANCE": [
             {
-                "title": "J.P. Morgan forecasts 2027 Fed hike; Barclays, Goldman postpone rate cut calls - Reuters",
+                "title": "J.P. Morgan은 2027년 Fed 인상을 예측합니다. Barclays, Goldman, 금리 인하 요청 연기 - Reuters",
                 "link": "https://news.google.com/rss/articles/CBMitwFBVV95cUxPWWFsNTdTUkRaQWdYNzc5MnNGbGFEb3p2dDRGZVg4Q1JCU0lTTkxJMkZ0ckIyUjF6bW0yazlLT0dYSEJFUFUzdWZqN3dGR3B4cXFNZHdyZUZhNGZ4UXhTdGtyalhJWGFOaG15T2FUNWFhQlBJLUhpTHNRenVaNktxQkpmSmtkSDlIRWlhU3BWOGxwaDJkX2ppaHh0RF9jdllxZHdhQWg4cEVkUTNqSGdYblh4N1MxNlk?oc=5",
                 "date": "Mon, 12 Jan 2026"
             },
             {
-                "title": "Big Banks Are on Fire. Why Is the Fed Eyeing More Fuel? - Bloomberg.com",
+                "title": "대형 은행에 불이 붙었습니다. 연준이 더 많은 연료를 주목하는 이유는 무엇입니까? - Bloomberg.com",
                 "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxObmpId2lKbWNmWVhxNk5JUVUtWXg5SUppYjdCOVluY3FqMWxSTXJvek5jWmNpLXVZWHkzdExhbnU2OXFkZlMxR2lkQzhhNjRQYnM1dE5LUTVYdHE0ampkcEZma2J5RVFLdzlYTWwtMTZZMm0xVDBFaC00TVJTQmY4T0FTT1UtZnRlZzN1SGJqM3BDMGZRdGY5TE1uXzY5NS1WSUJhY05ENWFKRWpZVXVwLW4ya0g?oc=5",
                 "date": "Tue, 14 Oct 2025"
             },
             {
-                "title": "JP Morgan, Goldman Sachs Predict Fed Will Cut Rates In December - Benzinga",
-                "link": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxOQ1MxcFgzZDhtUUttT0lvOFZ2QXZHZW9HekcxU3o0blI2VGtCR09Wb19HejNjdEluWFYtSFRBeHdGcjNLMjhaN3BuZlNkeElXazJZdXcxYVNSd29WVFJuVndaa2NJNUFCMnJYcXM4TmN2YWtoRWpfYTRJNGpVNjRscEtjcnhKc0Z6WDJRZWlfU3h4c0MwcFAzOHBXWE9YM0x4Y21tVVhUd0M3S256VUp3eDlkdC1JemJ4ekQyOEplcno1Zw?oc=5",
-                "date": "Fri, 28 Nov 2025"
+                "title": "연준, 고용 냉각으로 12월 금리 인하 전망 - Goldman Sachs",
+                "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxNYm1ENHlIckgwNTlpcGVzUnQ0cUtuUU9EYWctbUNkX1pKQnJMYWhaQWVxdGVHV25EVUptNjk2ZlZFNHFpaGlyX3QyXzBHZDhubnJZOXhJalE2dWhQbEh6UW1yc2E0LVBiSGl0eHJBZzUtQjdXOXJGZVZMaXV0YnBrSkVyV0tRVmVfZW05VDViT1dhblJjRTVNM3ZSdlJYbTdQa0FnZEZ5NmdtQlNEQmdEXw?oc=5",
+                "date": "Wed, 05 Nov 2025"
             }
         ]
-    },
-    "news_list": []
+    }
 }
