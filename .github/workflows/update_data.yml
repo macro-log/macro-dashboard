@@ -20,7 +20,7 @@ jobs:
           python-version: '3.9'
 
       - name: Install dependencies
-        run: pip install yfinance pandas google-generativeai requests deep-translator
+        run: pip install yfinance pandas google-generativeai requests deep-translator yfinance pandas
 
       - name: Run Update Script
         env:
@@ -146,4 +146,66 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
           git commit -m "7대엔진 정상화 및 데이터 주머니 분리 🚀" || echo "No changes"
-          git push
+          git push# ==========================================
+# 🚀 [추가 탑재] 빅테크 실적발표 자동 수집 파이프라인 (yfinance)
+# ==========================================
+import os
+import pandas as pd
+import yfinance as yf
+
+print("=== 빅테크 실적발표 자동 업데이트 시작 ===")
+events_file = 'PROJECT/economic_events.json'
+
+# 1. 기존 달력 파일 읽기 (형님의 수동 MACRO 일정 보호)
+if os.path.exists(events_file):
+    with open(events_file, 'r', encoding='utf-8') as f:
+        try:
+            events_data = json.load(f)
+        except:
+            events_data = []
+else:
+    events_data = []
+
+# 2. 형님이 수동으로 넣은 '지표(MACRO)' 일정만 살리고, 기존 실적 데이터는 싹 비움
+manual_events = [e for e in events_data if e.get('type') != 'EARNINGS']
+auto_earnings = []
+
+# 3. 핵심 타겟 빅테크 종목 (원하시면 여기 티커를 추가/수정하셔도 됩니다!)
+tickers = ['AAPL', 'MSFT', 'NVDA', 'TSLA', 'AMZN', 'GOOGL', 'META']
+
+now_utc = pd.Timestamp.now('UTC')
+
+for ticker in tickers:
+    try:
+        tk = yf.Ticker(ticker)
+        # 야후 파이낸스 DB에서 다이렉트로 향후 실적발표일 가져오기
+        earning_dates = tk.get_earnings_dates(limit=10)
+        
+        if earning_dates is not None and not earning_dates.empty:
+            # 현재 시간 이후의 다가올 미래 데이터만 필터링
+            future_dates = earning_dates[earning_dates.index >= now_utc]
+            
+            if not future_dates.empty:
+                # 가장 가까운 미래의 실적발표일 추출
+                next_date = future_dates.index.min()
+                date_str = next_date.strftime('%Y-%m-%d')
+                
+                auto_earnings.append({
+                    "date": date_str,
+                    "name": f"{ticker} 실적발표",
+                    "importance": "HIGH",
+                    "type": "EARNINGS"
+                })
+                print(f"[성공] {ticker} 실적발표일: {date_str}")
+    except Exception as e:
+        print(f"[실패] {ticker} 실적 파싱 에러: {e}")
+
+# 4. 수동 지표 + 자동 실적 합치고 날짜순 정렬
+final_events = manual_events + auto_earnings
+final_events.sort(key=lambda x: x['date'])
+
+# 5. 캘린더 파일 덮어쓰기 (자동 완성)
+with open(events_file, 'w', encoding='utf-8') as f:
+    json.dump(final_events, f, ensure_ascii=False, indent=4)
+    
+print("=== 빅테크 실적발표 자동 업데이트 완료 ===")
