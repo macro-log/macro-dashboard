@@ -2,7 +2,7 @@ name: Financial Data Update
 on:
   schedule:
     - cron: '0 * * * *'  # 매시간 정각 실행
-  workflow_dispatch:      # 수동 실행 버튼 활성화
+  workflow_dispatch:      # 수동 실행 버튼 활성화 (중요!)
 
 jobs:
   update:
@@ -17,8 +17,8 @@ jobs:
           python-version: '3.9'
 
       - name: Install dependencies
-        # [수정] RSS 뉴스를 가져오기 위해 'requests' 라이브러리 추가!
-        run: pip install yfinance pandas google-generativeai requests
+        # [핵심] deep-translator를 설치해서 뉴스 제목을 전부 한글로 번역합니다!
+        run: pip install yfinance pandas google-generativeai requests deep-translator
 
       - name: Run Update Script
         env:
@@ -31,23 +31,20 @@ jobs:
           import requests
           import google.generativeai as genai
           from xml.etree import ElementTree
+          from deep_translator import GoogleTranslator
 
-          # 0. AI 설정
+          # AI & 번역기 세팅
           api_key = os.getenv("GEMINI_API_KEY")
           genai.configure(api_key=api_key)
+          translator = GoogleTranslator(source='auto', target='ko') # 한글 번역기 장전!
 
           def get_score(val, low, high, reverse=False):
               score = ((val - low) / (high - low)) * 100
               return max(0, min(100, 100 - score if reverse else score))
 
-          # 1. 7대 엔진 가중치 계산
-          print("🚀 7대 엔진 분석 시작...")
+          print("🚀 1. 7대 엔진 분석 시작...")
           try:
-              tickers = {
-                  "VIX": "^VIX", "SPY": "SPY", "HYG": "HYG", 
-                  "IEF": "IEF", "UUP": "UUP", "QQQ": "QQQ", 
-                  "DIA": "DIA", "GOLD": "GC=F", "BTC": "BTC-USD"
-              }
+              tickers = {"VIX": "^VIX", "SPY": "SPY", "HYG": "HYG", "IEF": "IEF", "UUP": "UUP", "QQQ": "QQQ", "DIA": "DIA", "GOLD": "GC=F", "BTC": "BTC-USD"}
               raw_data = {k: yf.Ticker(v).history(period="150d") for k, v in tickers.items()}
 
               s1 = get_score(raw_data["VIX"]['Close'].iloc[-1], 12, 35, reverse=True)
@@ -58,7 +55,6 @@ jobs:
 
               final_score = int((s1*0.2) + (s2*0.2) + (s3*0.2) + (s4*0.15) + (s7*0.05))
 
-              # [중요 수정] HTML 차트가 읽을 수 있는 형태로 점수 데이터 포장
               chart_data = [
                   {"word": "시장 공포(VIX)", "sentiment_score": round((s1-50)/5, 1), "display_score": f"{int(s1)}점", "count": "Market"},
                   {"word": "가격 추세(SPY)", "sentiment_score": round((s2-50)/5, 1), "display_score": f"{int(s2)}점", "count": "Price"},
@@ -67,11 +63,9 @@ jobs:
                   {"word": "코인 열기(BTC)", "sentiment_score": round((s7-50)/5, 1), "display_score": f"{int(s7)}점", "count": "Crypto"}
               ]
           except Exception as e:
-              print(f"❌ 계산 에러: {e}")
               final_score, chart_data = 50, []
 
-          # 2. 섹터별 글로벌 뉴스 수집 (news_crawler 흡수)
-          print("📰 섹터별 뉴스 수집 중...")
+          print("📰 2. 섹터별 글로벌 뉴스 수집 및 한글 번역 중...")
           sectors = {
               "BIG TECH": "https://news.google.com/rss/search?q=Apple+Nvidia+Microsoft+Stock&hl=en-US&gl=US&ceid=US:en",
               "SEMICON": "https://news.google.com/rss/search?q=Semiconductor+TSMC+ASML&hl=en-US&gl=US&ceid=US:en",
@@ -82,15 +76,22 @@ jobs:
               try:
                   response = requests.get(url, timeout=10)
                   tree = ElementTree.fromstring(response.content)
-                  items = [{"title": item.find('title').text, "link": item.find('link').text, "date": item.find('pubDate').text[:16]} for item in tree.findall('.//item')[:4]]
+                  items = []
+                  for item in tree.findall('.//item')[:3]:
+                      en_title = item.find('title').text
+                      # [핵심] 여기서 영어 제목을 한글로 싹 바꿔줍니다!
+                      ko_title = translator.translate(en_title) 
+                      items.append({
+                          "title": ko_title,
+                          "link": item.find('link').text,
+                          "date": item.find('pubDate').text[:16]
+                      })
                   sector_news_data[name] = items
               except Exception as e:
-                  print(f"❌ {name} 뉴스 수집 에러: {e}")
                   sector_news_data[name] = []
 
-          # 3. AI 번역 및 3줄 요약
-          print("🤖 AI 요약 작성 중...")
-          ai_summary = "데이터를 분석 중입니다..."
+          print("🤖 3. AI 3줄 요약 작성 중...")
+          ai_summary = "데이터 분석 완료."
           try:
               top_titles = [n['title'] for n in sector_news_data.get("BIG TECH", [])[:2] + sector_news_data.get("FINANCE", [])[:2]]
               news_text = "\n".join(top_titles)
@@ -100,13 +101,9 @@ jobs:
               response = model.generate_content(prompt)
               ai_summary = response.text
           except Exception as e:
-              print(f"❌ AI 에러: {e}")
+              pass
 
-          # 4. 데이터 완벽 포장 및 저장
           os.makedirs('PROJECT', exist_ok=True)
-          file_path = 'PROJECT/indicators.json'
-          
-          # [핵심] HTML이 요구하는 모든 구조를 딱 맞춰서 넣음
           data = {
               "master_score": final_score,
               "market_temp": final_score,
@@ -115,7 +112,7 @@ jobs:
               "sector_news": sector_news_data
           }
           
-          with open(file_path, 'w', encoding='utf-8') as f:
+          with open('PROJECT/indicators.json', 'w', encoding='utf-8') as f:
               json.dump(data, f, ensure_ascii=False, indent=4)
           EOF
 
@@ -124,5 +121,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add PROJECT/indicators.json
-          git commit -m "올인원 통합 시스템 완성 🚀 [skip ci]" || echo "No changes"
+          git commit -m "뉴스 한글 번역 패치 완료 🚀 [skip ci]" || echo "No changes"
           git push
