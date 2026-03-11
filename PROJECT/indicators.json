@@ -1,8 +1,8 @@
 {
-    "master_score": 42,
-    "market_temp": 42,
+    "master_score": 61,
+    "market_temp": "-2.5",
     "ai_summary": "데이터 분석 완료.",
-    "indicators": [
+    "fomc_indicators": [
         {
             "word": "INFLATION",
             "sentiment_score": -1.8,
@@ -88,27 +88,71 @@
             "count": 3
         }
     ],
+    "engine_indicators": [
+        {
+            "word": "시장 공포(VIX)",
+            "display_score": "43점",
+            "count": "Market",
+            "sentiment_score": -1.3
+        },
+        {
+            "word": "가격 추세(SPY)",
+            "display_score": "49점",
+            "count": "Price",
+            "sentiment_score": -0.0
+        },
+        {
+            "word": "기업 신용(HYG)",
+            "display_score": "64점",
+            "count": "Credit",
+            "sentiment_score": 3.0
+        },
+        {
+            "word": "달러 강세(UUP)",
+            "display_score": "56점",
+            "count": "Cash",
+            "sentiment_score": 1.2
+        },
+        {
+            "word": "기술주 선호(QQQ)",
+            "display_score": "90점",
+            "count": "Tech",
+            "sentiment_score": 8.2
+        },
+        {
+            "word": "안전자산(GOLD)",
+            "display_score": "100점",
+            "count": "Safe",
+            "sentiment_score": 10.0
+        },
+        {
+            "word": "코인 열기(BTC)",
+            "display_score": "56점",
+            "count": "Crypto",
+            "sentiment_score": 1.4
+        }
+    ],
     "sector_news": {
         "BIG TECH": [
-            {
-                "title": "Peter Thiel이 Apple과 Microsoft를 위해 Nvidia 주식을 투매한 것이 AI 경쟁에 대해 말하는 것 - Fortune<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>Peter Thiel이 Apple과 Microsoft를 위해 Nvidia 주식을 투매한 것이 AI 경쟁에 관해 말하는 것&nbsp;&nbsp;Fortune...</span>",
-                "link": "https://news.google.com/rss/articles/CBMikgFBVV95cUxNOUJ6dzdUYVhGU3NRMUU2RXRtV3l0dm8wQ01sODBXOXhadUFUQ3MwQWlNYzJuV3hWOUh4Vi16cTlJRmJLNmVDZnM3cUtaZDFGMnIyM0hzODVadGczLXZleUwzV3BOSy1PVXp2Y0FuN2NoMkIxN1c0SFl1OGtDb3hEVTlpU0JHLW10UmxJY3FjaHhDQQ?oc=5",
-                "date": "Tue, 10 Mar 2026"
-            },
             {
                 "title": "Magnificent 7 주식 보고서: Apple 선두, NVIDIA Fades, Microsoft 충돌 - 연중무휴 월스트리트<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>Magnificent 7 주식 보고서: Apple 선두, NVIDIA Fades, Microsoft 충돌&nbsp;&nbsp;24/7 Wall St....</span>",
                 "link": "https://news.google.com/rss/articles/CBMiswFBVV95cUxPc2xianU3U2JqaEhJTGoxYTVpclhQMjFkUmFuMFJZN2dFQmxzZjlaVEQzcmVkOS1EbktoVTZGVE50Um1fYm1YNUxjNUxLNWl3S0lGOTZBSWo3b20xeDl3ci1ramEzLXpBdGhrMVQyd0Zza1dvd0JRbXdRLW1rZjNGWlh2OXBqX2ktWllrODdybzBJR01UTkJKNUs5bXNGNDJLaHNMTjZRREJDUGJYcTlkZ0xKVQ?oc=5",
                 "date": "Thu, 05 Mar 2026"
             },
             {
-                "title": "3조 달러 클럽에 엔비디아, 애플, 알파벳, 마이크로소프트에 합류하기 전에 지금 사야 할 멈출 수 없는 주식 1개 - The Motley Fool<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>3조 달러 클럽에 Nvidia, Apple, Alphabet 및 Microsoft가 합류하기 전에 지금 구매해야 할 멈출 수 없는 주식 1개&nbsp;&nbsp;The Motley Fool...</span>",
+                "title": "Peter Thiel은 Nvidia를 버리고 Microsoft와 Apple에 4,500만 달러를 투자했습니다. 이는 AI 경쟁에서 누가 승리할 것인지에 대한 강력한 신호를 보냈습니다. - Yahoo Finance<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>Peter Thiel은 Nvidia를 버리고 Microsoft와 Apple에 4,500만 달러를 투자했습니다. 이는 누가 승리할 것인지에 대한 강력한 신호를 보내는 것입니다....</span>",
+                "link": "https://news.google.com/rss/articles/CBMihwFBVV95cUxOemZGVnh2a1ZCRm5aX0NpeF9YUF80aVdza2UwaGRxSy0yYXlqOXpnQk12QTctSzByUVVxVlVLSnJQYXNhQjRoQ1IzQ19xa08zaFNfbWRLT2FlbHQyMUZyeFJwWGVucXpRTXhVNkRFd1lNazlDbFlVdGlHZTV3cXQ3TE42ZEtvTjQ?oc=5",
+                "date": "Tue, 10 Mar 2026"
+            },
+            {
+                "title": "3조 달러 클럽에 엔비디아, 애플, 알파벳, 마이크로소프트에 합류하기 전에 지금 사야 할 멈출 수 없는 주식 1개 - The Motley Fool<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>Nvidia, Apple, Alphabet 및 Microsoft가 3조 달러 클럽에 합류하기 전에 지금 구매해야 할 멈출 수 없는 주식 1개&nbsp;&nbsp...</span>",
                 "link": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOa1pSOG12X19jaS10RE5sNXltTjZRdjNFd3hWTTlNWW1na0JKbXFQTmJxcGFwc3czX1N2QWZ4Y1VkcmVzUFZQUC1TdE00bzZyazA3UVJmQ096TjZmaGpoRnptRGM1TVF3anVlLV9qNUJQbEZmRThZTFhzQnFLNFFjNml1VEE3MXVsZWJ5NFNreVNYNGduMVJPUA?oc=5",
                 "date": "Thu, 05 Mar 2026"
             }
         ],
         "SEMICON": [
             {
-                "title": "TSMC가 ASML 투자자들에게 놀라운 소식을 전했습니다 - The Motley Fool<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>TSMC는 ASML 투자자들에게 놀라운 소식을 전했습니다&nbsp;&nbsp;The Motley Fool...</span>",
+                "title": "TSMC는 ASML 투자자들에게 놀라운 소식을 전했습니다 - The Motley Fool<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>TSMC는 ASML 투자자들에게 놀라운 소식을 전했습니다&nbsp;&nbsp;The Motley Fool...</span>",
                 "link": "https://news.google.com/rss/articles/CBMikwFBVV95cUxQenp6RDJtQ3ZyZkJiWVhOaFh6TmgxWGpsay1nT3hJSlB6MmhVYkxEX0dsLWRLQkFSVUxWNWdHY245WWphOXA0aDRLaGVlVVdFMHQ0d3YwbXRUUkxLX0FteW9aTEppMnlKQmlXYjNpTzQwdTF0ZHJ5UEloTDE2THNGLUZiMllGYzUyMWFIZHhxVVFpZjA?oc=5",
                 "date": "Thu, 22 Jan 2026"
             },
