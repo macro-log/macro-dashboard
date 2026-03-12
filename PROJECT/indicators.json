@@ -1,7 +1,7 @@
 {
     "master_score": 72,
     "market_temp": "-2.5",
-    "ai_summary": "데이터 분석 완료.",
+    "ai_summary": "최근 24시간 시장 상황 종합 분석 완료.",
     "fomc_indicators": [
         {
             "word": "INFLATION",
@@ -174,40 +174,12 @@
             "count": 3
         }
     ],
-    "sector_news": {
-        "BIG TECH": [
-            {
-                "title": "Magnificent 7 주식 보고서: Apple 선두, NVIDIA Fades, Microsoft 충돌 - 연중무휴 월스트리트",
-                "link": "https://news.google.com/rss/articles/CBMiswFBVV95cUxPc2xianU3U2JqaEhJTGoxYTVpclhQMjFkUmFuMFJZN2dFQmxzZjlaVEQzcmVkOS1EbktoVTZGVE50Um1fYm1YNUxjNUxLNWl3S0lGOTZBSWo3b20xeDl3ci1ramEzLXpBdGhrMVQyd0Zza1dvd0JRbXdRLW1rZjNGWlh2OXBqX2ktWllrODdybzBJR01UTkJKNUs5bXNGNDJLaHNMTjZRREJDUGJYcTlkZ0xKVQ?oc=5",
-                "date": "Thu, 05 Mar 2026"
-            },
-            {
-                "title": "Peter Thiel이 Apple과 Microsoft를 위해 Nvidia 주식을 투매한 것이 AI 경쟁에 대해 말하는 것 - Fortune",
-                "link": "https://news.google.com/rss/articles/CBMikgFBVV95cUxNOUJ6dzdUYVhGU3NRMUU2RXRtV3l0dm8wQ01sODBXOXhadUFUQ3MwQWlNYzJuV3hWOUh4Vi16cTlJRmJLNmVDZnM3cUtaZDFGMnIyM0hzODVadGczLXZleUwzV3BOSy1PVXp2Y0FuN2NoMkIxN1c0SFl1OGtDb3hEVTlpU0JHLW10UmxJY3FjaHhDQQ?oc=5",
-                "date": "Tue, 10 Mar 2026"
-            },
-            {
-                "title": "2028년까지 애플보다 가치가 더 높아질 2가지 주식 - The Motley Fool",
-                "link": "https://news.google.com/rss/articles/CBMilgFBVV95cUxQVW9weFMteVlkamFwVnlxbVNWUC02dDdvU1BjaDJmZFpQTXhpVzJrRXVsQXR3VUs2c2ZHQ1NYQTBOYnZKbS1ERTdKcnJOVERRcHV3cG5taUZPemtjMlBKVktpQWg3NDhmVWJUQWZXMGRneWp4WFk1cWxmUkJPV29POEozV1k0dGkzaHJyNXJUcnpZYUEwT3c?oc=5",
-                "date": "Wed, 11 Mar 2026"
-            }
-        ],
-        "FINANCE": [
-            {
-                "title": "J.P. Morgan은 2027년 Fed 인상을 예측합니다. Barclays, Goldman, 금리 인하 요청 연기 - Reuters",
-                "link": "https://news.google.com/rss/articles/CBMitwFBVV95cUxPWWFsNTdTUkRaQWdYNzc5MnNGbGFEb3p2dDRGZVg4Q1JCU0lTTkxJMkZ0ckIyUjF6bW0yazlLT0dYSEJFUFUzdWZqN3dGR3B4cXFNZHdyZUZhNGZ4UXhTdGtyalhJWGFOaG15T2FUNWFhQlBJLUhpTHNRenVaNktxQkpmSmtkSDlIRWlhU3BWOGxwaDJkX2ppaHh0RF9jdllxZHdhQWg4cEVkUTNqSGdYblh4N1MxNlk?oc=5",
-                "date": "Mon, 12 Jan 2026"
-            },
-            {
-                "title": "대형 은행에 불이 붙었습니다. 연준이 더 많은 연료를 주목하는 이유는 무엇입니까? - 블룸버그",
-                "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxObmpId2lKbWNmWVhxNk5JUVUtWXg5SUppYjdCOVluY3FqMWxSTXJvek5jWmNpLXVZWHkzdExhbnU2OXFkZlMxR2lkQzhhNjRQYnM1dE5LUTVYdHE0ampkcEZma2J5RVFLdzlYTWwtMTZZMm0xVDBFaC00TVJTQmY4T0FTT1UtZnRlZzN1SGJqM3BDMGZRdGY5TE1uXzY5NS1WSUJhY05ENWFKRWpZVXVwLW4ya0g?oc=5",
-                "date": "Tue, 14 Oct 2025"
-            },
-            {
-                "title": "J.P. Morgan은 Fed의 다음 조치는 인상이 될 것이라고 말했습니다 - mpamag.com",
-                "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxPVndxMERyTEd2VDBPdHJCUVNELXJVczU5R3UxZEZ1cnFMd09rS1BnSjRva0pSYVR4U2xJZGJqMkJsYksxamZLdnlTTkl4bjd6OVVmeXdBX1Z5QjFFT2thQm1ZNEVBOG1lT05EQWtqR0dRRTJKTEhhWTR2MlhmeG9RU1ZqR2x1SUo1Mmx3dkJScWV1YjhwaDBWVmJWVDRKa1ZUUDEyNGdrTW9iWGgzaVY4bw?oc=5",
-                "date": "Mon, 12 Jan 2026"
-            }
-        ]
+    "dynamic_news": {
+        "섹터 1": "데이터를 분석 중입니다.",
+        "섹터 2": "데이터를 분석 중입니다.",
+        "섹터 3": "데이터를 분석 중입니다.",
+        "섹터 4": "데이터를 분석 중입니다.",
+        "섹터 5": "데이터를 분석 중입니다.",
+        "섹터 6": "데이터를 분석 중입니다."
     }
 }
