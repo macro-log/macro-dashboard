@@ -1,0 +1,14 @@
+[
+    {
+        "date": "2026-03-12",
+        "name": "미국 CPI",
+        "importance": "CRITICAL",
+        "type": "MACRO"
+    },
+    {
+        "date": "2026-03-20",
+        "name": "FOMC 결정",
+        "importance": "CRITICAL",
+        "type": "MACRO"
+    }
+]
