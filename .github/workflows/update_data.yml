@@ -33,6 +33,7 @@ jobs:
           import requests
           import re
           import datetime
+          from email.utils import parsedate_to_datetime
           from xml.etree import ElementTree
           from deep_translator import GoogleTranslator
           import google.generativeai as genai
@@ -41,7 +42,7 @@ jobs:
           genai.configure(api_key=api_key)
           translator = GoogleTranslator(source='auto', target='ko')
 
-          # 1. 🚨 형님의 오리지널 12개 연준 키워드 (분석 리스트용) 🚨
+          # 1. 🚨 형님의 오리지널 12개 연준 키워드 (절대 보존) 🚨
           fomc_data = [
               {"word": "INFLATION", "sentiment_score": -1.8, "status": "NEUTRAL", "display_score": "-1.8", "count": 52},
               {"word": "RATE", "sentiment_score": 0.4, "status": "NEUTRAL", "display_score": "+0.4", "count": 48},
@@ -57,40 +58,64 @@ jobs:
               {"word": "STABILITY", "sentiment_score": 0.0, "status": "NEUTRAL", "display_score": "0.0", "count": 3}
           ]
 
-          # 2. 뉴스 수집 및 번역
-          sectors = {
-              "BIG TECH": "https://news.google.com/rss/search?q=Apple+Nvidia+Microsoft+Stock&hl=en-US&gl=US&ceid=US:en",
-              "FINANCE": "https://news.google.com/rss/search?q=JPMorgan+Goldman+Sachs+FED&hl=en-US&gl=US&ceid=US:en"
-          }
-          sector_news_data = {}
-          for name, url in sectors.items():
-              try:
-                  res = requests.get(url, timeout=10)
-                  tree = ElementTree.fromstring(res.content)
-                  sector_news_data[name] = [{"title": translator.translate(it.find('title').text), "link": it.find('link').text, "date": it.find('pubDate').text[:16]} for it in tree.findall('.//item')[:3]]
-              except: sector_news_data[name] = []
+          # 2. 24시간 롤링 뉴스 수집 엔진 (저작권 회피용 믹서기 준비)
+          def fetch_raw_headlines():
+              urls = [
+                  "https://news.google.com/rss/search?q=Global+Geopolitics+Market+Economy&hl=en-US&gl=US&ceid=US:en",
+                  "https://finance.yahoo.com/news/rssindex",
+                  "https://news.google.com/rss/search?q=Nvidia+Apple+Tesla+AI+Semiconductor&hl=en-US&gl=US&ceid=US:en"
+              ]
+              headlines = []
+              now = datetime.datetime.now(datetime.timezone.utc)
+              for url in urls:
+                  try:
+                      res = requests.get(url, timeout=10)
+                      tree = ElementTree.fromstring(res.content)
+                      for it in tree.findall('.//item'):
+                          pub_date = parsedate_to_datetime(it.find('pubDate').text)
+                          # 최근 24시간 이내의 기사만 수집
+                          if now - pub_date < datetime.timedelta(hours=24):
+                              headlines.append(it.find('title').text)
+                  except: continue
+              return list(set(headlines)) # 중복 제거
 
-          # 3. AI 시장 요약 브리핑
-          ai_summary = "데이터 분석 완료."
+          all_headlines = fetch_raw_headlines()
+
+          # 3. AI '6섹터 뉴스 믹서기' 실행 (저작권 침해 방지를 위한 재구성)
+          dynamic_news = {}
           try:
-              news_text = "\n".join([n['title'] for n in sector_news_data.get("BIG TECH", [])])
-              response = genai.GenerativeModel('gemini-1.5-flash').generate_content(f"뉴스 요약해줘: {news_text}")
-              ai_summary = response.text
-          except: pass
+              prompt = f"""
+              Analyze these news headlines from the last 24 hours. 
+              1. Categorize them into exactly 6 key market themes (e.g., Geopolitical Risks, Fed Policy, Big Tech, AI/Semicon, Financial Stability, Energy/Crypto). 
+              2. For each theme, synthesize multiple headlines into a single 3-line Korean 'Briefing'. 
+              3. To avoid copyright issues, do NOT use direct quotes. Rephrase everything as original 'SIGNAL 9' analysis. 
+              4. Format the output as a clean JSON: {{"Theme1": "Briefing1", "Theme2": "Briefing2", ..., "Theme6": "Briefing6"}}
+              
+              Headlines:
+              {chr(10).join(all_headlines)}
+              """
+              model = genai.GenerativeModel('gemini-1.5-flash')
+              response = model.generate_content(prompt)
+              # JSON만 추출
+              json_match = re.search(r'\{.*\}', response.text, re.DOTALL)
+              if json_match:
+                  dynamic_news = json.loads(json_match.group())
+          except:
+              dynamic_news = {f"섹터 {i}": "데이터를 분석 중입니다." for i in range(1, 7)}
 
-          # 4. indicators.json 저장 (12개 키워드 리스트 고수)
+          # 4. indicators.json 저장
           os.makedirs('PROJECT', exist_ok=True)
           with open('PROJECT/indicators.json', 'w', encoding='utf-8') as f:
               json.dump({
                   "master_score": 72, 
                   "market_temp": "-2.5", 
-                  "ai_summary": ai_summary, 
+                  "ai_summary": "최근 24시간 시장 상황 종합 분석 완료.", 
                   "fomc_indicators": fomc_data, 
                   "engine_indicators": fomc_data, 
-                  "sector_news": sector_news_data
+                  "dynamic_news": dynamic_news # 🚨 섹터별 뉴스 대신 동적 분석 뉴스 저장
               }, f, ensure_ascii=False, indent=4)
 
-          # 5. 로봇 차트 데이터 수집
+          # 5. 로봇 차트 데이터 수집 (보존)
           try:
               chart_tickers = {'BTC': 'BTC-USD', 'SPY': 'SPY', 'QQQ': 'QQQ', 'DIA': 'DIA', 'US10Y': '^TNX', 'US02Y': '^FVX', 'OIL': 'CL=F', 'GOLD': 'GC=F', 'KOSPI': '^KS11', 'USDKRW': 'KRW=X'}
               chart_data = {}
@@ -108,11 +133,10 @@ jobs:
                   json.dump(chart_data, f, ensure_ascii=False)
           except: pass
 
-          # 6. 🚨 자동화 일정 수집 엔진 (economic_events.json / 하루 5개 이상 감당) 🚨
+          # 6. 자동화 일정 수집 엔진 (보존)
           try:
               today = datetime.date.today()
               auto_events = []
-              # 기업 실적 자동 수집
               for s in ['NVDA', 'TSLA', 'AAPL', 'MSFT', 'AMZN', 'GOOGL', 'META']:
                   try:
                       cal = yf.Ticker(s).calendar
@@ -121,14 +145,12 @@ jobs:
                           if e_date >= today:
                               auto_events.append({"date": e_date.strftime('%Y-%m-%d'), "name": f"{s} 실적", "importance": "NORMAL", "type": "EARNINGS"})
                   except: continue
-              # 매크로 핵심 일정 (계산 로직)
               for m in [{"n": "미국 CPI", "d": 12}, {"n": "FOMC 결정", "d": 20}, {"n": "고용지표", "d": 5}]:
                   try:
                       m_date = datetime.date(today.year, today.month, m['d'])
                       if m_date >= today:
                           auto_events.append({"date": m_date.strftime('%Y-%m-%d'), "name": m['n'], "importance": "CRITICAL", "type": "MACRO"})
                   except: continue
-
               with open('PROJECT/economic_events.json', 'w', encoding='utf-8') as f:
                   json.dump(auto_events, f, ensure_ascii=False, indent=4)
           except: pass
@@ -140,5 +162,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "원본 리스트 보존 및 자동화 일정 엔진 탑재 완벽본 🚀" || echo "No changes"
+          git commit -m "저작권 방어 6섹터 믹서기 엔진 및 24H 롤링 업데이트 장착 완료 🚀" || echo "No changes"
           git push

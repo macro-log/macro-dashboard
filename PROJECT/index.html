@@ -66,7 +66,13 @@
     <header class="p-4 bg-[#161e31] border-b border-[#262f45] flex justify-between items-center px-8">
         <div class="flex items-center gap-3">
             <div class="w-3 h-8 bg-[#38bdf8] rounded-sm"></div>
-            <div class="text-2xl font-black text-[#38bdf8] tracking-tighter cursor-pointer" onclick="switchTab('home')">SIGNAL 9</div>
+            <div class="flex items-center gap-4">
+    <div class="text-2xl font-black text-[#38bdf8] tracking-tighter cursor-pointer" onclick="switchTab('home')">SIGNAL 9</div>
+    <div class="flex flex-col border-l border-gray-700 pl-4">
+        <span class="text-[8px] text-gray-500 font-bold uppercase tracking-widest">Last Sync</span>
+        <span id="sync-time" class="text-[10px] text-sky-400 font-mono italic">SYNCING...</span>
+    </div>
+</div>
         </div>
 
         <div id="alert-bar" class="flex items-center gap-4 bg-[#0a0f1e] px-4 py-2 rounded border border-[#262f45] transition-all">
@@ -515,16 +521,31 @@
                         <span class="font-mono font-black text-xs ${i.sentiment_score >= 0 ? 'text-sky-400' : 'text-red-400'}">${i.display_score}</span>
                     </li>`).join('');
 
-                if(data.sector_news) {
-                    const upNews = (id, newsArr) => { document.getElementById(id).innerHTML = (newsArr || []).map(n => `<div class="news-item border-b border-[#262f45] pb-2 mb-2 last:border-0"><a href="${n.link}" target="_blank" class="hover:text-sky-400 block mb-1 font-bold text-sm">▶ ${n.title}</a><span class="text-[10px] text-gray-500">${n.date || ''}</span></div>`).join(''); };
-                    upNews('news-bigtech', data.sector_news['BIG TECH']); 
-                    upNews('news-semicon', data.sector_news['SEMICON']); 
-                    upNews('news-finance', data.sector_news['FINANCE']);
+                // 1. 업데이트 시간 및 게이지 반영
+                if(data.last_updated) document.getElementById('sync-time').innerText = data.last_updated;
+                initMasterGauge(data.master_score || 72);
 
-                    const topNews = (data.sector_news['BIG TECH'] || data.sector_news['FINANCE'] || [])[0];
-                    if(topNews) {
-                        document.getElementById('home-top-news').innerHTML = `<a href="${topNews.link}" target="_blank" class="hover:text-sky-400 block font-bold text-sm text-white">▶ ${topNews.title}</a>`;
-                    }
+                // 2. 6섹터 동적 뉴스 리포트 렌더링
+                if(data.dynamic_news) {
+                    const newsTab = document.getElementById('tab-news');
+                    newsTab.innerHTML = '<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>';
+                    const grid = newsTab.querySelector('div');
+                    
+                    const borderColors = ['border-sky-500', 'border-red-500', 'border-emerald-500', 'border-purple-500', 'border-amber-500', 'border-rose-500'];
+                    const labelColors = ['text-sky-400', 'text-red-400', 'text-emerald-400', 'text-purple-400', 'text-amber-400', 'text-rose-400'];
+                    
+                    Object.entries(data.dynamic_news).forEach(([theme, content], index) => {
+                        grid.innerHTML += `
+                            <div class="card min-h-[300px] border-t-4 ${borderColors[index % 6]}">
+                                <span class="section-label ${labelColors[index % 6]}">${theme}</span>
+                                <h3 class="text-lg font-bold text-white mb-2 border-b border-gray-800 pb-2 italic uppercase">Market Analysis</h3>
+                                <p class="text-sm text-gray-300 leading-relaxed font-medium">${content}</p>
+                            </div>`;
+                    });
+                    
+                    // 홈 화면 첫 번째 섹션 요약 노출
+                    const firstTheme = Object.keys(data.dynamic_news)[0];
+                    document.getElementById('home-top-news').innerHTML = `<b>[${firstTheme}]</b><br>${data.dynamic_news[firstTheme].substring(0, 70)}...`;
                 }
             } catch (err) { 
                 initMasterGauge(50); 
