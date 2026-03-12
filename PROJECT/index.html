@@ -23,7 +23,6 @@
         .thermal-card:hover { transform: translateY(-3px); border-color: var(--accent); }
         .thermal-card.active { border: 2px solid var(--accent); background: #1e293b; }
 
-        /* [신규] 탭 메뉴 스타일 */
         .tab-menu { display: flex; gap: 10px; border-bottom: 2px solid var(--border); padding-bottom: 10px; margin-bottom: 15px; overflow-x: auto; }
         .tab-btn { padding: 10px 24px; font-weight: 800; font-size: 14px; color: var(--text-dim); background: transparent; border: none; cursor: pointer; transition: 0.3s; position: relative; white-space: nowrap; }
         .tab-btn:hover { color: white; }
@@ -56,7 +55,7 @@
         .gauge-container { position: relative; width: 100%; max-width: 500px; margin: 0 auto; height: 250px; }
         .gauge-text { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); text-align: center; width: 100%; }
 
-        /* [추가] 기업 실적용 그리드 UI 스타일 */
+        /* [기업 실적용 그리드 UI 스타일] */
         .earnings-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
         @media (min-width: 768px) { .earnings-grid { grid-template-columns: repeat(4, 1fr); } }
         @media (min-width: 1024px) { .earnings-grid { grid-template-columns: repeat(6, 1fr); } }
@@ -255,14 +254,17 @@
         <div id="tab-calendar" class="tab-content">
             <div class="card h-[800px]">
                 <div class="flex justify-between items-center mb-4 border-b border-[#262f45] pb-3">
-                    <div><span class="section-label">Dynamic Calendar</span><h3 class="text-xl font-bold text-white" id="cal-main-title">글로벌 주요 매크로 일정</h3></div>
+                    <div>
+                        <span class="section-label" id="cal-month-label">Dynamic Calendar</span>
+                        <h3 class="text-xl font-bold text-white" id="cal-main-title">글로벌 주요 매크로 일정</h3>
+                    </div>
                     <div class="flex gap-2 items-center">
                         <button onclick="switchCalMode('MACRO')" id="btn-cal-macro" class="chart-btn active">경제 지표</button>
                         <button onclick="switchCalMode('EARNINGS')" id="btn-cal-earnings" class="chart-btn">기업 실적</button>
                         <div id="sync-status" class="text-[10px] text-gray-500 font-bold border border-gray-700 px-3 py-1 rounded ml-2">WAITING...</div>
                     </div>
                 </div>
-                <div id="calendar-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto pr-2 scroll-list h-full items-start">
+                <div id="calendar-container" class="w-full h-full flex flex-col">
                 </div>
             </div>
         </div>
@@ -288,7 +290,7 @@
         let robotChartInstance = null;
         let allChartData = {};
 
-        // [추가] 캘린더 모드 전환 변수
+        // 캘린더 모드 전환 변수
         let currentCalMode = 'MACRO';
         let globalEvents = [];
 
@@ -529,12 +531,16 @@
             }
         }
 
-        // [복구 및 추가] 캘린더 모드 전환 렌더링 로직
+        // 🚨 진짜 월간 달력 모양 그리기 로직 (경제지표 전용) 🚨
         function switchCalMode(mode) {
             currentCalMode = mode;
             document.getElementById('btn-cal-macro').classList.toggle('active', mode === 'MACRO');
             document.getElementById('btn-cal-earnings').classList.toggle('active', mode === 'EARNINGS');
             document.getElementById('cal-main-title').innerText = mode === 'MACRO' ? '글로벌 주요 매크로 일정' : '주요 기업 실적 발표';
+            
+            const today = new Date();
+            document.getElementById('cal-month-label').innerText = mode === 'MACRO' ? `${today.getFullYear()}년 ${today.getMonth() + 1}월 달력` : 'Earnings Grid';
+            
             renderCalendar();
         }
 
@@ -542,23 +548,58 @@
             const container = document.getElementById('calendar-container');
             container.innerHTML = '';
             
-            // type 기준 필터링 (없으면 매크로로 간주)
             const filtered = globalEvents.filter(ev => currentCalMode === 'MACRO' ? ev.type !== 'EARNINGS' : ev.type === 'EARNINGS');
 
             if (currentCalMode === 'MACRO') {
-                // 원본 매크로 캘린더 (그리드 카드, D-Day 표시)
-                container.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto pr-2 scroll-list h-full items-start";
-                container.innerHTML = filtered.map(ev => {
-                    const diff = Math.floor((new Date(ev.date) - new Date()) / (1000 * 60 * 60 * 24));
-                    const dDay = diff > 0 ? `D-${diff}` : (diff === 0 ? "TODAY" : "DONE");
-                    const color = ev.importance === 'CRITICAL' ? 'border-red-500 text-red-400' : 'border-sky-500 text-sky-400';
-                    return `<div class="event-card bg-[#0a0f1e] p-4 rounded border border-[#262f45] ${color} h-[100px] flex flex-col justify-between"><span class="text-[10px] text-gray-500">${ev.date}</span><span class="text-sm font-bold text-white block truncate mt-1">${ev.name}</span><span class="text-xs font-mono font-black text-sky-400 mt-1 block">${dDay}</span></div>`;
-                }).join('');
+                // [경제지표 전용] 7칸짜리 진짜 월간 달력 생성
+                container.className = "flex flex-col h-full w-full";
+                
+                const today = new Date();
+                const year = today.getFullYear();
+                const month = today.getMonth();
+                const firstDay = new Date(year, month, 1).getDay();
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+                
+                let html = `
+                    <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-black text-gray-500 mb-2 tracking-widest">
+                        <div class="text-red-900">SUN</div><div>MON</div><div>TUE</div><div>WED</div><div>THU</div><div>FRI</div><div class="text-sky-900">SAT</div>
+                    </div>
+                    <div class="grid grid-cols-7 gap-1 flex-grow auto-rows-fr">
+                `;
+                
+                for (let i = 0; i < firstDay; i++) {
+                    html += `<div class="bg-transparent rounded border border-transparent"></div>`;
+                }
+                
+                for (let d = 1; d <= daysInMonth; d++) {
+                    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                    const dayEvents = filtered.filter(e => e.date && e.date.startsWith(dateStr));
+                    
+                    let eventHtml = dayEvents.map(e => {
+                        const color = e.importance === 'CRITICAL' ? 'bg-red-500 text-[#0a0f1e]' : 'bg-sky-500 text-[#0a0f1e]';
+                        return `<div class="text-[9px] font-bold truncate px-1 py-0.5 mb-0.5 rounded ${color}">${e.name}</div>`;
+                    }).join('');
+                    
+                    const isToday = (d === today.getDate() && month === today.getMonth());
+                    const borderCls = isToday ? 'border-sky-500 border-2' : 'border-[#262f45] border';
+                    const bgCls = isToday ? 'bg-[#162032]' : 'bg-[#0a0f1e]';
+                    const textCls = isToday ? 'text-sky-400 font-black' : 'text-gray-500 font-bold';
+                    
+                    html += `
+                        <div class="${bgCls} rounded ${borderCls} p-1 h-[70px] md:h-[90px] overflow-y-auto scroll-list">
+                            <span class="text-[10px] ${textCls} block mb-1">${d}</span>
+                            ${eventHtml}
+                        </div>
+                    `;
+                }
+                html += `</div>`;
+                container.innerHTML = html;
             } else {
-                // 신규 기업 실적 전용 UI (작은 그리드 박스)
+                // [기업실적 전용] 달력 말고 뱃지(타일) 형태의 그리드 레이아웃
                 container.className = "earnings-grid overflow-y-auto pr-2 scroll-list h-full items-start";
                 container.innerHTML = filtered.map(ev => `
-                    <div class="p-3 bg-[#1e293b] rounded border border-[#262f45] text-center">
+                    <div class="p-3 bg-[#1e293b] rounded border border-[#262f45] text-center relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-sky-500 opacity-50"></div>
                         <span class="ticker-badge">${ev.name.split(' ')[0]}</span>
                         <div class="text-[10px] text-gray-400 mt-2">${ev.date}</div>
                     </div>`).join('');
@@ -568,9 +609,12 @@
         async function updateCalendar() {
             try {
                 const response = await fetch('./economic_events.json?v=' + Date.now());
-                globalEvents = await response.json(); // 전역 변수에 저장
+                globalEvents = await response.json(); 
                 
-                renderCalendar(); // 필터링해서 화면에 그리기
+                const today = new Date();
+                document.getElementById('cal-month-label').innerText = `${today.getFullYear()}년 ${today.getMonth() + 1}월 달력`;
+                
+                renderCalendar(); 
 
                 const nextEvent = globalEvents.find(ev => Math.floor((new Date(ev.date) - new Date()) / (1000 * 60 * 60 * 24)) >= 0) || globalEvents[0];
                 if(nextEvent) {
