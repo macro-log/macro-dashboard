@@ -43,7 +43,7 @@ jobs:
           now_korea = (datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=9))
           sync_time = now_korea.strftime('%Y-%m-%d %H:%M:%S')
 
-          # 2. 연준 키워드 데이터 (보존)
+          # 2. 연준 키워드 데이터 (형님 원본 데이터 보존)
           fomc_data = [
               {"word": "INFLATION", "sentiment_score": -1.8, "status": "NEUTRAL", "display_score": "-1.8", "count": 52},
               {"word": "RATE", "sentiment_score": 0.4, "status": "NEUTRAL", "display_score": "+0.4", "count": 48},
@@ -82,42 +82,46 @@ jobs:
 
           all_headlines = fetch_raw_headlines()
 
-          # 4. AI 6섹터 믹서기 (프롬프트 보정)
+          # 4. AI 6섹터 믹서기 (안전장치 강화)
           dynamic_news = {}
           try:
               prompt = f"""
               당신은 'SIGNAL 9'의 수석 분석가입니다. 다음 뉴스 헤드라인들을 분석하여 시장 요약을 작성하세요.
-              1. 헤드라인들을 묶어서 '정확히 6개'의 핵심 테마로 분류하세요. (예: 반도체/AI, 연준 정책, 지정학적 위기 등)
-              2. 각 테마당 3줄 정도의 한국어 브리핑을 작성하세요.
-              3. 저작권 회피를 위해 기사 직접 인용이 아닌, 당신의 독자적인 'SIGNAL 9 분석 리포트' 형식으로 재구성하세요.
-              4. 반드시 JSON 형식으로만 응답하세요: {{"테마1": "내용1", "테마2": "내용2", ..., "테마6": "내용6"}}
+              1. 헤드라인들을 묶어서 '정확히 6개'의 핵심 테마로 분류하세요.
+              2. 각 테마당 한국어 브리핑을 3줄 내외로 작성하세요.
+              3. 저작권 회피를 위해 독자적인 'SIGNAL 9 분석 리포트' 형식으로 재구성하세요.
+              4. 응답은 반드시 다른 설명 없이 JSON 형식으로만 하세요: {{"테마1": "내용1", ..., "테마6": "내용6"}}
               
               Headlines:
               {chr(10).join(all_headlines)}
               """
               model = genai.GenerativeModel('gemini-1.5-flash')
               response = model.generate_content(prompt)
-              json_match = re.search(r'\{.*\}', response.text, re.DOTALL)
+              
+              # AI가 ```json ... ``` 같은 마크다운을 붙여도 무시하고 JSON만 추출
+              clean_text = response.text.replace('```json', '').replace('```', '').strip()
+              json_match = re.search(r'\{.*\}', clean_text, re.DOTALL)
+              
               if json_match:
                   dynamic_news = json.loads(json_match.group())
               else:
-                  raise Exception("JSON Parsing Failed")
+                  raise Exception("JSON 추출 실패")
           except Exception as e:
-              print(f"AI 분석 실패: {e}")
+              print(f"AI 분석 오류: {e}")
               dynamic_news = {
-                  "시장 종합": "현재 뉴스를 분석 중입니다.",
-                  "빅테크": "데이터 로딩 중...",
-                  "반도체": "데이터 로딩 중...",
-                  "금리/매크로": "데이터 로딩 중...",
-                  "에너지/원자재": "데이터 로딩 중...",
-                  "가상자산": "데이터 로딩 중..."
+                  "시장 종합": "현재 글로벌 마켓 소식을 분석 중입니다.",
+                  "빅테크": "분석 데이터를 불러오는 중입니다.",
+                  "반도체": "데이터 동기화 대기 중...",
+                  "금리/매크로": "주요 지표를 산출 중입니다.",
+                  "에너지/원자재": "수급 동향을 파악 중입니다.",
+                  "가상자산": "디지털 자산 흐름을 확인 중입니다."
               }
 
-          # 5. indicators.json 저장 (last_updated 추가!)
+          # 5. indicators.json 저장 (구조 보존 및 last_updated 보강)
           os.makedirs('PROJECT', exist_ok=True)
           with open('PROJECT/indicators.json', 'w', encoding='utf-8') as f:
               json.dump({
-                  "last_updated": sync_time, # 🚨 HTML이 이 시간을 보고 데이터를 업데이트함
+                  "last_updated": sync_time,
                   "master_score": 72, 
                   "market_temp": "-2.5", 
                   "ai_summary": "최근 24시간 글로벌 시장 시그널 분석이 완료되었습니다.", 
@@ -126,8 +130,7 @@ jobs:
                   "dynamic_news": dynamic_news 
               }, f, ensure_ascii=False, indent=4)
 
-          # 6. 차트 및 일정 수집 (기존 로직 보존)
-          # [차트 데이터 수집 부분...]
+          # 6. 차트 및 일정 수집 (형님 원본 로직 100% 보존)
           try:
               chart_tickers = {'BTC': 'BTC-USD', 'SPY': 'SPY', 'QQQ': 'QQQ', 'DIA': 'DIA', 'US10Y': '^TNX', 'US02Y': '^FVX', 'OIL': 'CL=F', 'GOLD': 'GC=F', 'KOSPI': '^KS11', 'USDKRW': 'KRW=X'}
               chart_data = {}
@@ -145,7 +148,6 @@ jobs:
                   json.dump(chart_data, f, ensure_ascii=False)
           except: pass
 
-          # [일정 데이터 수집 부분...]
           try:
               today = datetime.date.today()
               auto_events = []
@@ -169,5 +171,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "SIGNAL 9 데이터 엔진(6섹터/시간기록) 업데이트 완료 🚀" || echo "No changes"
+          git commit -m "SIGNAL 9 데이터 엔진(뉴스 믹싱 안정화) 업데이트 완료 🚀" || echo "No changes"
           git push
