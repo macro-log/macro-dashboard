@@ -17,10 +17,10 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: '3.10' # 🚨 404 에러 방지를 위해 3.10으로 업그레이드
 
       - name: Install dependencies
-        run: pip install yfinance pandas google-generativeai requests deep-translator
+        run: pip install -U yfinance pandas google-generativeai requests deep-translator # 🚨 -U 붙여서 최신 모델 인식하게 함
 
       - name: Run Update Script
         env:
@@ -43,7 +43,7 @@ jobs:
           now_korea = (datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=9))
           sync_time = now_korea.strftime('%Y-%m-%d %H:%M:%S')
 
-          # 2. 연준 키워드 데이터 (형님 원본 데이터 보존)
+          # 2. 연준 키워드 데이터 (형님 원본 데이터 100% 보존)
           fomc_data = [
               {"word": "INFLATION", "sentiment_score": -1.8, "status": "NEUTRAL", "display_score": "-1.8", "count": 52},
               {"word": "RATE", "sentiment_score": 0.4, "status": "NEUTRAL", "display_score": "+0.4", "count": 48},
@@ -82,9 +82,11 @@ jobs:
 
           all_headlines = fetch_raw_headlines()
 
-          # 4. AI 6섹터 믹서기 (안전장치 강화)
+          # 4. AI 6섹터 믹서기
           dynamic_news = {}
           try:
+              # 🚨 모델 호출부 보정
+              model = genai.GenerativeModel('gemini-1.5-flash')
               prompt = f"""
               당신은 'SIGNAL 9'의 수석 분석가입니다. 다음 뉴스 헤드라인들을 분석하여 시장 요약을 작성하세요.
               1. 헤드라인들을 묶어서 '정확히 6개'의 핵심 테마로 분류하세요.
@@ -95,10 +97,7 @@ jobs:
               Headlines:
               {chr(10).join(all_headlines)}
               """
-              model = genai.GenerativeModel('gemini-1.5-flash')
               response = model.generate_content(prompt)
-              
-              # AI가 ```json ... ``` 같은 마크다운을 붙여도 무시하고 JSON만 추출
               clean_text = response.text.replace('```json', '').replace('```', '').strip()
               json_match = re.search(r'\{.*\}', clean_text, re.DOTALL)
               
@@ -117,7 +116,7 @@ jobs:
                   "가상자산": "디지털 자산 흐름을 확인 중입니다."
               }
 
-          # 5. indicators.json 저장 (구조 보존 및 last_updated 보강)
+          # 5. indicators.json 저장 (원본 구조 100% 보존)
           os.makedirs('PROJECT', exist_ok=True)
           with open('PROJECT/indicators.json', 'w', encoding='utf-8') as f:
               json.dump({
@@ -171,5 +170,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "SIGNAL 9 데이터 엔진(뉴스 믹싱 안정화) 업데이트 완료 🚀" || echo "No changes"
+          git commit -m "SIGNAL 9 환경 보강 (404 버그 수정 완) 🚀" || echo "No changes"
           git push
