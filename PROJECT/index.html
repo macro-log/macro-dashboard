@@ -11,6 +11,14 @@
         :root { --bg-main: #0a0f1e; --bg-card: #161e31; --accent: #38bdf8; --text-main: #f1f5f9; --text-dim: #94a3b8; --border: #262f45; --danger: #ef4444; }
         body { font-family: 'Pretendard', sans-serif; background-color: var(--bg-main); color: var(--text-main); margin: 0; overflow-x: hidden; }
         
+        /* 🚨 스크롤바 숨김 처리 (보기 싫은 스크롤바 제거) 🚨 */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
         .main-layout { display: flex; flex-direction: column; padding: 20px; max-width: 1600px; margin: 0 auto; gap: 15px; }
 
         .thermal-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 5px; }
@@ -36,11 +44,7 @@
         .card { background: var(--bg-card); padding: 24px; border-radius: 8px; border: 1px solid var(--border); display: flex; flex-direction: column; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); }
         .section-label { color: var(--accent); font-weight: 800; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; display: block; }
         
-        .scroll-list::-webkit-scrollbar { width: 4px; height: 6px; }
-        .scroll-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
-
-        @keyframes alert-blink { 0% { background-color: var(--danger); } 50% { background-color: #f59e0b; } 100% { background-color: var(--danger); } }
-        .alert-active { animation: alert-blink 0.5s infinite; color: white !important; cursor: pointer; border-radius: 8px; }
+        .scroll-list { overflow-y: auto; overflow-x: hidden; }
 
         #alert-modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; width: 320px; background: var(--bg-card); border: 1px solid var(--accent); border-radius: 8px; padding: 20px; }
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 999; }
@@ -54,27 +58,26 @@
         .gauge-container { position: relative; width: 100%; max-width: 500px; margin: 0 auto; height: 250px; }
         .gauge-text { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); text-align: center; width: 100%; }
 
-        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
-        .cal-header { text-align: center; font-weight: 800; font-size: 11px; color: var(--text-dim); padding: 8px 0; border-bottom: 1px solid var(--border); margin-bottom: 4px;}
-        .cal-cell { background: #1e293b; border: 1px solid var(--border); border-radius: 6px; min-height: 85px; padding: 6px; display: flex; flex-direction: column; cursor: pointer; transition: 0.2s; overflow: hidden; }
-        .cal-cell:hover { border-color: var(--accent); background: #26334a; }
-        .cal-cell.empty { background: transparent; border: none; cursor: default; }
-        .cal-cell.today { border-color: #f59e0b; background: rgba(245, 158, 11, 0.1); }
-        .cal-date { font-size: 12px; font-weight: bold; margin-bottom: 4px; color: #cbd5e1; }
-        .event-badge { font-size: 10px; font-weight: 700; padding: 2px 4px; border-radius: 3px; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .badge-critical { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border-left: 2px solid #ef4444; }
-        .badge-high { background: rgba(56, 189, 248, 0.2); color: #bae6fd; border-left: 2px solid #38bdf8; }
-        .badge-normal { background: rgba(148, 163, 184, 0.2); color: #e2e8f0; border-left: 2px solid #94a3b8; }
+        .earnings-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        @media (min-width: 768px) { .earnings-grid { grid-template-columns: repeat(4, 1fr); } }
+        @media (min-width: 1024px) { .earnings-grid { grid-template-columns: repeat(6, 1fr); } }
+        .ticker-badge { background: var(--accent); color: #0a0f1e; font-weight: 900; font-size: 10px; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-bottom: 5px; }
     </style>
 </head>
 <body>
     <header class="p-4 bg-[#161e31] border-b border-[#262f45] flex justify-between items-center px-8">
         <div class="flex items-center gap-3">
             <div class="w-3 h-8 bg-[#38bdf8] rounded-sm"></div>
-            <div class="text-2xl font-black text-[#38bdf8] tracking-tighter cursor-pointer" onclick="switchTab('home')">SIGNAL 9</div>
+            <div class="flex items-center gap-4">
+                <div class="text-2xl font-black text-[#38bdf8] tracking-tighter cursor-pointer" onclick="switchTab('home')">SIGNAL 9</div>
+                <div class="flex flex-col border-l border-gray-700 pl-4">
+                    <span class="text-[8px] text-gray-500 font-bold uppercase tracking-widest">Last Sync</span>
+                    <span id="sync-time" class="text-[10px] text-sky-400 font-mono italic">SYNCING...</span>
+                </div>
+            </div>
         </div>
 
-        <div id="alert-bar" class="flex items-center gap-4 bg-[#0a0f1e] px-4 py-2 rounded border border-[#262f45] transition-all">
+        <div id="alert-bar" class="flex items-center gap-4 bg-[#0a0f1e] px-4 py-2 rounded border border-[#262f45] transition-all hidden md:flex">
             <select id="alert-symbol" class="bg-transparent text-[10px] text-sky-400 font-bold focus:outline-none">
                 <option value="BTC">BTC</option>
                 <option value="SPY">SPX</option>
@@ -85,7 +88,7 @@
             <button onclick="toggleModal(true)" class="py-1 px-3 text-[10px] bg-gray-800 text-gray-300 border-none rounded hover:bg-gray-700 font-bold">🔔 목록</button>
             <span id="current-btc" class="text-[10px] font-mono text-gray-400 italic">LOADING...</span>
         </div>
-        <div class="text-[11px] text-gray-500 font-bold tracking-widest uppercase">투자를 위한 선택</div>
+        <div class="text-[11px] text-gray-500 font-bold tracking-widest uppercase md:hidden">투자를 위한 선택</div>
     </header>
 
     <div id="modal-overlay" class="modal-overlay" onclick="toggleModal(false)"></div>
@@ -94,7 +97,7 @@
             <h4 class="text-sm font-bold text-sky-400">설정된 알림 목록</h4>
             <button onclick="toggleModal(false)" class="text-xs text-gray-500">닫기</button>
         </div>
-        <ul id="active-alert-list" class="space-y-2 max-h-[250px] overflow-y-auto text-xs"></ul>
+        <ul id="active-alert-list" class="space-y-2 max-h-[250px] overflow-y-auto text-xs scroll-list"></ul>
     </div>
 
     <div id="chart-modal-overlay" class="chart-modal-overlay" onclick="toggleChartModal(false)"></div>
@@ -111,7 +114,9 @@
             </div>
             <button onclick="toggleChartModal(false)" class="text-gray-400 hover:text-white text-3xl leading-none">&times;</button>
         </div>
-        <div id="chart_box" class="w-full h-full bg-[#131722] rounded-lg border border-[#262f45] overflow-hidden p-0 relative"></div>
+        <div class="w-full bg-[#0a0f1e] rounded-lg border border-[#262f45] overflow-hidden p-4 relative" style="height: calc(100% - 60px);">
+            <canvas id="robotMainChart"></canvas>
+        </div>
     </div>
 
     <div class="main-layout">
@@ -128,11 +133,11 @@
             <div class="thermal-card" id="card-USDKRW" onclick="changeWidget('USDKRW', this)"><span class="idx-label">USD / KRW</span><div class="idx-val" id="val-USDKRW">--</div><div class="idx-chg" id="chg-USDKRW">0.00%</div></div>
         </div>
 
-        <nav class="tab-menu mt-2">
+        <nav class="tab-menu mt-2 no-scrollbar">
             <button class="tab-btn active" onclick="switchTab('home')">메인 상황실</button>
             <button class="tab-btn" onclick="switchTab('ai')">AI & 심리 분석</button>
             <button class="tab-btn" onclick="switchTab('calendar')">매크로 일정</button>
-            <button class="tab-btn" onclick="switchTab('news')">섹터별 뉴스</button>
+            <button class="tab-btn" onclick="switchTab('news')">동적 뉴스 리포트</button>
         </nav>
 
         <div id="tab-home" class="tab-content active">
@@ -154,24 +159,45 @@
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                 <div class="card min-h-[200px] flex flex-col justify-between">
-                    <div><span class="section-label text-gray-400">Briefing</span><h3 class="text-lg font-bold text-white mb-2">AI 시장 3줄 요약</h3><p class="text-sm text-gray-400 leading-relaxed" id="home-ai-summary">데이터를 분석 중입니다. 잠시만 기다려주세요.</p></div>
+                    <div>
+                        <span class="section-label text-gray-400">Briefing</span>
+                        <h3 class="text-lg font-bold text-white mb-2">AI 시장 3줄 요약</h3>
+                        <p class="text-sm text-gray-400 leading-relaxed" id="home-ai-summary">데이터를 분석 중입니다. 잠시만 기다려주세요.</p>
+                    </div>
                     <button onclick="switchTab('ai')" class="mt-4 text-xs font-bold text-sky-400 hover:text-white text-left transition-colors">▶ 심리 분석 딥다이브</button>
                 </div>
                 <div class="card min-h-[200px] flex flex-col justify-between">
-                    <div><span class="section-label text-gray-400">Next Big Event</span><h3 class="text-lg font-bold text-white mb-2">가장 임박한 일정 (6시간 내)</h3><div id="home-next-event" class="bg-[#0a0f1e] p-3 rounded border border-[#262f45] mt-2"><span class="text-xs text-gray-500 block">6시간 이내 임박한 일정이 없습니다.</span></div></div>
+                    <div>
+                        <span class="section-label text-gray-400">Next Big Event</span>
+                        <h3 class="text-lg font-bold text-white mb-2">가장 임박한 일정</h3>
+                        <div id="home-next-event" class="bg-[#0a0f1e] p-3 rounded border border-[#262f45] mt-2">
+                            <span class="text-xs text-gray-500 block">로딩 중...</span>
+                        </div>
+                    </div>
                     <button onclick="switchTab('calendar')" class="mt-4 text-xs font-bold text-sky-400 hover:text-white text-left transition-colors">▶ 캘린더 전체 보기</button>
                 </div>
                 <div class="card min-h-[200px] flex flex-col justify-between">
-                    <div><span class="section-label text-gray-400">Top Headline</span><h3 class="text-lg font-bold text-white mb-2">핵심 속보</h3><div id="home-top-news" class="mt-2 text-sm text-gray-300">뉴스를 불러오는 중입니다...</div></div>
-                    <button onclick="switchTab('news')" class="mt-4 text-xs font-bold text-sky-400 hover:text-white text-left transition-colors">▶ 섹터별 뉴스 더보기</button>
+                    <div>
+                        <span class="section-label text-gray-400">Top Headline</span>
+                        <h3 class="text-lg font-bold text-white mb-2">핵심 테마 브리핑</h3>
+                        <div id="home-top-news" class="mt-2 text-sm text-gray-300">
+                            로봇이 뉴스를 요약 중입니다...
+                        </div>
+                    </div>
+                    <button onclick="switchTab('news')" class="mt-4 text-xs font-bold text-sky-400 hover:text-white text-left transition-colors">▶ 뉴스 리포트 더보기</button>
                 </div>
             </div>
         </div>
 
         <div id="tab-ai" class="tab-content">
             <div class="ai-analysis-card mb-5">
-                <div class="mb-4 border-b border-[#262f45] pb-3"><span class="section-label">AI Market analysis</span><h3 class="text-xl font-bold italic text-white">실시간 AI 시장 분석 상세 리포트</h3></div>
-                <div id="ai-analysis-text" class="text-sm text-gray-300 leading-relaxed overflow-y-auto scroll-list pr-2 min-h-[100px]">데이터를 분석 중입니다...</div>
+                <div class="mb-4 border-b border-[#262f45] pb-3">
+                    <span class="section-label">AI Market analysis</span>
+                    <h3 class="text-xl font-bold italic text-white">실시간 AI 시장 분석 상세 리포트</h3>
+                </div>
+                <div id="ai-analysis-text" class="text-sm text-gray-300 leading-relaxed overflow-y-auto scroll-list pr-2 min-h-[100px]">
+                    데이터를 분석 중입니다...
+                </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
@@ -179,9 +205,12 @@
                     <div class="card min-h-[360px]">
                         <div class="flex justify-between items-start mb-4">
                             <div><span class="section-label">Dual Analytics</span><h3 class="text-xl font-bold">실시간 연준 심리 분석</h3></div>
-                            <div class="bg-[#0a0f1e] px-4 py-2 rounded-lg border border-[#262f45] text-right"><span class="text-[9px] text-gray-500 font-bold uppercase tracking-tighter">Market Temp</span><span class="text-xl font-black italic tracking-tighter" id="temp-value">0.0°</span></div>
+                            <div class="bg-[#0a0f1e] px-4 py-2 rounded-lg border border-[#262f45] text-right">
+                                <span class="text-[9px] text-gray-500 font-bold uppercase tracking-tighter">Market Temp</span>
+                                <span class="text-xl font-black italic tracking-tighter" id="temp-value">0.0°</span>
+                            </div>
                         </div>
-                        <div class="flex-grow flex flex-col gap-4 h-full relative">
+                        <div class="flex-grow flex flex-col gap-4 h-full">
                             <div class="h-[70%] border-b border-gray-800 pb-2 relative"><canvas id="sentimentChart"></canvas></div>
                             <div class="h-[30%] pt-2 relative"><canvas id="volumeChart"></canvas></div>
                         </div>
@@ -201,72 +230,233 @@
         </div>
 
         <div id="tab-calendar" class="tab-content">
-            <div class="card min-h-[800px]">
+            <div class="card h-[800px]">
                 <div class="flex justify-between items-center mb-4 border-b border-[#262f45] pb-3">
-                    <div><span class="section-label">Macro Calendar</span><h3 class="text-xl font-bold text-white">글로벌 매크로 일정</h3></div>
-                    <div class="flex gap-4 items-center bg-[#0a0f1e] px-4 py-1 rounded border border-[#262f45]">
-                        <button onclick="changeMonth(-1)" class="text-gray-400 hover:text-sky-400 font-bold px-3 py-1 text-lg">&lt;</button>
-                        <span id="cal-month-display" class="font-black text-lg text-sky-400 tracking-widest w-[100px] text-center">2026. 03</span>
-                        <button onclick="changeMonth(1)" class="text-gray-400 hover:text-sky-400 font-bold px-3 py-1 text-lg">&gt;</button>
+                    <div>
+                        <span class="section-label" id="cal-month-label">Dynamic Calendar</span>
+                        <h3 class="text-xl font-bold text-white" id="cal-main-title">글로벌 주요 매크로 일정</h3>
+                    </div>
+                    <div class="flex gap-2 items-center">
+                        <button onclick="switchCalMode('MACRO')" id="btn-cal-macro" class="chart-btn active">경제 지표</button>
+                        <button onclick="switchCalMode('EARNINGS')" id="btn-cal-earnings" class="chart-btn">기업 실적</button>
+                        <div id="sync-status" class="text-[10px] text-gray-500 font-bold border border-gray-700 px-3 py-1 rounded ml-2">WAITING...</div>
                     </div>
                 </div>
-                <div class="cal-grid"><div class="cal-header text-red-400">SUN</div><div class="cal-header">MON</div><div class="cal-header">TUE</div><div class="cal-header">WED</div><div class="cal-header">THU</div><div class="cal-header">FRI</div><div class="cal-header text-sky-400">SAT</div></div>
-                <div id="calendar-grid" class="cal-grid mb-6"></div>
-                <div class="mt-auto border-t border-[#262f45] pt-4 bg-[#0a0f1e] p-4 rounded-lg">
-                    <div class="flex justify-between items-center mb-3 border-b border-[#262f45] pb-2"><h4 class="text-md font-bold text-sky-400" id="selected-date-title">날짜를 선택하세요</h4><span class="text-[10px] text-gray-500 font-bold tracking-widest border border-gray-700 px-2 py-1 rounded">DAILY SCHEDULE</span></div>
-                    <ul id="selected-date-events" class="space-y-2 text-sm text-gray-300 min-h-[100px]"><li class="text-xs text-gray-500 italic mt-4 text-center">달력에서 날짜를 클릭하시면 해당 일의 상세 일정이 표시됩니다.</li></ul>
+                <div id="calendar-container" class="w-full h-full flex flex-col">
                 </div>
             </div>
         </div>
 
         <div id="tab-news" class="tab-content">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-                <div class="card min-h-[600px]"><span class="section-label text-sky-400">BIG TECH</span><h3 class="text-lg font-bold text-white mb-4 border-b border-[#262f45] pb-2">빅테크 터미널</h3><div id="news-bigtech" class="text-sm scroll-list overflow-y-auto space-y-3"></div></div>
-                <div class="card min-h-[600px]"><span class="section-label text-purple-400">SEMICONDUCTOR</span><h3 class="text-lg font-bold text-white mb-4 border-b border-[#262f45] pb-2">반도체 터미널</h3><div id="news-semicon" class="text-sm scroll-list overflow-y-auto space-y-3"></div></div>
-                <div class="card min-h-[600px]"><span class="section-label text-emerald-400">FINANCE & MACRO</span><h3 class="text-lg font-bold text-white mb-4 border-b border-[#262f45] pb-2">금융 터미널</h3><div id="news-finance" class="text-sm scroll-list overflow-y-auto space-y-3"></div></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="dynamic-news-grid">
+                <div class="col-span-full text-center py-20">
+                    <span class="inline-block animate-spin text-4xl mb-4">⚙️</span>
+                    <p class="text-gray-400 font-bold">AI 로봇이 전 세계 최신 뉴스를 6개 테마로 분석 중입니다...</p>
+                    <p class="text-xs text-gray-500 mt-2">※ 깃허브 액션이 완료되면 자동으로 표시됩니다.</p>
+                </div>
             </div>
         </div>
+
     </div>
 
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
-        let sentimentChart = null, volumeChart = null, trendChart = null, masterGaugeChart = null; 
-        let alertList = [], globalEvents = [], currentCalDate = new Date();
-        let currentModalTickerId = 'BTC', currentRange = '1d';
+        let sentimentChart = null, volumeChart = null, trendChart = null;
+        let masterGaugeChart = null; 
+        let alertList = [];
+        let currentModalTickerId = 'BTC';
+        let currentRange = '1d';
+        
+        let robotChartInstance = null;
+        let allChartData = {};
 
-        function switchTab(tabId) { document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active')); document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); document.getElementById(`tab-${tabId}`).classList.add('active'); if(event) event.currentTarget.classList.add('active'); }
-        const tvTickerMap = { 'BTC': 'BINANCE:BTCUSDT', 'SPY': 'OANDA:SPX500USD', 'QQQ': 'OANDA:NAS100USD', 'DIA': 'OANDA:US30USD', 'US10Y': 'TVC:US10Y', 'US02Y': 'TVC:US02Y', 'OIL': 'TVC:USOIL', 'GOLD': 'TVC:GOLD', 'KOSPI': 'AMEX:EWY', 'USDKRW': 'FX_IDC:USDKRW' };
+        // 캘린더 모드 전환 변수
+        let currentCalMode = 'MACRO';
+        let globalEvents = [];
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
 
         function toggleModal(show) { document.getElementById('alert-modal').style.display = show ? 'block' : 'none'; document.getElementById('modal-overlay').style.display = show ? 'block' : 'none'; }
-        function toggleChartModal(show) { document.getElementById('chart-modal-wrapper').style.display = show ? 'flex' : 'none'; document.getElementById('chart-modal-overlay').style.display = show ? 'block' : 'none'; }
-        function addAlert() { const s = document.getElementById('alert-symbol'); const p = parseFloat(document.getElementById('alert-price').value); if (!p) return alert("가격을 입력하세요!"); alertList.push({ id: Date.now(), symbol: s.value, name: s.options[s.selectedIndex].text, target: p }); document.getElementById('alert-price').value = ""; renderAlertList(); }
-        function renderAlertList() { const list = document.getElementById('active-alert-list'); list.innerHTML = alertList.length === 0 ? `<li class="text-gray-500 text-center py-4 text-xs italic">설정된 알림이 없습니다.</li>` : alertList.map(a => `<li class="flex justify-between p-2 bg-[#1e293b] rounded mb-1 text-xs"><span>${a.name} $${a.target}</span><button onclick="removeAlert(${a.id})" class="text-red-500 font-bold">삭제</button></li>`).join(''); }
+        function toggleChartModal(show) {
+            document.getElementById('chart-modal-wrapper').style.display = show ? 'flex' : 'none';
+            document.getElementById('chart-modal-overlay').style.display = show ? 'block' : 'none';
+        }
+
+        function addAlert() {
+            const select = document.getElementById('alert-symbol');
+            const price = parseFloat(document.getElementById('alert-price').value);
+            if (!price) return alert("가격을 입력하세요!");
+            alertList.push({ id: Date.now(), symbol: select.value, name: select.options[select.selectedIndex].text, target: price });
+            document.getElementById('alert-price').value = ""; renderAlertList();
+        }
+
+        function renderAlertList() {
+            const listEl = document.getElementById('active-alert-list');
+            listEl.innerHTML = alertList.length === 0 ? `<li class="text-gray-500 text-center py-4 text-xs italic">설정된 알림이 없습니다.</li>` : 
+                alertList.map(a => `<li class="flex justify-between items-center p-2 bg-[#1e293b] rounded mb-1 text-xs"><span>${a.name} $${a.target}</span><button onclick="removeAlert(${a.id})" class="text-red-500 font-bold">삭제</button></li>`).join('');
+        }
+
         function removeAlert(id) { alertList = alertList.filter(a => a.id !== id); renderAlertList(); }
 
         async function syncMarketPrices() {
             try {
-                const btcRes = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT'); const btcData = await btcRes.json();
-                updateCardUI('BTC', btcData.lastPrice, btcData.priceChangePercent); document.getElementById('current-btc').innerText = `BTC: $${parseFloat(btcData.lastPrice).toLocaleString()}`;
-                const symbols = [ { id: 'SPY', ticker: '^GSPC' }, { id: 'QQQ', ticker: '^NDX' }, { id: 'DIA', ticker: '^DJI' }, { id: 'US10Y', ticker: '^TNX' }, { id: 'US02Y', ticker: '^FVX' }, { id: 'OIL', ticker: 'CL=F' }, { id: 'GOLD', ticker: 'GC=F' }, { id: 'KOSPI', ticker: '^KS11' }, { id: 'USDKRW', ticker: 'KRW=X' } ];
+                const btcRes = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT');
+                const btcData = await btcRes.json();
+                updateCardUI('BTC', btcData.lastPrice, btcData.priceChangePercent);
+                document.getElementById('current-btc').innerText = `BTC: $${parseFloat(btcData.lastPrice).toLocaleString()}`;
+
+                const symbols = [
+                    { id: 'SPY', ticker: '^GSPC' }, { id: 'QQQ', ticker: '^NDX' }, { id: 'DIA', ticker: '^DJI' },
+                    { id: 'US10Y', ticker: '^TNX' }, { id: 'US02Y', ticker: '^FVX' }, { id: 'OIL', ticker: 'CL=F' },   
+                    { id: 'GOLD', ticker: 'GC=F' }, { id: 'KOSPI', ticker: '^KS11' }, { id: 'USDKRW', ticker: 'KRW=X' } 
+                ];
+
                 symbols.forEach(async (s) => {
-                    try { const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${s.ticker}`)}`); const data = JSON.parse((await res.json()).contents).chart.result[0].meta; updateCardUI(s.id, data.regularMarketPrice, ((data.regularMarketPrice - data.chartPreviousClose) / data.chartPreviousClose) * 100); } catch (e) {}
+                    try {
+                        const url = encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${s.ticker}`);
+                        const res = await fetch(`https://api.allorigins.win/get?url=${url}`);
+                        const data = await res.json();
+                        const yfData = JSON.parse(data.contents);
+                        const meta = yfData.chart.result[0].meta;
+                        const price = meta.regularMarketPrice;
+                        const prevClose = meta.chartPreviousClose;
+                        const change = ((price - prevClose) / prevClose) * 100;
+                        updateCardUI(s.id, price, change);
+                    } catch (err) { }
                 });
-            } catch (e) {}
+            } catch (e) { }
         }
 
-        function updateCardUI(id, price, change) { const valEl = document.getElementById(`val-${id}`), chgEl = document.getElementById(`chg-${id}`), cd = document.getElementById(`card-${id}`); if (valEl) { const c = parseFloat(change).toFixed(2); valEl.innerText = parseFloat(price).toLocaleString(); chgEl.innerText = (c >= 0 ? '+' : '') + c + '%'; chgEl.className = `idx-chg font-bold ${c >= 0 ? 'text-red-400' : 'text-sky-400'}`; cd.classList.toggle('hot', c > 0.5); cd.classList.toggle('cold', c < -0.5); } }
-        function loadChart(id, range = '1d') { document.getElementById('chart_box').innerHTML = ''; new TradingView.widget({ "width": "100%", "height": "100%", "symbol": tvTickerMap[id] || id, "interval": range === '1d' ? '5' : 'D', "theme": "dark", "container_id": "chart_box", "hide_top_toolbar": true }); }
-        function changeWidget(id, el) { document.querySelectorAll('.thermal-card').forEach(c => c.classList.remove('active')); if(el) el.classList.add('active'); currentModalTickerId = id; toggleChartModal(true); loadChart(id, '1d'); }
-        function changeChartRange(range, btnEl) { document.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active')); btnEl.classList.add('active'); currentRange = range; loadChart(currentModalTickerId, currentRange); }
+        function updateCardUI(id, price, change) {
+            const valEl = document.getElementById(`val-${id}`);
+            const chgEl = document.getElementById(`chg-${id}`);
+            const cardEl = document.getElementById(`card-${id}`);
+            if (valEl && chgEl) {
+                const p = parseFloat(price);
+                const c = parseFloat(change).toFixed(2); 
+                valEl.innerText = p.toLocaleString(undefined, {minimumFractionDigits: (id.includes('Y') || id === 'USDKRW') ? 2 : 0});
+                chgEl.innerText = (c >= 0 ? '+' : '') + c + '%';
+                chgEl.className = `idx-chg font-bold ${c >= 0 ? 'text-red-400' : 'text-sky-400'}`;
+                cardEl.classList.remove('hot', 'cold');
+                if (c > 0.5) cardEl.classList.add('hot');
+                else if (c < -0.5) cardEl.classList.add('cold');
+            }
+        }
+
+        async function loadChart(id, range = '1d') {
+            const ctx = document.getElementById('robotMainChart').getContext('2d');
+            if (robotChartInstance) robotChartInstance.destroy();
+            
+            if (!allChartData[id]) {
+                try {
+                    const res = await fetch('./market_charts.json?v=' + Date.now());
+                    allChartData = await res.json();
+                } catch(e) { console.log("차트 데이터 로드 대기중..."); return; }
+            }
+
+            if (!allChartData[id]) return;
+
+            const dataObj = allChartData[id];
+            let labels, prices;
+
+            if (range === '1d') { 
+                labels = dataObj.day.labels; prices = dataObj.day.prices; 
+            } else { 
+                let sliceLen = (range === '5d') ? 7 : (range === '1mo') ? 30 : (range === '3mo') ? 90 : (range === '1y') ? 365 : 3650; 
+                labels = dataObj.full.labels.slice(-sliceLen); 
+                prices = dataObj.full.prices.slice(-sliceLen); 
+            }
+
+            robotChartInstance = new Chart(ctx, { 
+                type: 'line', 
+                data: { 
+                    labels: labels, 
+                    datasets: [{ 
+                        data: prices, 
+                        borderColor: '#38bdf8', 
+                        backgroundColor: 'rgba(56, 189, 248, 0.1)', 
+                        fill: true, 
+                        pointRadius: 0, 
+                        borderWidth: 2, 
+                        tension: 0.1 
+                    }]
+                },
+                options: { 
+                    responsive: true, maintainAspectRatio: false, 
+                    plugins: { legend: { display: false } }, 
+                    scales: { 
+                        x: { grid: { display: false }, ticks: { color: '#64748b', maxTicksLimit: 8 } }, 
+                        y: { grid: { color: '#262f45' }, ticks: { color: '#64748b' } } 
+                    }
+                }
+            });
+        }
+
+        function changeWidget(id, el) { 
+            document.querySelectorAll('.thermal-card').forEach(c => c.classList.remove('active'));
+            if(el) {
+                el.classList.add('active');
+                const name = el.querySelector('.idx-label').innerText;
+                document.getElementById('chart-modal-title').innerText = `${name} MARKET SIGNAL`;
+            }
+            currentModalTickerId = id; 
+            document.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector('.chart-btn').classList.add('active'); 
+            toggleChartModal(true);
+            loadChart(currentModalTickerId, '1d'); 
+        }
+
+        function changeChartRange(range, btnEl) {
+            document.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active'));
+            btnEl.classList.add('active');
+            currentRange = range;
+            loadChart(currentModalTickerId, currentRange);
+        }
 
         function initMasterGauge(score) {
             const ctx = document.getElementById('masterGaugeChart').getContext('2d');
             if(masterGaugeChart) masterGaugeChart.destroy();
-            let statusText = "Neutral", color = "#eab308";
-            if(score <= 25) { statusText = "Extreme Fear"; color = "#ef4444"; } else if(score <= 45) { statusText = "Fear"; color = "#f97316"; } else if(score >= 75) { statusText = "Extreme Greed"; color = "#38bdf8"; } else if(score >= 55) { statusText = "Greed"; color = "#2dd4bf"; }
-            document.getElementById('gauge-score').innerText = score + '°'; document.getElementById('gauge-score').style.color = color;
-            document.getElementById('gauge-status').innerText = statusText; document.getElementById('gauge-status').style.color = color;
-            masterGaugeChart = new Chart(ctx, { type: 'doughnut', data: { labels: ['극단적 공포', '공포', '중립', '탐욕', '극단적 탐욕'], datasets: [{ data: [20, 20, 20, 20, 20], backgroundColor: ['#ef4444', '#f97316', '#eab308', '#2dd4bf', '#38bdf8'], borderWidth: 0, circumference: 180, rotation: 270 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '80%', plugins: { legend: { display: false }, tooltip: { enabled: false } }, animation: { animateRotate: true, animateScale: false } } });
+
+            let statusText = "Neutral (중립)";
+            let color = "#eab308";
+            if(score <= 25) { statusText = "Extreme Fear (극단적 공포)"; color = "#ef4444"; }
+            else if(score <= 45) { statusText = "Fear (공포)"; color = "#f97316"; }
+            else if(score >= 75) { statusText = "Extreme Greed (극단적 탐욕)"; color = "#38bdf8"; }
+            else if(score >= 55) { statusText = "Greed (탐욕)"; color = "#2dd4bf"; }
+
+            document.getElementById('gauge-score').innerText = score + '°';
+            document.getElementById('gauge-score').style.color = color;
+            document.getElementById('gauge-status').innerText = statusText;
+            document.getElementById('gauge-status').style.color = color;
+
+            masterGaugeChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['극단적 공포', '공포', '중립', '탐욕', '극단적 탐욕'],
+                    datasets: [{
+                        data: [20, 20, 20, 20, 20],
+                        backgroundColor: ['#ef4444', '#f97316', '#eab308', '#2dd4bf', '#38bdf8'],
+                        borderWidth: 0,
+                        circumference: 180,
+                        rotation: 270
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '80%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false }
+                    },
+                    animation: { animateRotate: true, animateScale: false }
+                }
+            });
         }
 
         async function updateTerminalData() {
@@ -274,62 +464,176 @@
                 const response = await fetch('./indicators.json?v=' + Date.now());
                 const data = await response.json();
                 
-                // 🚀 [원본 로직] 형님 온도계 절대 안 건드리고 master_score 그대로 씀
+                // 1. 업데이트 시간 동기화
+                if(data.last_updated) document.getElementById('sync-time').innerText = data.last_updated;
+                
+                // 2. 게이지 및 텍스트 업데이트
+                const tempNum = parseFloat(data.market_temp || "0");
+                document.getElementById('temp-value').innerText = data.market_temp + '°';
+                document.getElementById('temp-value').className = tempNum >= 0 ? "text-xl font-black italic text-sky-400" : "text-xl font-black italic text-red-400";
+                document.getElementById('ai-analysis-text').innerText = data.ai_summary || "데이터 분석 완료.";
+                document.getElementById('home-ai-summary').innerText = (data.ai_summary || "").substring(0, 100) + "...";
+                
                 let gaugeScore = data.master_score || 50; 
                 initMasterGauge(gaugeScore); 
 
-                document.getElementById('home-ai-summary').innerText = (data.ai_summary || "").substring(0, 100) + "...";
-                document.getElementById('ai-analysis-text').innerText = data.ai_summary || "데이터 분석 완료.";
-                document.getElementById('temp-value').innerText = (data.market_temp || "0.0") + '°';
+                // 3. 12개 연준 키워드 업데이트
+                const labels = data.fomc_indicators.map(i => i.word);
+                if (sentimentChart) sentimentChart.destroy();
+                sentimentChart = new Chart(document.getElementById('sentimentChart'), {
+                    type: 'bar',
+                    data: { labels, datasets: [{ data: data.fomc_indicators.map(i => i.sentiment_score), backgroundColor: data.fomc_indicators.map(i => i.sentiment_score >= 0 ? 'rgba(56, 189, 248, 0.7)' : 'rgba(239, 68, 68, 0.7)'), borderRadius: 4 }] },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { min: -10, max: 10, grid: { color: '#262f45' } } } }
+                });
 
-                const fomcData = data.fomc_indicators || data.indicators || []; 
-                const engineData = data.engine_indicators || data.indicators || []; 
+                document.getElementById('indicator-list').innerHTML = data.engine_indicators.map(i => `
+                    <li class="flex justify-between items-center p-3 rounded bg-[#1e293b] border-l-4 ${i.sentiment_score >= 0 ? 'border-sky-500' : 'border-red-500'}">
+                        <div class="flex flex-col"><span class="font-bold text-white text-xs">${i.word}</span><span class="text-[9px] text-gray-500">${i.count} MENTIONS</span></div>
+                        <span class="font-mono font-black text-xs ${i.sentiment_score >= 0 ? 'text-sky-400' : 'text-red-400'}">${i.display_score}</span>
+                    </li>`).join('');
 
-                if (fomcData.length > 0) {
-                    const labels = fomcData.map(i => i.word);
-                    if (sentimentChart) sentimentChart.destroy();
-                    sentimentChart = new Chart(document.getElementById('sentimentChart'), {
-                        type: 'bar',
-                        data: { labels, datasets: [{ data: fomcData.map(i => i.sentiment_score), backgroundColor: fomcData.map(i => i.sentiment_score >= 0 ? 'rgba(56, 189, 248, 0.7)' : 'rgba(239, 68, 68, 0.7)'), borderRadius: 4 }] },
-                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { min: -10, max: 10, grid: { color: '#262f45' } } } }
+                // 🚨 4. [완벽 수정] 6섹터 동적 뉴스 렌더링 🚨
+                // Github Action이 돌아서 dynamic_news 데이터를 json에 성공적으로 썼다면 아래 로직이 실행됩니다.
+                if(data.dynamic_news && Object.keys(data.dynamic_news).length > 0) {
+                    const grid = document.getElementById('dynamic-news-grid');
+                    grid.innerHTML = ''; // 로딩 메시지를 지우고 카드를 뿌림
+                    
+                    const borderColors = ['border-sky-500', 'border-red-500', 'border-emerald-500', 'border-purple-500', 'border-amber-500', 'border-rose-500'];
+                    const labelColors = ['text-sky-400', 'text-red-400', 'text-emerald-400', 'text-purple-400', 'text-amber-400', 'text-rose-400'];
+                    
+                    Object.entries(data.dynamic_news).forEach(([theme, content], index) => {
+                        grid.innerHTML += `
+                            <div class="card min-h-[300px] border-t-4 ${borderColors[index % 6]}">
+                                <span class="section-label ${labelColors[index % 6]}">${theme}</span>
+                                <h3 class="text-lg font-bold text-white mb-2 border-b border-gray-800 pb-2 italic uppercase">Market Briefing</h3>
+                                <p class="text-sm text-gray-300 leading-relaxed font-medium mt-2">${content}</p>
+                            </div>`;
                     });
+                    
+                    // 홈 화면 최상단 카드에 첫 번째 테마 노출
+                    const firstTheme = Object.keys(data.dynamic_news)[0];
+                    if(firstTheme) {
+                        document.getElementById('home-top-news').innerHTML = `<b>[${firstTheme}]</b><br><span class="text-gray-400 mt-1 inline-block">${data.dynamic_news[firstTheme].substring(0, 60)}...</span>`;
+                    }
                 }
-
-                // 🚀 [여기가 수술 부위] 상세 리스트 이름을 i.word 원본으로 출력
-                if (engineData.length > 0) {
-                    document.getElementById('indicator-list').innerHTML = engineData.map(i => `
-                        <li class="flex justify-between items-center p-3 rounded bg-[#1e293b] border-l-4 ${i.sentiment_score >= 0 ? 'border-sky-500' : 'border-red-500'}">
-                            <div class="flex flex-col"><span class="font-bold text-white text-xs">${i.word}</span><span class="text-[9px] text-gray-500">${i.count} MENTIONS</span></div>
-                            <span class="font-mono font-black text-xs ${i.sentiment_score >= 0 ? 'text-sky-400' : 'text-red-400'}">${i.display_score}</span>
-                        </li>`).join('');
-                }
-
-                if(data.sector_news) {
-                    const upNews = (id, arr) => { document.getElementById(id).innerHTML = (arr || []).map(n => `<div class="news-item border-b border-[#262f45] pb-2 mb-2 last:border-0"><a href="${n.link}" target="_blank" class="hover:text-sky-400 block mb-1 font-bold text-sm text-gray-300">▶ ${n.title}</a></div>`).join(''); };
-                    upNews('news-bigtech', data.sector_news['BIG TECH']); upNews('news-semicon', data.sector_news['SEMICON']); upNews('news-finance', data.sector_news['FINANCE']);
-                }
-            } catch (err) { initMasterGauge(50); }
-        }
-
-        async function updateCalendar() { try { const response = await fetch('./economic_events.json?v=' + Date.now()); globalEvents = await response.json(); renderCalendar(); updateHomeCalendarTeaser(); } catch (e) {} }
-        function renderCalendar() {
-            const grid = document.getElementById('calendar-grid'); grid.innerHTML = '';
-            const year = currentCalDate.getFullYear(), month = currentCalDate.getMonth();
-            const days = new Date(year, month + 1, 0).getDate();
-            const firstDay = new Date(year, month, 1).getDay();
-            for (let i = 0; i < firstDay; i++) grid.innerHTML += `<div class="cal-cell empty"></div>`;
-            for (let i = 1; i <= days; i++) {
-                const d = `${year}-${String(month+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
-                const evs = globalEvents.filter(ev => ev.date.startsWith(d));
-                grid.innerHTML += `<div class="cal-cell" onclick="showDateEvents('${d}')"><div class="cal-date">${i}</div>${evs.slice(0, 2).map(e => `<div class="event-badge badge-high">${e.name}</div>`).join('')}</div>`;
+            } catch (err) { 
+                initMasterGauge(50); 
+                console.error("터미널 데이터 로드 실패", err);
             }
         }
-        function changeMonth(delta) { currentCalDate.setMonth(currentCalDate.getMonth() + delta); renderCalendar(); }
-        function showDateEvents(dateStrPrefix) { document.getElementById('selected-date-title').innerText = `${dateStrPrefix} 상세 일정`; const dayEvents = globalEvents.filter(ev => ev.date.startsWith(dateStrPrefix)); const list = document.getElementById('selected-date-events'); if (dayEvents.length === 0) { list.innerHTML = '<li class="text-xs text-gray-500 italic mt-4 text-center">일정 없음</li>'; return; } list.innerHTML = dayEvents.map(ev => `<li class="bg-[#161e31] p-3 rounded border border-gray-600 font-bold text-sm flex items-center gap-3"><span class="flex-grow">${ev.name}</span></li>`).join(''); }
-        function updateHomeCalendarTeaser() { /* 임박 일정 로직 생략 없이 그대로 유지 */ }
-        async function loadTrendData() { try { const res = await fetch('./historical_data.json?v=' + Date.now()); const history = await res.json(); if (trendChart) trendChart.destroy(); trendChart = new Chart(document.getElementById('trendChart'), { type: 'line', data: { labels: history.map(d => d.date), datasets: [{ data: history.map(d => d.score), borderColor: '#38bdf8', backgroundColor: 'rgba(56, 189, 248, 0.15)', fill: true, tension: 0.4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#262f45' } }, x: { grid: { display: false } } } } }); } catch (e) { } }
 
-        window.onload = () => { syncMarketPrices(); updateTerminalData(); updateCalendar(); loadTrendData(); setInterval(syncMarketPrices, 5000); setInterval(updateTerminalData, 30000); };
+        // 캘린더 관련 로직
+        function switchCalMode(mode) {
+            currentCalMode = mode;
+            document.getElementById('btn-cal-macro').classList.toggle('active', mode === 'MACRO');
+            document.getElementById('btn-cal-earnings').classList.toggle('active', mode === 'EARNINGS');
+            document.getElementById('cal-main-title').innerText = mode === 'MACRO' ? '글로벌 주요 매크로 일정' : '주요 기업 실적 발표';
+            
+            const today = new Date();
+            document.getElementById('cal-month-label').innerText = mode === 'MACRO' ? `${today.getFullYear()}년 ${today.getMonth() + 1}월 달력` : 'Earnings Grid';
+            
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            const container = document.getElementById('calendar-container');
+            container.innerHTML = '';
+            
+            const filtered = globalEvents.filter(ev => currentCalMode === 'MACRO' ? ev.type !== 'EARNINGS' : ev.type === 'EARNINGS');
+
+            if (currentCalMode === 'MACRO') {
+                container.className = "flex flex-col h-full w-full";
+                
+                const today = new Date();
+                const year = today.getFullYear();
+                const month = today.getMonth();
+                const firstDay = new Date(year, month, 1).getDay();
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+                
+                let html = `
+                    <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-black text-gray-500 mb-2 tracking-widest mt-4">
+                        <div class="text-red-900">SUN</div><div>MON</div><div>TUE</div><div>WED</div><div>THU</div><div>FRI</div><div class="text-sky-900">SAT</div>
+                    </div>
+                    <div class="grid grid-cols-7 gap-1 flex-grow auto-rows-fr">
+                `;
+                
+                for (let i = 0; i < firstDay; i++) {
+                    html += `<div class="bg-transparent rounded border border-transparent"></div>`;
+                }
+                
+                for (let d = 1; d <= daysInMonth; d++) {
+                    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                    const dayEvents = filtered.filter(e => e.date && e.date.startsWith(dateStr));
+                    
+                    let eventHtml = dayEvents.map(e => {
+                        const color = e.importance === 'CRITICAL' ? 'bg-red-500 text-[#0a0f1e]' : 'bg-sky-500 text-[#0a0f1e]';
+                        return `<div class="text-[9px] font-bold truncate px-1 py-0.5 mb-0.5 rounded ${color}">${e.name}</div>`;
+                    }).join('');
+                    
+                    const isToday = (d === today.getDate() && month === today.getMonth());
+                    const borderCls = isToday ? 'border-sky-500 border-2' : 'border-[#262f45] border';
+                    const bgCls = isToday ? 'bg-[#162032]' : 'bg-[#0a0f1e]';
+                    const textCls = isToday ? 'text-sky-400 font-black' : 'text-gray-500 font-bold';
+                    
+                    html += `
+                        <div class="${bgCls} rounded ${borderCls} p-1 h-[70px] md:h-[90px] overflow-y-auto scroll-list">
+                            <span class="text-[10px] ${textCls} block mb-1">${d}</span>
+                            ${eventHtml}
+                        </div>
+                    `;
+                }
+                html += `</div>`;
+                container.innerHTML = html;
+            } else {
+                container.className = "earnings-grid overflow-y-auto pr-2 scroll-list h-full items-start mt-4";
+                container.innerHTML = filtered.map(ev => `
+                    <div class="p-3 bg-[#1e293b] rounded border border-[#262f45] text-center relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-sky-500 opacity-50"></div>
+                        <span class="ticker-badge">${ev.name.split(' ')[0]}</span>
+                        <div class="text-[10px] text-gray-400 mt-2">${ev.date}</div>
+                    </div>`).join('');
+            }
+        }
+
+        async function updateCalendar() {
+            try {
+                const response = await fetch('./economic_events.json?v=' + Date.now());
+                globalEvents = await response.json(); 
+                
+                const today = new Date();
+                document.getElementById('cal-month-label').innerText = `${today.getFullYear()}년 ${today.getMonth() + 1}월 달력`;
+                
+                renderCalendar(); 
+
+                const nextEvent = globalEvents.find(ev => Math.floor((new Date(ev.date) - new Date()) / (1000 * 60 * 60 * 24)) >= 0) || globalEvents[0];
+                if(nextEvent) {
+                    const diff = Math.floor((new Date(nextEvent.date) - new Date()) / (1000 * 60 * 60 * 24));
+                    const dDay = diff > 0 ? `D-${diff}` : "TODAY";
+                    document.getElementById('home-next-event').innerHTML = `<span class="text-[10px] text-gray-500">${nextEvent.date}</span><span class="text-sm font-bold text-white block truncate mt-1">${nextEvent.name}</span><span class="text-xs font-mono font-black text-sky-400 mt-1 block">${dDay}</span>`;
+                }
+            } catch (e) { }
+        }
+
+        async function loadTrendData() {
+            try {
+                const res = await fetch('./historical_data.json?v=' + Date.now());
+                const history = await res.json();
+                if (trendChart) trendChart.destroy();
+                trendChart = new Chart(document.getElementById('trendChart'), {
+                    type: 'line',
+                    data: { labels: history.map(d => d.date), datasets: [{ data: history.map(d => d.score), borderColor: '#38bdf8', backgroundColor: 'rgba(56, 189, 248, 0.15)', fill: true, tension: 0.4 }] },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#262f45' } }, x: { grid: { display: false } } } }
+                });
+            } catch (e) { }
+        }
+
+        window.onload = () => { 
+            updateTerminalData(); updateCalendar(); loadTrendData();
+            syncMarketPrices();
+            setInterval(syncMarketPrices, 5000); 
+            setInterval(updateTerminalData, 30000);
+            if ("Notification" in window) Notification.requestPermission();
+        };
     </script>
 </body>
 </html>
