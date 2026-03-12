@@ -1,188 +1,274 @@
 {
-    "master_score": 62,
-    "market_temp": "-2.5",
-    "ai_summary": "데이터 분석 완료.",
-    "fomc_indicators": [
-        {
-            "word": "INFLATION",
-            "sentiment_score": -1.8,
-            "status": "NEUTRAL",
-            "display_score": "-1.8",
-            "count": 52
-        },
-        {
-            "word": "RATE",
-            "sentiment_score": 0.4,
-            "status": "NEUTRAL",
-            "display_score": "+0.4",
-            "count": 48
-        },
-        {
-            "word": "POLICY",
-            "sentiment_score": -0.2,
-            "status": "NEUTRAL",
-            "display_score": "-0.2",
-            "count": 34
-        },
-        {
-            "word": "RISKS",
-            "sentiment_score": -0.5,
-            "status": "NEUTRAL",
-            "display_score": "-0.5",
-            "count": 21
-        },
-        {
-            "word": "GROWTH",
-            "sentiment_score": -0.1,
-            "status": "NEUTRAL",
-            "display_score": "-0.1",
-            "count": 20
-        },
-        {
-            "word": "LABOR",
-            "sentiment_score": -0.0,
-            "status": "NEUTRAL",
-            "display_score": "-0.0",
-            "count": 18
-        },
-        {
-            "word": "CREDIT",
-            "sentiment_score": 0.2,
-            "status": "NEUTRAL",
-            "display_score": "+0.2",
-            "count": 13
-        },
-        {
-            "word": "GDP",
-            "sentiment_score": -0.2,
-            "status": "NEUTRAL",
-            "display_score": "-0.2",
-            "count": 11
-        },
-        {
-            "word": "PRICES",
-            "sentiment_score": 0.0,
-            "status": "NEUTRAL",
-            "display_score": "0.0",
-            "count": 11
-        },
-        {
-            "word": "EMPLOYMENT",
-            "sentiment_score": -0.1,
-            "status": "NEUTRAL",
-            "display_score": "-0.1",
-            "count": 7
-        },
-        {
-            "word": "ECONOMY",
-            "sentiment_score": -0.7,
-            "status": "NEUTRAL",
-            "display_score": "-0.7",
-            "count": 5
-        },
-        {
-            "word": "STABILITY",
-            "sentiment_score": 0.0,
-            "status": "NEUTRAL",
-            "display_score": "0.0",
-            "count": 3
-        }
-    ],
-    "engine_indicators": [
-        {
-            "word": "시장 공포(VIX)",
-            "display_score": "46점",
-            "count": "Market",
-            "sentiment_score": -0.6
-        },
-        {
-            "word": "가격 추세(SPY)",
-            "display_score": "49점",
-            "count": "Price",
-            "sentiment_score": -0.2
-        },
-        {
-            "word": "기업 신용(HYG)",
-            "display_score": "65점",
-            "count": "Credit",
-            "sentiment_score": 3.2
-        },
-        {
-            "word": "달러 강세(UUP)",
-            "display_score": "53점",
-            "count": "Cash",
-            "sentiment_score": 0.8
-        },
-        {
-            "word": "기술주 선호(QQQ)",
-            "display_score": "93점",
-            "count": "Tech",
-            "sentiment_score": 8.7
-        },
-        {
-            "word": "안전자산(GOLD)",
-            "display_score": "100점",
-            "count": "Safe",
-            "sentiment_score": 10.0
-        },
-        {
-            "word": "코인 열기(BTC)",
-            "display_score": "55점",
-            "count": "Crypto",
-            "sentiment_score": 1.2
-        }
-    ],
-    "sector_news": {
-        "BIG TECH": [
-            {
-                "title": "Magnificent 7 주식 보고서: Apple 선두, NVIDIA Fades, Microsoft 충돌 - 연중무휴 월스트리트<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>Magnificent 7 주식 보고서: Apple 선두, NVIDIA Fades, Microsoft 충돌&nbsp;&nbsp;24/7 Wall St....</span>",
-                "link": "https://news.google.com/rss/articles/CBMiswFBVV95cUxPc2xianU3U2JqaEhJTGoxYTVpclhQMjFkUmFuMFJZN2dFQmxzZjlaVEQzcmVkOS1EbktoVTZGVE50Um1fYm1YNUxjNUxLNWl3S0lGOTZBSWo3b20xeDl3ci1ramEzLXpBdGhrMVQyd0Zza1dvd0JRbXdRLW1rZjNGWlh2OXBqX2ktWllrODdybzBJR01UTkJKNUs5bXNGNDJLaHNMTjZRREJDUGJYcTlkZ0xKVQ?oc=5",
-                "date": "Thu, 05 Mar 2026"
-            },
-            {
-                "title": "Peter Thiel이 Apple과 Microsoft를 위해 Nvidia 주식을 투매한 것이 AI 경쟁에 대해 말하는 것 - Fortune<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>Peter Thiel이 Apple과 Microsoft를 위해 Nvidia 주식을 투매한 것이 AI 경쟁에 관해 말하는 것&nbsp;&nbsp;Fortune...</span>",
-                "link": "https://news.google.com/rss/articles/CBMikgFBVV95cUxNOUJ6dzdUYVhGU3NRMUU2RXRtV3l0dm8wQ01sODBXOXhadUFUQ3MwQWlNYzJuV3hWOUh4Vi16cTlJRmJLNmVDZnM3cUtaZDFGMnIyM0hzODVadGczLXZleUwzV3BOSy1PVXp2Y0FuN2NoMkIxN1c0SFl1OGtDb3hEVTlpU0JHLW10UmxJY3FjaHhDQQ?oc=5",
-                "date": "Tue, 10 Mar 2026"
-            },
-            {
-                "title": "2028년까지 애플보다 가치가 더 높아질 2가지 주식 - The Motley Fool<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>2028년까지 Apple보다 가치가 더 높아질 2가지 주식&nbsp;&nbsp;The Motley Fool...</span>",
-                "link": "https://news.google.com/rss/articles/CBMilgFBVV95cUxQVW9weFMteVlkamFwVnlxbVNWUC02dDdvU1BjaDJmZFpQTXhpVzJrRXVsQXR3VUs2c2ZHQ1NYQTBOYnZKbS1ERTdKcnJOVERRcHV3cG5taUZPemtjMlBKVktpQWg3NDhmVWJUQWZXMGRneWp4WFk1cWxmUkJPV29POEozV1k0dGkzaHJyNXJUcnpZYUEwT3c?oc=5",
-                "date": "Wed, 11 Mar 2026"
-            }
-        ],
-        "SEMICON": [
-            {
-                "title": "TSMC가 ASML 투자자들에게 놀라운 소식을 전했습니다 - The Motley Fool<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>TSMC는 ASML 투자자들에게 놀라운 소식을 전했습니다&nbsp;&nbsp;The Motley Fool...</span>",
-                "link": "https://news.google.com/rss/articles/CBMikwFBVV95cUxQenp6RDJtQ3ZyZkJiWVhOaFh6TmgxWGpsay1nT3hJSlB6MmhVYkxEX0dsLWRLQkFSVUxWNWdHY245WWphOXA0aDRLaGVlVVdFMHQ0d3YwbXRUUkxLX0FteW9aTEppMnlKQmlXYjNpTzQwdTF0ZHJ5UEloTDE2THNGLUZiMllGYzUyMWFIZHhxVVFpZjA?oc=5",
-                "date": "Thu, 22 Jan 2026"
-            },
-            {
-                "title": "메모리 칩 거대 기업, 부족으로 인한 가격 인상으로 글로벌 반도체 랠리 촉발 - CNBC<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>부족으로 인한 가격 인상으로 메모리 칩 거대 기업들이 글로벌 반도체 랠리를 촉발&nbsp;&nbsp;CNBC...</span>",
-                "link": "https://news.google.com/rss/articles/CBMikgFBVV95cUxQeEE1Mm5ESzRwVThWckRwMXp0MVpBMWhGeVBNWm05WFdVd3JnbnU0SUdESnVBXzZ1NFJobkVrTXZuTGZZZ1NBQXNCNzZJT2o4Z05pYlNGSTkwVHM5NGZ2WjJpaVFFNUw2REVMUFN4dHhhU3ZGLUJTSkNUTUYwbTkwTlFveGlzSzBTNk81dU1xZklDUdIBlwFBVV95cUxPemlVY2l1ejVKUWZNM0dmYktZYWF2Y0x1WVhfanJVcURYRHpadGtKbnJpUVFiWUhZWUxmQ29wUE5RRDBrR0Etak1Rdy1wWUhQRUtyRFlEV1k5M0NWb1ZVSG02MEw4LUxsTG43cE5ISE9zc0plRTBoOGFITzRQTEZrX2xHaXM0TWVXWG5BbFA0d044MXlXR3Fr?oc=5",
-                "date": "Tue, 06 Jan 2026"
-            },
-            {
-                "title": "더 나은 인공지능 주식: ASML 대 TSMC - Nasdaq<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>더 나은 인공 지능 주식: ASML 대 TSMC&nbsp;&nbsp;Nasdaq...</span>",
-                "link": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxOMldBN1h6U0ltNk41V1hLTi0taEtQcFpib0pkRlVjeS1LUHR0Z3lwdmcyQ3k1dHEtM1dXZjc2RzZEdi1wRk9tb0lSc0JlVGdBVXM2Vl9wU1hpRWFSNUxMc216X0o3b0Q2TGFQOF9FN1E0eDNobFJ2bU1qbnZlVDltQlpGdWs0bTdT?oc=5",
-                "date": "Mon, 15 Dec 2025"
-            }
-        ],
-        "FINANCE": [
-            {
-                "title": "J.P. Morgan은 2027년 Fed 인상을 예측합니다. Barclays, Goldman, 금리 인하 요청 연기 - Reuters<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>J.P. Morgan은 2027년 Fed 인상을 예측합니다. Barclays, Goldman은 요금 인하 요청을 연기&nbsp;&nbsp;Reuters...</span>",
-                "link": "https://news.google.com/rss/articles/CBMitwFBVV95cUxPWWFsNTdTUkRaQWdYNzc5MnNGbGFEb3p2dDRGZVg4Q1JCU0lTTkxJMkZ0ckIyUjF6bW0yazlLT0dYSEJFUFUzdWZqN3dGR3B4cXFNZHdyZUZhNGZ4UXhTdGtyalhJWGFOaG15T2FUNWFhQlBJLUhpTHNRenVaNktxQkpmSmtkSDlIRWlhU3BWOGxwaDJkX2ppaHh0RF9jdllxZHdhQWg4cEVkUTNqSGdYblh4N1MxNlk?oc=5",
-                "date": "Mon, 12 Jan 2026"
-            },
-            {
-                "title": "대형 은행에 불이 붙었습니다. 연준이 더 많은 연료를 주목하는 이유는 무엇입니까? - 블룸버그<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>대형 은행에 불이 붙었습니다. 연준이 더 많은 연료를 주목하는 이유는 무엇입니까?&nbsp;&nbsp;블룸버그...</span>",
-                "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxObmpId2lKbWNmWVhxNk5JUVUtWXg5SUppYjdCOVluY3FqMWxSTXJvek5jWmNpLXVZWHkzdExhbnU2OXFkZlMxR2lkQzhhNjRQYnM1dE5LUTVYdHE0ampkcEZma2J5RVFLdzlYTWwtMTZZMm0xVDBFaC00TVJTQmY4T0FTT1UtZnRlZzN1SGJqM3BDMGZRdGY5TE1uXzY5NS1WSUJhY05ENWFKRWpZVXVwLW4ya0g?oc=5",
-                "date": "Tue, 14 Oct 2025"
-            },
-            {
-                "title": "J.P. Morgan은 Fed의 다음 조치는 인상이 될 것이라고 말했습니다 - mpamag.com<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>J.P. Morgan은 연준의 다음 조치는 인상이 될 것이라고 말했습니다.&nbsp;&nbsp;mpamag.com...</span>",
-                "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxPVndxMERyTEd2VDBPdHJCUVNELXJVczU5R3UxZEZ1cnFMd09rS1BnSjRva0pSYVR4U2xJZGJqMkJsYksxamZLdnlTTkl4bjd6OVVmeXdBX1Z5QjFFT2thQm1ZNEVBOG1lT05EQWtqR0dRRTJKTEhhWTR2MlhmeG9RU1ZqR2x1SUo1Mmx3dkJScWV1YjhwaDBWVmJWVDRKa1ZUUDEyNGdrTW9iWGgzaVY4bw?oc=5",
-                "date": "Mon, 12 Jan 2026"
-            }
-        ]
+  "master_score": 62,
+  "market_temp": "-2.5",
+  "ai_summary": "데이터 분석 완료.",
+  "fomc_indicators": [
+    {
+      "word": "INFLATION",
+      "sentiment_score": -1.8,
+      "status": "NEUTRAL",
+      "display_score": "-1.8",
+      "count": 52
+    },
+    {
+      "word": "RATE",
+      "sentiment_score": 0.4,
+      "status": "NEUTRAL",
+      "display_score": "+0.4",
+      "count": 48
+    },
+    {
+      "word": "POLICY",
+      "sentiment_score": -0.2,
+      "status": "NEUTRAL",
+      "display_score": "-0.2",
+      "count": 34
+    },
+    {
+      "word": "RISKS",
+      "sentiment_score": -0.5,
+      "status": "NEUTRAL",
+      "display_score": "-0.5",
+      "count": 21
+    },
+    {
+      "word": "GROWTH",
+      "sentiment_score": -0.1,
+      "status": "NEUTRAL",
+      "display_score": "-0.1",
+      "count": 20
+    },
+    {
+      "word": "LABOR",
+      "sentiment_score": -0.0,
+      "status": "NEUTRAL",
+      "display_score": "-0.0",
+      "count": 18
+    },
+    {
+      "word": "CREDIT",
+      "sentiment_score": 0.2,
+      "status": "NEUTRAL",
+      "display_score": "+0.2",
+      "count": 13
+    },
+    {
+      "word": "GDP",
+      "sentiment_score": -0.2,
+      "status": "NEUTRAL",
+      "display_score": "-0.2",
+      "count": 11
+    },
+    {
+      "word": "PRICES",
+      "sentiment_score": 0.0,
+      "status": "NEUTRAL",
+      "display_score": "0.0",
+      "count": 11
+    },
+    {
+      "word": "EMPLOYMENT",
+      "sentiment_score": -0.1,
+      "status": "NEUTRAL",
+      "display_score": "-0.1",
+      "count": 7
+    },
+    {
+      "word": "ECONOMY",
+      "sentiment_score": -0.7,
+      "status": "NEUTRAL",
+      "display_score": "-0.7",
+      "count": 5
+    },
+    {
+      "word": "STABILITY",
+      "sentiment_score": 0.0,
+      "status": "NEUTRAL",
+      "display_score": "0.0",
+      "count": 3
     }
+  ],
+  "engine_indicators": [
+    {
+      "word": "시장 공포(VIX)",
+      "display_score": "46점",
+      "count": "Market",
+      "sentiment_score": -0.6
+    },
+    {
+      "word": "가격 추세(SPY)",
+      "display_score": "49점",
+      "count": "Price",
+      "sentiment_score": -0.2
+    },
+    {
+      "word": "기업 신용(HYG)",
+      "display_score": "65점",
+      "count": "Credit",
+      "sentiment_score": 3.2
+    },
+    {
+      "word": "달러 강세(UUP)",
+      "display_score": "53점",
+      "count": "Cash",
+      "sentiment_score": 0.8
+    },
+    {
+      "word": "기술주 선호(QQQ)",
+      "display_score": "93점",
+      "count": "Tech",
+      "sentiment_score": 8.7
+    },
+    {
+      "word": "안전자산(GOLD)",
+      "display_score": "100점",
+      "count": "Safe",
+      "sentiment_score": 10.0
+    },
+    {
+      "word": "코인 열기(BTC)",
+      "display_score": "55점",
+      "count": "Crypto",
+      "sentiment_score": 1.2
+    }
+  ],
+  "sector_news": {
+    "BIG TECH": [
+      {
+        "title": "Magnificent 7 주식 보고서: Apple 선두, NVIDIA Fades, Microsoft 충돌 - 연중무휴 월스트리트<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>Magnificent 7 주식 보고서: Apple 선두, NVIDIA Fades, Microsoft 충돌&nbsp;&nbsp;24/7 Wall St....</span>",
+        "link": "https://news.google.com/rss/articles/CBMiswFBVV95cUxPc2xianU3U2JqaEhJTGoxYTVpclhQMjFkUmFuMFJZN2dFQmxzZjlaVEQzcmVkOS1EbktoVTZGVE50Um1fYm1YNUxjNUxLNWl3S0lGOTZBSWo3b20xeDl3ci1ramEzLXpBdGhrMVQyd0Zza1dvd0JRbXdRLW1rZjNGWlh2OXBqX2ktWllrODdybzBJR01UTkJKNUs5bXNGNDJLaHNMTjZRREJDUGJYcTlkZ0xKVQ?oc=5",
+        "date": "Thu, 05 Mar 2026"
+      },
+      {
+        "title": "Peter Thiel이 Apple과 Microsoft를 위해 Nvidia 주식을 투매한 것이 AI 경쟁에 대해 말하는 것 - Fortune<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>Peter Thiel이 Apple과 Microsoft를 위해 Nvidia 주식을 투매한 것이 AI 경쟁에 관해 말하는 것&nbsp;&nbsp;Fortune...</span>",
+        "link": "https://news.google.com/rss/articles/CBMikgFBVV95cUxNOUJ6dzdUYVhGU3NRMUU2RXRtV3l0dm8wQ01sODBXOXhadUFUQ3MwQWlNYzJuV3hWOUh4Vi16cTlJRmJLNmVDZnM3cUtaZDFGMnIyM0hzODVadGczLXZleUwzV3BOSy1PVXp2Y0FuN2NoMkIxN1c0SFl1OGtDb3hEVTlpU0JHLW10UmxJY3FjaHhDQQ?oc=5",
+        "date": "Tue, 10 Mar 2026"
+      },
+      {
+        "title": "2028년까지 애플보다 가치가 더 높아질 2가지 주식 - The Motley Fool<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>2028년까지 Apple보다 가치가 더 높아질 2가지 주식&nbsp;&nbsp;The Motley Fool...</span>",
+        "link": "https://news.google.com/rss/articles/CBMilgFBVV95cUxQVW9weFMteVlkamFwVnlxbVNWUC02dDdvU1BjaDJmZFpQTXhpVzJrRXVsQXR3VUs2c2ZHQ1NYQTBOYnZKbS1ERTdKcnJOVERRcHV3cG5taUZPemtjMlBKVktpQWg3NDhmVWJUQWZXMGRneWp4WFk1cWxmUkJPV29POEozV1k0dGkzaHJyNXJUcnpZYUEwT3c?oc=5",
+        "date": "Wed, 11 Mar 2026"
+      }
+    ],
+    "SEMICON": [
+      {
+        "title": "TSMC가 ASML 투자자들에게 놀라운 소식을 전했습니다 - The Motley Fool<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>TSMC는 ASML 투자자들에게 놀라운 소식을 전했습니다&nbsp;&nbsp;The Motley Fool...</span>",
+        "link": "https://news.google.com/rss/articles/CBMikwFBVV95cUxQenp6RDJtQ3ZyZkJiWVhOaFh6TmgxWGpsay1nT3hJSlB6MmhVYkxEX0dsLWRLQkFSVUxWNWdHY245WWphOXA0aDRLaGVlVVdFMHQ0d3YwbXRUUkxLX0FteW9aTEppMnlKQmlXYjNpTzQwdTF0ZHJ5UEloTDE2THNGLUZiMllGYzUyMWFIZHhxVVFpZjA?oc=5",
+        "date": "Thu, 22 Jan 2026"
+      },
+      {
+        "title": "메모리 칩 거대 기업, 부족으로 인한 가격 인상으로 글로벌 반도체 랠리 촉발 - CNBC<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>부족으로 인한 가격 인상으로 메모리 칩 거대 기업들이 글로벌 반도체 랠리를 촉발&nbsp;&nbsp;CNBC...</span>",
+        "link": "https://news.google.com/rss/articles/CBMikgFBVV95cUxQeEE1Mm5ESzRwVThWckRwMXp0MVpBMWhGeVBNWm05WFdVd3JnbnU0SUdESnVBXzZ1NFJobkVrTXZuTGZZZ1NBQXNCNzZJT2o4Z05pYlNGSTkwVHM5NGZ2WjJpaVFFNUw2REVMUFN4dHhhU3ZGLUJTSkNUTUYwbTkwTlFveGlzSzBTNk81dU1xZklDUdIBlwFBVV95cUxPemlVY2l1ejVKUWZNM0dmYktZYWF2Y0x1WVhfanJVcURYRHpadGtKbnJpUVFiWUhZWUxmQ29wUE5RRDBrR0Etak1Rdy1wWUhQRUtyRFlEV1k5M0NWb1ZVSG02MEw4LUxsTG43cE5ISE9zc0plRTBoOGFITzRQTEZrX2xHaXM0TWVXWG5BbFA0d044MXlXR3Fr?oc=5",
+        "date": "Tue, 06 Jan 2026"
+      },
+      {
+        "title": "더 나은 인공지능 주식: ASML 대 TSMC - Nasdaq<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>더 나은 인공 지능 주식: ASML 대 TSMC&nbsp;&nbsp;Nasdaq...</span>",
+        "link": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxOMldBN1h6U0ltNk41V1hLTi0taEtQcFpib0pkRlVjeS1LUHR0Z3lwdmcyQ3k1dHEtM1dXZjc2RzZEdi1wRk9tb0lSc0JlVGdBVXM2Vl9wU1hpRWFSNUxMc216X0o3b0Q2TGFQOF9FN1E0eDNobFJ2bU1qbnZlVDltQlpGdWs0bTdT?oc=5",
+        "date": "Mon, 15 Dec 2025"
+      }
+    ],
+    "FINANCE": [
+      {
+        "title": "J.P. Morgan은 2027년 Fed 인상을 예측합니다. Barclays, Goldman, 금리 인하 요청 연기 - Reuters<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>J.P. Morgan은 2027년 Fed 인상을 예측합니다. Barclays, Goldman은 요금 인하 요청을 연기&nbsp;&nbsp;Reuters...</span>",
+        "link": "https://news.google.com/rss/articles/CBMitwFBVV95cUxPWWFsNTdTUkRaQWdYNzc5MnNGbGFEb3p2dDRGZVg4Q1JCU0lTTkxJMkZ0ckIyUjF6bW0yazlLT0dYSEJFUFUzdWZqN3dGR3B4cXFNZHdyZUZhNGZ4UXhTdGtyalhJWGFOaG15T2FUNWFhQlBJLUhpTHNRenVaNktxQkpmSmtkSDlIRWlhU3BWOGxwaDJkX2ppaHh0RF9jdllxZHdhQWg4cEVkUTNqSGdYblh4N1MxNlk?oc=5",
+        "date": "Mon, 12 Jan 2026"
+      },
+      {
+        "title": "대형 은행에 불이 붙었습니다. 연준이 더 많은 연료를 주목하는 이유는 무엇입니까? - 블룸버그<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>대형 은행에 불이 붙었습니다. 연준이 더 많은 연료를 주목하는 이유는 무엇입니까?&nbsp;&nbsp;블룸버그...</span>",
+        "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxObmpId2lKbWNmWVhxNk5JUVUtWXg5SUppYjdCOVluY3FqMWxSTXJvek5jWmNpLXVZWHkzdExhbnU2OXFkZlMxR2lkQzhhNjRQYnM1dE5LUTVYdHE0ampkcEZma2J5RVFLdzlYTWwtMTZZMm0xVDBFaC00TVJTQmY4T0FTT1UtZnRlZzN1SGJqM3BDMGZRdGY5TE1uXzY5NS1WSUJhY05ENWFKRWpZVXVwLW4ya0g?oc=5",
+        "date": "Tue, 14 Oct 2025"
+      },
+      {
+        "title": "J.P. Morgan은 Fed의 다음 조치는 인상이 될 것이라고 말했습니다 - mpamag.com<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>J.P. Morgan은 연준의 다음 조치는 인상이 될 것이라고 말했습니다.&nbsp;&nbsp;mpamag.com...</span>",
+        "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxPVndxMERyTEd2VDBPdHJCUVNELXJVczU5R3UxZEZ1cnFMd09rS1BnSjRva0pSYVR4U2xJZGJqMkJsYksxamZLdnlTTkl4bjd6OVVmeXdBX1Z5QjFFT2thQm1ZNEVBOG1lT05EQWtqR0dRRTJKTEhhWTR2MlhmeG9RU1ZqR2x1SUo1Mmx3dkJScWV1YjhwaDBWVmJWVDRKa1ZUUDEyNGdrTW9iWGgzaVY4bw?oc=5",
+        "date": "Mon, 12 Jan 2026"
+      }
+    ]
+  },
+  "indicators": [
+    {
+      "word": "INFLATION",
+      "sentiment_score": -1.8,
+      "status": "NEUTRAL",
+      "display_score": "-1.8",
+      "count": 52
+    },
+    {
+      "word": "RATE",
+      "sentiment_score": 0.4,
+      "status": "NEUTRAL",
+      "display_score": "+0.4",
+      "count": 48
+    },
+    {
+      "word": "POLICY",
+      "sentiment_score": -0.2,
+      "status": "NEUTRAL",
+      "display_score": "-0.2",
+      "count": 34
+    },
+    {
+      "word": "RISKS",
+      "sentiment_score": -0.5,
+      "status": "NEUTRAL",
+      "display_score": "-0.5",
+      "count": 21
+    },
+    {
+      "word": "GROWTH",
+      "sentiment_score": -0.1,
+      "status": "NEUTRAL",
+      "display_score": "-0.1",
+      "count": 20
+    },
+    {
+      "word": "LABOR",
+      "sentiment_score": -0.0,
+      "status": "NEUTRAL",
+      "display_score": "-0.0",
+      "count": 18
+    },
+    {
+      "word": "CREDIT",
+      "sentiment_score": 0.2,
+      "status": "NEUTRAL",
+      "display_score": "+0.2",
+      "count": 13
+    },
+    {
+      "word": "GDP",
+      "sentiment_score": -0.2,
+      "status": "NEUTRAL",
+      "display_score": "-0.2",
+      "count": 11
+    },
+    {
+      "word": "PRICES",
+      "sentiment_score": 0.0,
+      "status": "NEUTRAL",
+      "display_score": "0.0",
+      "count": 11
+    },
+    {
+      "word": "EMPLOYMENT",
+      "sentiment_score": -0.1,
+      "status": "NEUTRAL",
+      "display_score": "-0.1",
+      "count": 7
+    },
+    {
+      "word": "ECONOMY",
+      "sentiment_score": -0.7,
+      "status": "NEUTRAL",
+      "display_score": "-0.7",
+      "count": 5
+    },
+    {
+      "word": "STABILITY",
+      "sentiment_score": 0.0,
+      "status": "NEUTRAL",
+      "display_score": "0.0",
+      "count": 3
+    }
+  ]
 }
