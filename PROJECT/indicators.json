@@ -1,5 +1,5 @@
 {
-    "master_score": 62,
+    "master_score": 61,
     "market_temp": "-2.5",
     "ai_summary": "데이터 분석 완료.",
     "fomc_indicators": [
@@ -91,9 +91,9 @@
     "engine_indicators": [
         {
             "word": "시장 공포(VIX)",
-            "display_score": "46점",
+            "display_score": "42점",
             "count": "Market",
-            "sentiment_score": -0.6
+            "sentiment_score": -1.5
         },
         {
             "word": "가격 추세(SPY)",
@@ -127,9 +127,9 @@
         },
         {
             "word": "코인 열기(BTC)",
-            "display_score": "55점",
+            "display_score": "56점",
             "count": "Crypto",
-            "sentiment_score": 1.2
+            "sentiment_score": 1.4
         }
     ],
     "sector_news": {
@@ -140,7 +140,7 @@
                 "date": "Thu, 05 Mar 2026"
             },
             {
-                "title": "Peter Thiel이 Apple과 Microsoft를 위해 Nvidia 주식을 투매한 것이 AI 경쟁에 대해 말하는 것 - Fortune<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>Peter Thiel이 Apple과 Microsoft를 위해 Nvidia 주식을 투매한 것이 AI 경쟁에 관해 말하는 것&nbsp;&nbsp;Fortune...</span>",
+                "title": "Peter Thiel이 Apple과 Microsoft를 위해 Nvidia 주식을 투매한 것이 AI 경쟁에 대해 말하는 것 - Fortune<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>Peter Thiel이 Apple과 Microsoft를 위해 Nvidia 주식을 투매한 것이 AI 경쟁에 대해 말하는 것&nbsp;&nbsp;Fortune...</span>",
                 "link": "https://news.google.com/rss/articles/CBMikgFBVV95cUxNOUJ6dzdUYVhGU3NRMUU2RXRtV3l0dm8wQ01sODBXOXhadUFUQ3MwQWlNYzJuV3hWOUh4Vi16cTlJRmJLNmVDZnM3cUtaZDFGMnIyM0hzODVadGczLXZleUwzV3BOSy1PVXp2Y0FuN2NoMkIxN1c0SFl1OGtDb3hEVTlpU0JHLW10UmxJY3FjaHhDQQ?oc=5",
                 "date": "Tue, 10 Mar 2026"
             },
@@ -174,14 +174,14 @@
                 "date": "Mon, 12 Jan 2026"
             },
             {
-                "title": "대형 은행에 불이 붙었습니다. 연준이 더 많은 연료를 주목하는 이유는 무엇입니까? - 블룸버그<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>대형 은행에 불이 붙었습니다. 연준이 더 많은 연료를 주목하는 이유는 무엇입니까?&nbsp;&nbsp;블룸버그...</span>",
+                "title": "대형 은행에 불이 붙었습니다. 연준이 더 많은 연료를 주목하는 이유는 무엇입니까? - Bloomberg.com<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>대형 은행에 불이 붙었습니다. 연준이 더 많은 연료를 주목하는 이유는 무엇입니까?&nbsp;&nbsp;Bloomberg.com...</span>",
                 "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxObmpId2lKbWNmWVhxNk5JUVUtWXg5SUppYjdCOVluY3FqMWxSTXJvek5jWmNpLXVZWHkzdExhbnU2OXFkZlMxR2lkQzhhNjRQYnM1dE5LUTVYdHE0ampkcEZma2J5RVFLdzlYTWwtMTZZMm0xVDBFaC00TVJTQmY4T0FTT1UtZnRlZzN1SGJqM3BDMGZRdGY5TE1uXzY5NS1WSUJhY05ENWFKRWpZVXVwLW4ya0g?oc=5",
                 "date": "Tue, 14 Oct 2025"
             },
             {
-                "title": "J.P. Morgan은 Fed의 다음 조치는 인상이 될 것이라고 말했습니다 - mpamag.com<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>J.P. Morgan은 연준의 다음 조치는 인상이 될 것이라고 말했습니다.&nbsp;&nbsp;mpamag.com...</span>",
-                "link": "https://news.google.com/rss/articles/CBMisAFBVV95cUxPVndxMERyTEd2VDBPdHJCUVNELXJVczU5R3UxZEZ1cnFMd09rS1BnSjRva0pSYVR4U2xJZGJqMkJsYksxamZLdnlTTkl4bjd6OVVmeXdBX1Z5QjFFT2thQm1ZNEVBOG1lT05EQWtqR0dRRTJKTEhhWTR2MlhmeG9RU1ZqR2x1SUo1Mmx3dkJScWV1YjhwaDBWVmJWVDRKa1ZUUDEyNGdrTW9iWGgzaVY4bw?oc=5",
-                "date": "Mon, 12 Jan 2026"
+                "title": "JP모건, 12월 금리 인하 긴급 촉구 - Yahoo Finance<br><span style='font-size:11px; color:#94a3b8; font-weight:normal; display:block; margin-top:4px;'>JPMorgan은 12월 금리 인하를 긴급 요청했습니다.&nbsp;&nbsp;Yahoo Finance...</span>",
+                "link": "https://news.google.com/rss/articles/CBMiigFBVV95cUxNSEQ1Q2tQTEdpY0lLcnhoTzlhbDZGT1FHaDRFb3pYWnljSml2WVhlUlhNZF94b0xhbWpFc3dKcXo4RmdMbjBLN0hsVFhHdFg3OTd4VmZpZWZjdXBlUThaMmhiY1hOUl9UVW5zTVhGS3RGY0w4X0hQWHNLUmRJQXJkWnVyZDBhZVpzMWc?oc=5",
+                "date": "Fri, 28 Nov 2025"
             }
         ]
     }
