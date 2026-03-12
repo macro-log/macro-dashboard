@@ -1,13 +1,186 @@
 {
-    "last_updated": "2026-03-13 00:10:32",
+    "last_updated": "2026-03-13 00:19:56",
+    "master_score": 72,
+    "market_temp": "-2.5",
+    "ai_summary": "최근 24시간 글로벌 시장 시그널 분석이 완료되었습니다.",
+    "fomc_indicators": [
+        {
+            "word": "INFLATION",
+            "sentiment_score": -1.8,
+            "status": "NEUTRAL",
+            "display_score": "-1.8",
+            "count": 52
+        },
+        {
+            "word": "RATE",
+            "sentiment_score": 0.4,
+            "status": "NEUTRAL",
+            "display_score": "+0.4",
+            "count": 48
+        },
+        {
+            "word": "POLICY",
+            "sentiment_score": -0.2,
+            "status": "NEUTRAL",
+            "display_score": "-0.2",
+            "count": 34
+        },
+        {
+            "word": "RISKS",
+            "sentiment_score": -0.5,
+            "status": "NEUTRAL",
+            "display_score": "-0.5",
+            "count": 21
+        },
+        {
+            "word": "GROWTH",
+            "sentiment_score": -0.1,
+            "status": "NEUTRAL",
+            "display_score": "-0.1",
+            "count": 20
+        },
+        {
+            "word": "LABOR",
+            "sentiment_score": -0.0,
+            "status": "NEUTRAL",
+            "display_score": "-0.0",
+            "count": 18
+        },
+        {
+            "word": "CREDIT",
+            "sentiment_score": 0.2,
+            "status": "NEUTRAL",
+            "display_score": "+0.2",
+            "count": 13
+        },
+        {
+            "word": "GDP",
+            "sentiment_score": -0.2,
+            "status": "NEUTRAL",
+            "display_score": "-0.2",
+            "count": 11
+        },
+        {
+            "word": "PRICES",
+            "sentiment_score": 0.0,
+            "status": "NEUTRAL",
+            "display_score": "0.0",
+            "count": 11
+        },
+        {
+            "word": "EMPLOYMENT",
+            "sentiment_score": -0.1,
+            "status": "NEUTRAL",
+            "display_score": "-0.1",
+            "count": 7
+        },
+        {
+            "word": "ECONOMY",
+            "sentiment_score": -0.7,
+            "status": "NEUTRAL",
+            "display_score": "-0.7",
+            "count": 5
+        },
+        {
+            "word": "STABILITY",
+            "sentiment_score": 0.0,
+            "status": "NEUTRAL",
+            "display_score": "0.0",
+            "count": 3
+        }
+    ],
+    "engine_indicators": [
+        {
+            "word": "INFLATION",
+            "sentiment_score": -1.8,
+            "status": "NEUTRAL",
+            "display_score": "-1.8",
+            "count": 52
+        },
+        {
+            "word": "RATE",
+            "sentiment_score": 0.4,
+            "status": "NEUTRAL",
+            "display_score": "+0.4",
+            "count": 48
+        },
+        {
+            "word": "POLICY",
+            "sentiment_score": -0.2,
+            "status": "NEUTRAL",
+            "display_score": "-0.2",
+            "count": 34
+        },
+        {
+            "word": "RISKS",
+            "sentiment_score": -0.5,
+            "status": "NEUTRAL",
+            "display_score": "-0.5",
+            "count": 21
+        },
+        {
+            "word": "GROWTH",
+            "sentiment_score": -0.1,
+            "status": "NEUTRAL",
+            "display_score": "-0.1",
+            "count": 20
+        },
+        {
+            "word": "LABOR",
+            "sentiment_score": -0.0,
+            "status": "NEUTRAL",
+            "display_score": "-0.0",
+            "count": 18
+        },
+        {
+            "word": "CREDIT",
+            "sentiment_score": 0.2,
+            "status": "NEUTRAL",
+            "display_score": "+0.2",
+            "count": 13
+        },
+        {
+            "word": "GDP",
+            "sentiment_score": -0.2,
+            "status": "NEUTRAL",
+            "display_score": "-0.2",
+            "count": 11
+        },
+        {
+            "word": "PRICES",
+            "sentiment_score": 0.0,
+            "status": "NEUTRAL",
+            "display_score": "0.0",
+            "count": 11
+        },
+        {
+            "word": "EMPLOYMENT",
+            "sentiment_score": -0.1,
+            "status": "NEUTRAL",
+            "display_score": "-0.1",
+            "count": 7
+        },
+        {
+            "word": "ECONOMY",
+            "sentiment_score": -0.7,
+            "status": "NEUTRAL",
+            "display_score": "-0.7",
+            "count": 5
+        },
+        {
+            "word": "STABILITY",
+            "sentiment_score": 0.0,
+            "status": "NEUTRAL",
+            "display_score": "0.0",
+            "count": 3
+        }
+    ],
     "dynamic_news": {
-        "시장 종합": "분석 데이터를 불러오는 중입니다.",
-        "빅테크": "분석 데이터를 불러오는 중입니다.",
-        "반도체": "분석 데이터를 불러오는 중입니다.",
-        "금리/매크로": "분석 데이터를 불러오는 중입니다.",
-        "에너지/원자재": "분석 데이터를 불러오는 중입니다.",
-        "가상자산": "분석 데이터를 불러오는 중입니다."
-    },
-    "master_score": 75,
-    "ai_summary": "글로벌 뉴스 분석 완료."
+        "시장 종합": "데이터 분석 엔진 대기 중...",
+        "빅테크": "데이터 분석 엔진 대기 중...",
+        "반도체": "데이터 분석 엔진 대기 중...",
+        "금리/매크로": "데이터 분석 엔진 대기 중...",
+        "에너지/원자재": "데이터 분석 엔진 대기 중...",
+        "가상자산": "데이터 분석 엔진 대기 중..."
+    }
 }
