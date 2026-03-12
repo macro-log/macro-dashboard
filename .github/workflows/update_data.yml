@@ -138,6 +138,41 @@ jobs:
           
           with open('PROJECT/indicators.json', 'w', encoding='utf-8') as f:
               json.dump(data, f, ensure_ascii=False, indent=4)
+
+          # [수정 시작] 로봇 차트용 10년치 데이터 수집 및 market_charts.json 생성
+          try:
+              chart_tickers = {
+                  'BTC': 'BTC-USD', 'SPY': 'SPY', 'QQQ': 'QQQ', 'DIA': 'DIA',
+                  'US10Y': '^TNX', 'US02Y': '^FVX', 'OIL': 'CL=F', 'GOLD': 'GC=F',
+                  'KOSPI': '^KS11', 'USDKRW': 'KRW=X'
+              }
+              chart_data = {}
+              for name, ticker in chart_tickers.items():
+                  try:
+                      tk = yf.Ticker(ticker)
+                      # 1. 당일 궤적용 (1일, 5분 간격)
+                      df_day = tk.history(period="1d", interval="5m")
+                      day_labels = df_day.index.strftime('%H:%M').tolist()
+                      day_prices = [round(p, 2) for p in df_day['Close'].tolist()]
+
+                      # 2. 장기 패러다임용 (10년, 1일 간격)
+                      df_full = tk.history(period="10y", interval="1d")
+                      full_labels = df_full.index.strftime('%Y-%m-%d').tolist()
+                      full_prices = [round(p, 2) for p in df_full['Close'].tolist()]
+
+                      chart_data[name] = {
+                          "day": {"labels": day_labels, "prices": day_prices},
+                          "full": {"labels": full_labels, "prices": full_prices}
+                      }
+                  except Exception as e:
+                      continue
+              
+              with open('PROJECT/market_charts.json', 'w', encoding='utf-8') as f:
+                  json.dump(chart_data, f, ensure_ascii=False)
+          except Exception as e:
+              pass
+          # [수정 끝]
+          
           EOF
 
       - name: Commit and Push
@@ -145,5 +180,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "7대엔진 정상화 및 데이터 주머니 분리 🚀" || echo "No changes"
+          git commit -m "7대엔진 정상화 및 독자 로봇 차트 데이터 연동 🚀" || echo "No changes"
           git push

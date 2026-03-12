@@ -56,6 +56,12 @@
         /* [신규] 마스터 게이지 중앙 텍스트용 */
         .gauge-container { position: relative; width: 100%; max-width: 500px; margin: 0 auto; height: 250px; }
         .gauge-text { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); text-align: center; width: 100%; }
+
+        /* [수정] 캘린더 실적 뷰 스타일 추가 */
+        .earnings-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        @media (min-width: 768px) { .earnings-grid { grid-template-columns: repeat(4, 1fr); } }
+        @media (min-width: 1024px) { .earnings-grid { grid-template-columns: repeat(6, 1fr); } }
+        .ticker-badge { background: var(--accent); color: #0a0f1e; font-weight: 900; font-size: 10px; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-bottom: 5px; }
     </style>
 </head>
 <body>
@@ -102,7 +108,9 @@
             </div>
             <button onclick="toggleChartModal(false)" class="text-gray-400 hover:text-white text-3xl leading-none">&times;</button>
         </div>
-        <div id="chart_box" class="w-full h-full bg-[#131722] rounded-lg border border-[#262f45] overflow-hidden p-0 relative"></div>
+        <div class="w-full bg-[#0a0f1e] rounded-lg border border-[#262f45] overflow-hidden p-4 relative" style="height: calc(100% - 60px);">
+            <canvas id="robotMainChart"></canvas>
+        </div>
     </div>
 
     <div class="main-layout">
@@ -248,8 +256,12 @@
         <div id="tab-calendar" class="tab-content">
             <div class="card h-[800px]">
                 <div class="flex justify-between items-center mb-4 border-b border-[#262f45] pb-3">
-                    <div><span class="section-label">Economic Calendar</span><h3 class="text-xl font-bold text-white">글로벌 주요 매크로 일정</h3></div>
-                    <div id="sync-status" class="text-[10px] text-gray-500 font-bold border border-gray-700 px-3 py-1 rounded">WAITING...</div>
+                    <div><span class="section-label">Dynamic Calendar</span><h3 class="text-xl font-bold text-white" id="cal-main-title">글로벌 주요 매크로 일정</h3></div>
+                    <div class="flex gap-2 items-center">
+                        <button onclick="switchCalMode('MACRO')" id="btn-cal-macro" class="chart-btn active">경제 지표</button>
+                        <button onclick="switchCalMode('EARNINGS')" id="btn-cal-earnings" class="chart-btn">기업 실적</button>
+                        <div id="sync-status" class="text-[10px] text-gray-500 font-bold border border-gray-700 px-3 py-1 rounded ml-2">WAITING...</div>
+                    </div>
                 </div>
                 <div id="calendar-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto pr-2 scroll-list h-full items-start">
                     </div>
@@ -274,6 +286,12 @@
         let alertList = [];
         let currentModalTickerId = 'BTC';
         let currentRange = '1d';
+        
+        // [수정] 전역 변수 추가 (독자 차트 및 캘린더용)
+        let robotChartInstance = null;
+        let allChartData = {};
+        let currentCalMode = 'MACRO';
+        let globalEvents = [];
 
         // [신규] 탭 전환 로직
         function switchTab(tabId) {
@@ -359,32 +377,56 @@
             }
         }
 
-        function loadChart(id, range = '1d') {
-            const container = document.getElementById('chart_box');
-            container.innerHTML = ''; 
+        // [수정 시작] 트레이딩뷰 대신 독자 로봇 차트 함수로 교체
+        async function loadChart(id, range = '1d') {
+            const ctx = document.getElementById('robotMainChart').getContext('2d');
+            if (robotChartInstance) robotChartInstance.destroy();
             
-            const symbol = tvTickerMap[id] || 'BINANCE:BTCUSDT';
-            let tvInterval = '5'; let tvRange = '1D';
+            if (!allChartData[id]) {
+                try {
+                    const res = await fetch('./market_charts.json?v=' + Date.now());
+                    allChartData = await res.json();
+                } catch(e) { console.log("차트 데이터 로드 대기중..."); return; }
+            }
 
-            if (range === '5d') { tvInterval = '15'; tvRange = '5D'; }
-            else if (range === '1mo') { tvInterval = '1D'; tvRange = '1M'; }
-            else if (range === '3mo') { tvInterval = '1D'; tvRange = '3M'; }
-            else if (range === '1y') { tvInterval = '1D'; tvRange = '12M'; }
-            else if (range === '5y') { tvInterval = '1W'; tvRange = '60M'; }
+            if (!allChartData[id]) return; // 데이터 없으면 종료
 
-            new TradingView.widget({
-                "width": "100%", "height": "100%", "symbol": symbol, "interval": tvInterval, "range": tvRange,
-                "timezone": "Asia/Seoul", "theme": "dark", "style": "3", "locale": "ko", "enable_publishing": false,
-                "hide_top_toolbar": true, "hide_side_toolbar": true, "hide_legend": true, "hide_volume": true,
-                "allow_symbol_change": false, "save_image": false, "container_id": "chart_box",
-                "disabled_features": ["header_widget", "left_toolbar", "timeframes_toolbar"],
-                "overrides": {
-                    "paneProperties.background": "#131722", "paneProperties.vertGridProperties.color": "#262f45", "paneProperties.horzGridProperties.color": "#262f45",
-                    "mainSeriesProperties.areaStyle.color1": "rgba(56, 189, 248, 0.3)", "mainSeriesProperties.areaStyle.color2": "rgba(56, 189, 248, 0)",
-                    "mainSeriesProperties.areaStyle.linecolor": "#38bdf8", "mainSeriesProperties.areaStyle.linewidth": 2
+            const dataObj = allChartData[id];
+            let labels, prices;
+
+            if (range === '1d') { 
+                labels = dataObj.day.labels; prices = dataObj.day.prices; 
+            } else { 
+                let sliceLen = (range === '5d') ? 7 : (range === '1mo') ? 30 : (range === '1y') ? 365 : 3650; 
+                labels = dataObj.full.labels.slice(-sliceLen); 
+                prices = dataObj.full.prices.slice(-sliceLen); 
+            }
+
+            robotChartInstance = new Chart(ctx, { 
+                type: 'line', 
+                data: { 
+                    labels: labels, 
+                    datasets: [{ 
+                        data: prices, 
+                        borderColor: '#38bdf8', 
+                        backgroundColor: 'rgba(56, 189, 248, 0.1)', 
+                        fill: true, 
+                        pointRadius: 0, 
+                        borderWidth: 2, 
+                        tension: 0.1 
+                    }]
+                },
+                options: { 
+                    responsive: true, maintainAspectRatio: false, 
+                    plugins: { legend: { display: false } }, 
+                    scales: { 
+                        x: { grid: { display: false }, ticks: { color: '#64748b', maxTicksLimit: 8 } }, 
+                        y: { grid: { color: '#262f45' }, ticks: { color: '#64748b' } } 
+                    }
                 }
             });
         }
+        // [수정 끝]
 
         function changeWidget(id, el) { 
             document.querySelectorAll('.thermal-card').forEach(c => c.classList.remove('active'));
@@ -501,21 +543,47 @@
             }
         }
 
-        async function updateCalendar() {
-            try {
-                const response = await fetch('./economic_events.json?v=' + Date.now());
-                const events = await response.json();
-                
-                // 기존 달력 탭 렌더링 (그리드 스타일로 변경됨)
-                document.getElementById('calendar-container').innerHTML = events.map(ev => {
+        // [수정 시작] 캘린더 모드 전환 및 렌더링 로직 추가
+        function switchCalMode(mode) {
+            currentCalMode = mode;
+            document.getElementById('btn-cal-macro').classList.toggle('active', mode === 'MACRO');
+            document.getElementById('btn-cal-earnings').classList.toggle('active', mode === 'EARNINGS');
+            document.getElementById('cal-main-title').innerText = mode === 'MACRO' ? '글로벌 주요 매크로 일정' : '주요 기업 실적 발표';
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            const container = document.getElementById('calendar-container');
+            container.innerHTML = '';
+            const filtered = globalEvents.filter(ev => currentCalMode === 'MACRO' ? ev.type !== 'EARNINGS' : ev.type === 'EARNINGS');
+
+            if (currentCalMode === 'MACRO') {
+                container.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto pr-2 scroll-list h-full items-start";
+                container.innerHTML = filtered.map(ev => {
                     const diff = Math.floor((new Date(ev.date) - new Date()) / (1000 * 60 * 60 * 24));
                     const dDay = diff > 0 ? `D-${diff}` : (diff === 0 ? "TODAY" : "DONE");
                     const color = ev.importance === 'CRITICAL' ? 'border-red-500 text-red-400' : 'border-sky-500 text-sky-400';
                     return `<div class="event-card bg-[#0a0f1e] p-4 rounded border border-[#262f45] ${color} h-[100px] flex flex-col justify-between"><span class="text-[10px] text-gray-500">${ev.date}</span><span class="text-sm font-bold text-white block truncate mt-1">${ev.name}</span><span class="text-xs font-mono font-black text-sky-400 mt-1 block">${dDay}</span></div>`;
                 }).join('');
+            } else {
+                container.className = "earnings-grid overflow-y-auto pr-2 scroll-list h-full items-start";
+                container.innerHTML = filtered.map(ev => `
+                    <div class="p-3 bg-[#1e293b] rounded border border-[#262f45] text-center">
+                        <span class="ticker-badge">${ev.name.split(' ')[0]}</span>
+                        <div class="text-[10px] text-gray-400 mt-2">${ev.date}</div>
+                    </div>`).join('');
+            }
+        }
+
+        async function updateCalendar() {
+            try {
+                const response = await fetch('./economic_events.json?v=' + Date.now());
+                globalEvents = await response.json(); // [수정] 전역 변수에 저장
+                
+                renderCalendar(); // [수정] 렌더링 함수 호출
 
                 // [신규] 홈 탭 달력 티저 (가장 가까운 1개 이벤트)
-                const nextEvent = events.find(ev => Math.floor((new Date(ev.date) - new Date()) / (1000 * 60 * 60 * 24)) >= 0) || events[0];
+                const nextEvent = globalEvents.find(ev => Math.floor((new Date(ev.date) - new Date()) / (1000 * 60 * 60 * 24)) >= 0) || globalEvents[0];
                 if(nextEvent) {
                     const diff = Math.floor((new Date(nextEvent.date) - new Date()) / (1000 * 60 * 60 * 24));
                     const dDay = diff > 0 ? `D-${diff}` : "TODAY";
@@ -523,6 +591,7 @@
                 }
             } catch (e) { }
         }
+        // [수정 끝]
 
         async function loadTrendData() {
             try {
