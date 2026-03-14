@@ -1,49 +1,7 @@
 [
     {
-        "date": "2026-05-20",
-        "name": "NVDA 실적 발표",
-        "importance": "HIGH",
-        "type": "EARNINGS"
-    },
-    {
-        "date": "2026-04-21",
-        "name": "TSLA 실적 발표",
-        "importance": "HIGH",
-        "type": "EARNINGS"
-    },
-    {
-        "date": "2026-04-30",
-        "name": "AAPL 실적 발표",
-        "importance": "HIGH",
-        "type": "EARNINGS"
-    },
-    {
-        "date": "2026-04-29",
-        "name": "MSFT 실적 발표",
-        "importance": "HIGH",
-        "type": "EARNINGS"
-    },
-    {
-        "date": "2026-04-30",
-        "name": "AMZN 실적 발표",
-        "importance": "HIGH",
-        "type": "EARNINGS"
-    },
-    {
-        "date": "2026-04-23",
-        "name": "GOOGL 실적 발표",
-        "importance": "HIGH",
-        "type": "EARNINGS"
-    },
-    {
-        "date": "2026-04-29",
-        "name": "META 실적 발표",
-        "importance": "HIGH",
-        "type": "EARNINGS"
-    },
-    {
-        "date": "2026-03-15",
-        "name": "SIGNAL 9 시스템 동기화 완료",
+        "date": "2026-03-14",
+        "name": "시스템 통합 분석 완료",
         "importance": "NORMAL",
         "type": "SYSTEM"
     }
