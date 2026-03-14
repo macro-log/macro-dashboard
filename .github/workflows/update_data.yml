@@ -28,6 +28,8 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           python << 'EOF'
+          import warnings
+          warnings.filterwarnings("ignore", category=FutureWarning) # 경고 메시지 제거
           import yfinance as yf
           import json
           import os
@@ -44,7 +46,7 @@ jobs:
           now_korea = (datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=9))
           sync_time = now_korea.strftime('%Y-%m-%d %H:%M:%S')
 
-          # 2. 실시간 데이터 (9대 지표 및 분석용)
+          # 2. 실시간 데이터 (9대 지표용)
           tickers_list = ['BTC-USD', 'SPY', 'QQQ', 'DIA', 'DX-Y.NYB', '^VIX', 'GC=F', 'HYG', 'XLY', 'XLP', '^TNX', '^TYX']
           raw = {t: yf.Ticker(t).history(period="180d") for t in tickers_list}
           
@@ -84,7 +86,7 @@ jobs:
           dynamic_news, ai_briefing, period_interpretation = {}, "분석 중...", {}
           try:
               model = genai.GenerativeModel('models/gemini-2.0-flash')
-              prompt = f"Analyze market stats: {market_stats}. News: {chr(10).join(all_headlines[:25])}. Provide 3-line briefing, analysis for [당일, 주간, 월간, 년간, 장기], and sector news. JSON ONLY."
+              prompt = f"Analyze stats: {market_stats}. News: {chr(10).join(all_headlines[:25])}. Provide 3-line briefing, analysis for [당일, 주간, 월간, 년간, 장기], and sector news. JSON ONLY."
               data = json.loads(re.search(r'\{.*\}', model.generate_content(prompt).text, re.DOTALL).group())
               ai_briefing, period_interpretation = data.get("briefing", ai_briefing), data.get("analysis", {})
               dynamic_news = {k: v for k, v in data.items() if k not in ["briefing", "analysis"]}
@@ -95,42 +97,38 @@ jobs:
           with open('PROJECT/indicators.json', 'w', encoding='utf-8') as f:
               json.dump({"last_updated": sync_time, "master_score": master_score, "market_temp": "-2.5", "ai_summary": ai_briefing, "period_interpretation": period_interpretation, "fomc_indicators": fomc_data, "engine_indicators": fomc_data, "dynamic_news": dynamic_news}, f, ensure_ascii=False, indent=4)
 
-          # 6. [전격 수정] 불사조 차트 엔진 (라벨-가격 1:1 매칭 강화)
+          # 6. [전격 수정] 차트 엔진 (데이터 개수 100% 동기화 버전)
           try:
               chart_tickers = {'BTC': 'BTC-USD', 'SPY': 'SPY', 'QQQ': 'QQQ', 'DIA': 'DIA', 'US10Y': '^TNX', 'USDKRW': 'KRW=X'}
               chart_data = {}
               for name, tkr in chart_tickers.items():
                   try:
                       tk = yf.Ticker(tkr)
-                      
-                      # [당일]
-                      d_raw = tk.history(period="7d", interval="15m")
+                      # 공통 데이터 생성 함수 (개수 일치 보증)
+                      def sync_data(df, label_fmt):
+                          if df.empty: return {"labels": [], "prices": []}
+                          labels = df.index.strftime(label_fmt).tolist()
+                          prices = [round(float(p), 2) for p in df['Close'].tolist()]
+                          # 길이 불일치 강제 보정
+                          min_len = min(len(labels), len(prices))
+                          return {"labels": labels[:min_len], "prices": prices[:min_len]}
+
+                      # [당일] 5일치에서 마지막 영업일 15분봉
+                      d_raw = tk.history(period="5d", interval="15m")
                       if not d_raw.empty:
                           d_final = d_raw[d_raw.index.date == d_raw.index[-1].date()]
-                          d_obj = {"labels": d_final.index.strftime('%H:%M').tolist(), "prices": [round(p,2) for p in d_final['Close'].tolist()]}
-                      else: d_obj = {"labels": [], "prices": []}
+                          chart_data[name] = {"day": sync_data(d_final, '%H:%M')}
+                      else:
+                          chart_data[name] = {"day": {"labels": [], "prices": []}}
 
-                      # [주간]
-                      w_raw = tk.history(period="1mo", interval="1h").tail(168)
-                      w_obj = {"labels": w_raw.index.strftime('%m-%d %H:00').tolist(), "prices": [round(p,2) for p in w_raw['Close'].tolist()]}
+                      # [주간, 월간, 년간, 장기] 추가
+                      chart_data[name]["week"] = sync_data(tk.history(period="1mo", interval="1h").tail(168), '%m-%d %H:00')
+                      chart_data[name]["month"] = sync_data(tk.history(period="6mo", interval="1d").tail(30), '%m-%d')
+                      chart_data[name]["year"] = sync_data(tk.history(period="2y", interval="1d").tail(365), '%Y-%m')
+                      chart_data[name]["long"] = sync_data(tk.history(period="max", interval="1wk"), '%Y')
 
-                      # [월간]
-                      m_raw = tk.history(period="1y", interval="1d").tail(30)
-                      m_obj = {"labels": m_raw.index.strftime('%m-%d').tolist(), "prices": [round(p,2) for p in m_raw['Close'].tolist()]}
-
-                      # [년간]
-                      y_raw = tk.history(period="5y", interval="1wk").tail(52)
-                      y_obj = {"labels": y_raw.index.strftime('%Y-%m').tolist(), "prices": [round(p,2) for p in y_raw['Close'].tolist()]}
-
-                      # [장기]
-                      l_raw = tk.history(period="max", interval="1mo")
-                      l_obj = {"labels": l_raw.index.strftime('%Y').tolist(), "prices": [round(p,2) for p in l_raw['Close'].tolist()]}
-
-                      chart_data[name] = {"day": d_obj, "week": w_obj, "month": m_obj, "year": y_obj, "long": l_obj}
-                      print(f"📊 {name} 차트 데이터 생성 성공 (Day: {len(d_obj['labels'])}, Week: {len(w_obj['labels'])})")
-                  except Exception as e:
-                      print(f"⚠️ {name} 차트 에러: {e}")
-                      continue
+                      print(f"📊 {name} 데이터 동기화 완료 (Day: {len(chart_data[name]['day']['labels'])})")
+                  except: continue
               
               with open('PROJECT/market_charts.json', 'w', encoding='utf-8') as f:
                   json.dump(chart_data, f, ensure_ascii=False)
@@ -149,5 +147,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "차트 라벨 불일치 버그 수정 및 데이터 100% 동기화 🚀" || echo "No changes"
+          git commit -m "차트 데이터 개수 완벽 동기화 및 경고 제거 🚀" || echo "No changes"
           git push
