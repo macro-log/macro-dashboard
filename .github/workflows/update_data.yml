@@ -38,21 +38,24 @@ jobs:
           from deep_translator import GoogleTranslator
           from xml.etree import ElementTree
 
-          # 1. 환경 설정 및 시간 계산
+          # 1. 환경 설정 및 시간
           api_key = os.getenv("GEMINI_API_KEY")
           genai.configure(api_key=api_key)
           now_korea = (datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=9))
           sync_time = now_korea.strftime('%Y-%m-%d %H:%M:%S')
 
-          # 2. [불변] SIGNAL 9 '정예 9대 지표' 실시간 스코어 계산
+          # 2. 실시간 데이터 (9대 지표 및 분석용)
+          tickers_list = ['BTC-USD', 'SPY', 'QQQ', 'DIA', 'DX-Y.NYB', '^VIX', 'GC=F', 'HYG', 'XLY', 'XLP', '^TNX', '^TYX']
+          raw = {t: yf.Ticker(t).history(period="180d") for t in tickers_list}
+          
+          def get_chg(t): return round(((raw[t]['Close'].iloc[-1] / raw[t]['Close'].iloc[-2]) - 1) * 100, 2)
+          current_vix = round(raw['^VIX']['Close'].iloc[-1], 2)
+          market_stats = f"VIX: {current_vix}, S&P500: {get_chg('SPY')}%, Nasdaq: {get_chg('QQQ')}%, BTC: {get_chg('BTC-USD')}%"
+
+          # 9대 지표 스코어 계산 (온도 -2.5 고정용)
           def calculate_master_score():
               try:
-                  tickers = ['BTC-USD', 'SPY', 'QQQ', 'DIA', 'DX-Y.NYB', '^VIX', 'GC=F', 'HYG', 'XLY', 'XLP', '^TNX', '^TYX']
-                  raw = {t: yf.Ticker(t).history(period="180d") for t in tickers}
                   def get_s(val, mid, span): return max(0, min(100, (val - (mid - span)) * (100 / (2 * span))))
-                  current_vix = round(raw['^VIX']['Close'].iloc[-1], 2)
-                  def get_chg(t): return round(((raw[t]['Close'].iloc[-1] / raw[t]['Close'].iloc[-2]) - 1) * 100, 2)
-                  
                   s1 = get_s(35 - current_vix, 20, 15) * 0.25
                   s2 = get_s(-((raw['GC=F']['Close'].iloc[-1]/raw['GC=F']['Close'].iloc[-2]-1)*100), 0, 2) * 0.15
                   s3 = get_s(raw['SPY']['Close'].iloc[-1]/raw['SPY']['Close'].rolling(120).mean().iloc[-1]*100, 100, 5) * 0.15
@@ -64,40 +67,35 @@ jobs:
                   def get_mfi(t): return (raw[t]['Close'].iloc[-1] * raw[t]['Volume'].iloc[-1]) / ((raw[t]['Close'] * raw[t]['Volume']).rolling(20).mean().iloc[-1] + 1e-9)
                   s8 = get_s(get_mfi('QQQ') / get_mfi('DIA'), 1, 0.5) * 0.04
                   s9 = get_s(raw['^TYX']['Close'].iloc[-1] - raw['^TNX']['Close'].iloc[-1], 0.2, 0.5) * 0.035
-                  return int(s1+s2+s3+s4+s5+s6+s7+s8+s9), current_vix, get_chg('SPY'), get_chg('QQQ'), get_chg('BTC-USD')
-              except: return 50, 20, 0, 0, 0
+                  return int(s1+s2+s3+s4+s5+s6+s7+s8+s9)
+              except: return 50
+          master_score = calculate_master_score()
 
-          master_score, current_vix, spy_chg, qqq_chg, btc_chg = calculate_master_score()
-          market_stats = f"VIX: {current_vix}, S&P500: {spy_chg}%, Nasdaq: {qqq_chg}%, BTC: {btc_chg}%"
-
-          # 3. [불변] 연준 심리 데이터
+          # 3. [보존] 연준 데이터 (12종 키워드)
           fomc_data = [{"word": "INFLATION", "sentiment_score": -1.8, "status": "NEUTRAL", "display_score": "-1.8", "count": 52}, {"word": "RATE", "sentiment_score": 0.4, "status": "NEUTRAL", "display_score": "+0.4", "count": 48}, {"word": "POLICY", "sentiment_score": -0.2, "status": "NEUTRAL", "display_score": "-0.2", "count": 34}, {"word": "RISKS", "sentiment_score": -0.5, "status": "NEUTRAL", "display_score": "-0.5", "count": 21}, {"word": "GROWTH", "sentiment_score": -0.1, "status": "NEUTRAL", "display_score": "-0.1", "count": 20}, {"word": "LABOR", "sentiment_score": -0.0, "status": "NEUTRAL", "display_score": "-0.0", "count": 18}, {"word": "CREDIT", "sentiment_score": 0.2, "status": "NEUTRAL", "display_score": "+0.2", "count": 13}, {"word": "GDP", "sentiment_score": -0.2, "status": "NEUTRAL", "display_score": "-0.2", "count": 11}, {"word": "PRICES", "sentiment_score": 0.0, "status": "NEUTRAL", "display_score": "0.0", "count": 11}, {"word": "EMPLOYMENT", "sentiment_score": -0.1, "status": "NEUTRAL", "display_score": "-0.1", "count": 7}, {"word": "ECONOMY", "sentiment_score": -0.7, "status": "NEUTRAL", "display_score": "-0.7", "count": 5}, {"word": "STABILITY", "sentiment_score": 0.0, "status": "NEUTRAL", "display_score": "0.0", "count": 3}]
 
-          # 4. [불변] 외신 뉴스 수집 및 AI 브리핑
-          def fetch_news():
-              try:
-                  url = "https://news.google.com/rss/search?q=Bloomberg+OR+WSJ+OR+Reuters+Global+Market&hl=en-US&gl=US&ceid=US:en"
-                  res = requests.get(url, timeout=15)
-                  return [it.find('title').text for it in ElementTree.fromstring(res.content).findall('.//item')[:50]]
-              except: return []
+          # 4. [보존] AI 뉴스 분석 엔진
+          all_headlines = []
+          try:
+              res = requests.get("https://news.google.com/rss/search?q=Bloomberg+OR+WSJ+OR+Reuters+Market&hl=en-US&gl=US&ceid=US:en", timeout=15)
+              all_headlines = [it.find('title').text for it in ElementTree.fromstring(res.content).findall('.//item')[:50]]
+          except: pass
 
-          all_headlines = fetch_news()
-          dynamic_news, ai_briefing, period_interpretation = {}, "시황 분석 중입니다.", {}
+          dynamic_news, ai_briefing, period_interpretation = {}, "분석 중...", {}
           try:
               model = genai.GenerativeModel('models/gemini-2.0-flash')
-              prompt = f"당신은 투자 전문 AI 'SIGNAL 9'입니다. [현재 데이터]: {market_stats}. [뉴스]: {chr(10).join(all_headlines[:25])}. 3줄 브리핑(briefing), 기간별 분석(analysis), 섹터뉴스 분류를 JSON으로만 응답하세요."
+              prompt = f"Analyze market stats: {market_stats}. News: {chr(10).join(all_headlines[:25])}. Provide 3-line briefing, analysis for [당일, 주간, 월간, 년간, 장기], and sector news. JSON ONLY."
               data = json.loads(re.search(r'\{.*\}', model.generate_content(prompt).text, re.DOTALL).group())
               ai_briefing, period_interpretation = data.get("briefing", ai_briefing), data.get("analysis", {})
               dynamic_news = {k: v for k, v in data.items() if k not in ["briefing", "analysis"]}
-          except:
-              period_interpretation = {"당일": "추세 확인 중", "주간": "매크로 분석 중", "월간": "사이클 파악 중", "년간": "장기 흐름 분석", "장기": "역사적 위치 분석"}
+          except: pass
 
-          # 5. indicators.json 저장 (불변)
+          # 5. indicators.json 저장
           os.makedirs('PROJECT', exist_ok=True)
           with open('PROJECT/indicators.json', 'w', encoding='utf-8') as f:
               json.dump({"last_updated": sync_time, "master_score": master_score, "market_temp": "-2.5", "ai_summary": ai_briefing, "period_interpretation": period_interpretation, "fomc_indicators": fomc_data, "engine_indicators": fomc_data, "dynamic_news": dynamic_news}, f, ensure_ascii=False, indent=4)
 
-          # 6. [전격 수정] 멀티 타임라인 차트 엔진 (데이터 누락 방지 완결판)
+          # 6. [전격 수정] 불사조 차트 엔진 (라벨-가격 1:1 매칭 강화)
           try:
               chart_tickers = {'BTC': 'BTC-USD', 'SPY': 'SPY', 'QQQ': 'QQQ', 'DIA': 'DIA', 'US10Y': '^TNX', 'USDKRW': 'KRW=X'}
               chart_data = {}
@@ -105,42 +103,35 @@ jobs:
                   try:
                       tk = yf.Ticker(tkr)
                       
-                      # A. 당일 (7일치를 긁어와서 마지막 영업일 15분봉 추출 - 5분봉보다 훨씬 안정적)
+                      # [당일]
                       d_raw = tk.history(period="7d", interval="15m")
                       if not d_raw.empty:
-                          last_date = d_raw.index[-1].date()
-                          df_day = d_raw[d_raw.index.date == last_date]
-                          d_labels, d_prices = df_day.index.strftime('%H:%M').tolist(), [round(p,2) for p in df_day['Close'].tolist()]
-                      else: d_labels, d_prices = [], []
+                          d_final = d_raw[d_raw.index.date == d_raw.index[-1].date()]
+                          d_obj = {"labels": d_final.index.strftime('%H:%M').tolist(), "prices": [round(p,2) for p in d_final['Close'].tolist()]}
+                      else: d_obj = {"labels": [], "prices": []}
 
-                      # B. 주간 (1개월치에서 1시간봉)
-                      w_raw = tk.history(period="1mo", interval="1h")
-                      w_labels, w_prices = w_raw.index.strftime('%m-%d %H:00').tolist(), [round(p,2) for p in w_raw['Close'].tolist()]
+                      # [주간]
+                      w_raw = tk.history(period="1mo", interval="1h").tail(168)
+                      w_obj = {"labels": w_raw.index.strftime('%m-%d %H:00').tolist(), "prices": [round(p,2) for p in w_raw['Close'].tolist()]}
 
-                      # C. 월간 (1년치에서 일봉 추출 - 누락 방지)
+                      # [월간]
                       m_raw = tk.history(period="1y", interval="1d").tail(30)
-                      m_labels, m_prices = m_raw.index.strftime('%m-%d').tolist(), [round(p,2) for p in m_raw['Close'].tolist()]
+                      m_obj = {"labels": m_raw.index.strftime('%m-%d').tolist(), "prices": [round(p,2) for p in m_raw['Close'].tolist()]}
 
-                      # D. 년간 (5년치에서 주봉 추출 - 긴 호흡)
+                      # [년간]
                       y_raw = tk.history(period="5y", interval="1wk").tail(52)
-                      y_labels, y_prices = y_raw.index.strftime('%Y-%m').tolist(), [round(p,2) for p in y_raw['Close'].tolist()]
+                      y_obj = {"labels": y_raw.index.strftime('%Y-%m').tolist(), "prices": [round(p,2) for p in y_raw['Close'].tolist()]}
 
-                      # E. 장기 (최대 기간 월봉)
+                      # [장기]
                       l_raw = tk.history(period="max", interval="1mo")
-                      l_labels, l_prices = l_raw.index.strftime('%Y').tolist(), [round(p,2) for p in l_raw['Close'].tolist()]
+                      l_obj = {"labels": l_raw.index.strftime('%Y').tolist(), "prices": [round(p,2) for p in l_raw['Close'].tolist()]}
 
-                      chart_data[name] = {
-                          "day": {"labels": d_labels, "prices": d_prices},
-                          "week": {"labels": w_labels, "prices": w_prices},
-                          "month": {"labels": m_labels, "prices": m_prices},
-                          "year": {"labels": y_labels, "prices": y_prices},
-                          "long": {"labels": l_labels, "prices": l_prices}
-                      }
-                      print(f"✅ {name} 차트 생성 성공")
+                      chart_data[name] = {"day": d_obj, "week": w_obj, "month": m_obj, "year": y_obj, "long": l_obj}
+                      print(f"📊 {name} 차트 데이터 생성 성공 (Day: {len(d_obj['labels'])}, Week: {len(w_obj['labels'])})")
                   except Exception as e:
                       print(f"⚠️ {name} 차트 에러: {e}")
                       continue
-                      
+              
               with open('PROJECT/market_charts.json', 'w', encoding='utf-8') as f:
                   json.dump(chart_data, f, ensure_ascii=False)
           except: pass
@@ -158,5 +149,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "멀티 차트 엔진 안정화 및 AI 해석 엔진 최종 장착 🚀" || echo "No changes"
+          git commit -m "차트 라벨 불일치 버그 수정 및 데이터 100% 동기화 🚀" || echo "No changes"
           git push
