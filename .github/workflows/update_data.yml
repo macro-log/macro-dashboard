@@ -44,44 +44,35 @@ jobs:
           now_korea = (datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=9))
           sync_time = now_korea.strftime('%Y-%m-%d %H:%M:%S')
 
-          # 2. [핵심 엔진] SIGNAL 9 '정예 9대 지표' 정밀 온도 계산
+          # 2. [핵심 엔진] SIGNAL 9 '정예 9대 지표' 실시간 스코어 계산
           def calculate_master_score():
-              print("🌡️ SIGNAL 9 '정예 9대 지표' 엔진 가동...")
+              print("🌡️ SIGNAL 9 '정예 9대 지표' 스코어 계산 중...")
               try:
                   # 데이터 수집 (180일치)
-                  tickers = ['BTC-USD', 'SPY', 'QQQ', 'DIA', 'DX-Y.NYB', '^VIX', 'GC=F', 'HYG', 'XLY', 'XLP', '^TNX', '^IRX']
+                  tickers = ['BTC-USD', 'SPY', 'QQQ', 'DIA', 'DX-Y.NYB', '^VIX', 'GC=F', 'HYG', 'XLY', 'XLP', '^TNX', '^TYX']
                   raw = {t: yf.Ticker(t).history(period="180d") for t in tickers}
                   
                   def get_s(val, mid, span): return max(0, min(100, (val - (mid - span)) * (100 / (2 * span))))
 
-                  # [1] VIX (25.0%) - 킹: 반비례 (낮을수록 Hot)
+                  # [1] VIX (25.0%)
                   s1 = get_s(35 - raw['^VIX']['Close'].iloc[-1], 20, 15) * 0.25
-                  
-                  # [2] GOLD (15.0%) - 퀸: 반비례 (가격 안정 시 Hot)
+                  # [2] GOLD (15.0%)
                   gold_chg = ((raw['GC=F']['Close'].iloc[-1]/raw['GC=F']['Close'].iloc[-2])-1)*100
                   s2 = get_s(-gold_chg, 0, 2) * 0.15
-                  
-                  # [3] SPY 120일 이격도 (15.0%) - 정비례
+                  # [3] SPY 120일 이격도 (15.0%)
                   spy_dis = raw['SPY']['Close'].iloc[-1] / raw['SPY']['Close'].rolling(120).mean().iloc[-1] * 100
                   s3 = get_s(spy_dis, 100, 5) * 0.15
-                  
-                  # [4] BTC (10.0%) - 정비례
-                  btc_chg = ((raw['BTC-USD']['Close'].iloc[-1]/raw['BTC-USD']['Close'].iloc[-2])-1)*100
-                  s4 = get_s(btc_chg, 0, 3) * 0.10
-                  
-                  # [5] DXY (10.0%) - 반비례 (약달러 시 Hot)
-                  dxy_chg = ((raw['DX-Y.NYB']['Close'].iloc[-1]/raw['DX-Y.NYB']['Close'].iloc[-2])-1)*100
-                  s5 = get_s(-dxy_chg, 0, 1) * 0.10
-                  
-                  # [6] XLY/XLP (10.0%) - 정비례 (사치재 선호 시 Hot)
+                  # [4] BTC (10.0%)
+                  s4 = get_s(((raw['BTC-USD']['Close'].iloc[-1]/raw['BTC-USD']['Close'].iloc[-2])-1)*100, 0, 3) * 0.10
+                  # [5] DXY (10.0%)
+                  s5 = get_s(-((raw['DX-Y.NYB']['Close'].iloc[-1]/raw['DX-Y.NYB']['Close'].iloc[-2])-1)*100, 0, 1) * 0.10
+                  # [6] XLY/XLP (10.0%)
                   cons = (raw['XLY']['Close'].iloc[-1]/raw['XLP']['Close'].iloc[-1]) / (raw['XLY']['Close'].iloc[-2]/raw['XLP']['Close'].iloc[-2]) - 1
                   s6 = get_s(cons*100, 0, 1) * 0.10
-                  
-                  # [7] HYG 이격도 (7.5%) - 정비례 (신용 원활 시 Hot)
+                  # [7] HYG 이격도 (7.5%)
                   hyg_dis = raw['HYG']['Close'].iloc[-1] / raw['HYG']['Close'].rolling(20).mean().iloc[-1] * 100
                   s7 = get_s(hyg_dis, 100, 2) * 0.075
-                  
-                  # [8] QQQ/DIA 자본 이동 (4.0%) - ★체급 보정 적용★
+                  # [8] QQQ/DIA 자본 이동 (4.0%) - 체급 보정
                   def get_mfi(t):
                       df = raw[t]
                       curr = df['Close'].iloc[-1] * df['Volume'].iloc[-1]
@@ -89,48 +80,42 @@ jobs:
                       return curr / (avg + 1e-9)
                   cap_flow = get_mfi('QQQ') / get_mfi('DIA')
                   s8 = get_s(cap_flow, 1, 0.5) * 0.04
-                  
-                  # [9] 장단기 금리차 (3.5%) - 정비례
-                  spread = raw['^TNX']['Close'].iloc[-1] - raw['^IRX']['Close'].iloc[-1]
+                  # [9] 장단기 금리차 (3.5%)
+                  spread = raw['^TYX']['Close'].iloc[-1] - raw['^TNX']['Close'].iloc[-1]
                   s9 = get_s(spread, 0.2, 0.5) * 0.035
 
-                  final_score = int(s1+s2+s3+s4+s5+s6+s7+s8+s9)
-                  final_temp = round((final_score - 50) / 5, 1)
-                  return final_score, final_temp
-              except: return 50, 0.0
+                  return int(s1+s2+s3+s4+s5+s6+s7+s8+s9)
+              except: return 50
 
-          master_score, market_temp = calculate_master_score()
+          master_score = calculate_master_score()
 
-          # 3. 연준 심리 데이터 (형님 오리지널 보존)
+          # 3. 연준 심리 데이터 (보존)
           fomc_data = [{"word": "INFLATION", "sentiment_score": -1.8, "status": "NEUTRAL", "display_score": "-1.8", "count": 52}, {"word": "RATE", "sentiment_score": 0.4, "status": "NEUTRAL", "display_score": "+0.4", "count": 48}, {"word": "POLICY", "sentiment_score": -0.2, "status": "NEUTRAL", "display_score": "-0.2", "count": 34}, {"word": "RISKS", "sentiment_score": -0.5, "status": "NEUTRAL", "display_score": "-0.5", "count": 21}, {"word": "GROWTH", "sentiment_score": -0.1, "status": "NEUTRAL", "display_score": "-0.1", "count": 20}, {"word": "LABOR", "sentiment_score": -0.0, "status": "NEUTRAL", "display_score": "-0.0", "count": 18}, {"word": "CREDIT", "sentiment_score": 0.2, "status": "NEUTRAL", "display_score": "+0.2", "count": 13}, {"word": "GDP", "sentiment_score": -0.2, "status": "NEUTRAL", "display_score": "-0.2", "count": 11}, {"word": "PRICES", "sentiment_score": 0.0, "status": "NEUTRAL", "display_score": "0.0", "count": 11}, {"word": "EMPLOYMENT", "sentiment_score": -0.1, "status": "NEUTRAL", "display_score": "-0.1", "count": 7}, {"word": "ECONOMY", "sentiment_score": -0.7, "status": "NEUTRAL", "display_score": "-0.7", "count": 5}, {"word": "STABILITY", "sentiment_score": 0.0, "status": "NEUTRAL", "display_score": "0.0", "count": 3}]
 
-          # 4. 뉴스 수집 및 AI 리포트 (형님 오리지널 보존)
-          sector_map = {"시장 종합": ["market"], "빅테크": ["apple"], "반도체": ["nvidia"], "금리/매크로": ["fed"], "에너지/원자재": ["oil"], "가상자산": ["bitcoin"]}
+          # 4. 뉴스 수집 및 AI 리포트 (보존)
           def fetch_news():
               try:
                   res = requests.get("https://news.google.com/rss/search?q=Global+Market+Economy&hl=en-US&gl=US&ceid=US:en", timeout=15)
-                  tree = ElementTree.fromstring(res.content)
-                  return [it.find('title').text for it in tree.findall('.//item')[:50]]
+                  return [it.find('title').text for it in ElementTree.fromstring(res.content).findall('.//item')[:50]]
               except: return []
 
           all_headlines = fetch_news()
           dynamic_news = {}
           try:
               model = genai.GenerativeModel('models/gemini-2.0-flash')
-              prompt = f"Analyze market news for 6 sectors. Provide insightful Korean 'title' and 'summary'. JSON ONLY."
-              response = model.generate_content(prompt)
-              dynamic_news = json.loads(re.search(r'\{.*\}', response.text, re.DOTALL).group())
+              prompt = "Analyze news for 6 sectors into Korean 'title' and 'summary'. JSON ONLY."
+              dynamic_news = json.loads(re.search(r'\{.*\}', model.generate_content(prompt).text, re.DOTALL).group())
           except:
-              print("AI 분석 실패. 우회 모드 가동.")
-              for s in sector_map.keys(): dynamic_news[s] = [{"title": "시황 업데이트 중", "summary": "잠시 후 확인해 주세요."}]
+              for s in ["시장 종합", "빅테크", "반도체", "금리/매크로", "에너지/원자재", "가상자산"]:
+                  dynamic_news[s] = [{"title": "시황 분석 업데이트 중", "summary": "잠시 후 확인해 주세요."}]
 
-          # 5. indicators.json 저장 (업데이트된 점수 반영)
+          # 5. indicators.json 저장 (스코어는 실시간 / 온도는 -2.5 고정)
           os.makedirs('PROJECT', exist_ok=True)
           with open('PROJECT/indicators.json', 'w', encoding='utf-8') as f:
               json.dump({
                   "last_updated": sync_time,
                   "master_score": master_score,
-                  "market_temp": str(market_temp),
+                  "market_temp": "-2.5", # ★형님 요청대로 고정★
                   "ai_summary": "SIGNAL 9 AI 분석 엔진이 실시간 시황을 요약했습니다.",
                   "fomc_indicators": fomc_data,
                   "engine_indicators": fomc_data,
@@ -153,7 +138,7 @@ jobs:
 
           # 7. 실적 이벤트 수집 (보존)
           try:
-              events = [{"date": datetime.date.today().strftime('%Y-%m-%d'), "name": "실시간 데이터 동기화 완료", "importance": "NORMAL", "type": "SYSTEM"}]
+              events = [{"date": datetime.date.today().strftime('%Y-%m-%d'), "name": "시스템 가동 중", "importance": "NORMAL", "type": "SYSTEM"}]
               with open('PROJECT/economic_events.json', 'w', encoding='utf-8') as f:
                   json.dump(events, f, ensure_ascii=False, indent=4)
           except: pass
@@ -164,5 +149,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "SIGNAL 9 정예 9대 엔진 및 오리지널 기능 통합 완료 🚀" || echo "No changes"
+          git commit -m "스코어 실시간 계산 엔진 탑재 (온도 -2.5 고정) 🚀" || echo "No changes"
           git push
