@@ -1,9 +1,15 @@
 {
-    "last_updated": "2026-03-15 00:56:36",
-    "master_score": 29,
+    "last_updated": "2026-03-15 01:07:38",
+    "master_score": 28,
     "market_temp": "-2.5",
-    "ai_summary": "분석 중...",
-    "period_interpretation": {},
+    "ai_summary": "시황 분석 중입니다.",
+    "period_interpretation": {
+        "당일": "안정적 흐름",
+        "주간": "매크로 대기",
+        "월간": "추세 형성 중",
+        "년간": "사이클 반영",
+        "장기": "역사적 저점 부근"
+    },
     "fomc_indicators": [
         {
             "word": "INFLATION",
