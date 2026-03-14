@@ -1,1 +1,8 @@
-[]
+[
+    {
+        "date": "2026-03-14",
+        "name": "시스템 가동 중",
+        "importance": "NORMAL",
+        "type": "SYSTEM"
+    }
+]
