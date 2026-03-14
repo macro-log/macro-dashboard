@@ -300,8 +300,10 @@
 
         function removeAlert(id) { alertList = alertList.filter(a => a.id !== id); renderAlertList(); }
 
+        // 🚨 1. [핵심 수술] 막혀버린 allorigins 우회망을 가장 안정적인 codetabs로 교체 🚨
         async function syncMarketPrices() {
             try {
+                // 바이낸스 데이터는 그대로 유지 (오류 없음)
                 const btcRes = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT');
                 const btcData = await btcRes.json();
                 updateCardUI('BTC', btcData.lastPrice, btcData.priceChangePercent);
@@ -316,9 +318,10 @@
                 symbols.forEach(async (s) => {
                     try {
                         const url = encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${s.ticker}`);
-                        const res = await fetch(`https://api.allorigins.win/get?url=${url}`);
-                        const data = await res.json();
-                        const yfData = JSON.parse(data.contents);
+                        // ❌ 기존 막힌 코드: fetch(`https://api.allorigins.win/get?url=${url}`)
+                        // ✅ 새로운 우회망 적용 (여기서 CORS 에러가 싹 잡힙니다)
+                        const res = await fetch(`https://api.codetabs.com/v1/proxy/?quest=${url}`);
+                        const yfData = await res.json(); 
                         const meta = yfData.chart.result[0].meta;
                         const price = meta.regularMarketPrice;
                         const prevClose = meta.chartPreviousClose;
@@ -345,6 +348,7 @@
             }
         }
 
+        // 🚨 2. [두 번째 수술] 파이썬이 만든 '주간, 월간' 데이터를 정확하게 불러오도록 수정 🚨
         async function loadChart(id, range = '1d') {
             const ctx = document.getElementById('robotMainChart').getContext('2d');
             if (robotChartInstance) robotChartInstance.destroy();
@@ -361,12 +365,17 @@
             const dataObj = allChartData[id];
             let labels, prices;
 
+            // ✅ 이제 에러 없이 방(day, week, month 등)을 제대로 찾아갑니다.
             if (range === '1d') { 
                 labels = dataObj.day.labels; prices = dataObj.day.prices; 
+            } else if (range === '5d') { 
+                labels = dataObj.week.labels; prices = dataObj.week.prices; 
+            } else if (range === '1mo' || range === '3mo') { 
+                labels = dataObj.month.labels; prices = dataObj.month.prices; 
+            } else if (range === '1y') { 
+                labels = dataObj.year.labels; prices = dataObj.year.prices; 
             } else { 
-                let sliceLen = (range === '5d') ? 7 : (range === '1mo') ? 30 : (range === '3mo') ? 90 : (range === '1y') ? 365 : 3650; 
-                labels = dataObj.full.labels.slice(-sliceLen); 
-                prices = dataObj.full.prices.slice(-sliceLen); 
+                labels = dataObj.long.labels; prices = dataObj.long.prices; 
             }
 
             robotChartInstance = new Chart(ctx, { 
@@ -486,7 +495,6 @@
                         <span class="font-mono font-black text-xs ${i.sentiment_score >= 0 ? 'text-sky-400' : 'text-red-400'}">${i.display_score}</span>
                     </li>`).join('');
 
-                // 🚨 4. [완벽 수정] 6섹터 동적 뉴스 렌더링 (클릭 시 요약 기능 포함) 🚨
                 if(data.dynamic_news && Object.keys(data.dynamic_news).length > 0) {
                     const grid = document.getElementById('dynamic-news-grid');
                     grid.innerHTML = ''; 
