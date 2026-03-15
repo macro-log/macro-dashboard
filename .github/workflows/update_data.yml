@@ -77,16 +77,19 @@ jobs:
           # 3. [불변] 연준 심리 데이터 (형님 오리지널 12개 키워드 보존)
           fomc_data = [{"word": "INFLATION", "sentiment_score": -1.8, "status": "NEUTRAL", "display_score": "-1.8", "count": 52}, {"word": "RATE", "sentiment_score": 0.4, "status": "NEUTRAL", "display_score": "+0.4", "count": 48}, {"word": "POLICY", "sentiment_score": -0.2, "status": "NEUTRAL", "display_score": "-0.2", "count": 34}, {"word": "RISKS", "sentiment_score": -0.5, "status": "NEUTRAL", "display_score": "-0.5", "count": 21}, {"word": "GROWTH", "sentiment_score": -0.1, "status": "NEUTRAL", "display_score": "-0.1", "count": 20}, {"word": "LABOR", "sentiment_score": -0.0, "status": "NEUTRAL", "display_score": "-0.0", "count": 18}, {"word": "CREDIT", "sentiment_score": 0.2, "status": "NEUTRAL", "display_score": "+0.2", "count": 13}, {"word": "GDP", "sentiment_score": -0.2, "status": "NEUTRAL", "display_score": "-0.2", "count": 11}, {"word": "PRICES", "sentiment_score": 0.0, "status": "NEUTRAL", "display_score": "0.0", "count": 11}, {"word": "EMPLOYMENT", "sentiment_score": -0.1, "status": "NEUTRAL", "display_score": "-0.1", "count": 7}, {"word": "ECONOMY", "sentiment_score": -0.7, "status": "NEUTRAL", "display_score": "-0.7", "count": 5}, {"word": "STABILITY", "sentiment_score": 0.0, "status": "NEUTRAL", "display_score": "0.0", "count": 3}]
 
-          # 4. 외신 뉴스 수집 및 AI 통합 분석 (브리핑 + 타임라인 해석)
+          # 4. [완벽 수정] 외신 뉴스 수집 및 AI 통합 분석 (JSON 강제 출력 및 차단 회피)
           def fetch_news():
               try:
                   url = "https://news.google.com/rss/search?q=Bloomberg+OR+WSJ+OR+Reuters+Global+Market&hl=en-US&gl=US&ceid=US:en"
-                  res = requests.get(url, timeout=15)
-                  return [it.find('title').text for it in ElementTree.fromstring(res.content).findall('.//item')[:50]]
+                  headers = {'User-Agent': 'Mozilla/5.0'} # 봇 차단 방지용 마스크
+                  res = requests.get(url, headers=headers, timeout=15)
+                  return [it.find('title').text for it in ElementTree.fromstring(res.content).findall('.//item')[:40]]
               except: return []
 
           all_headlines = fetch_news()
-          dynamic_news, ai_briefing, period_interpretation = {}, "시황 분석 중입니다.", {}
+          dynamic_news = {}
+          ai_briefing = "시황 분석 중입니다."
+          period_interpretation = {"당일": "안정적 흐름", "주간": "매크로 대기", "월간": "추세 형성 중", "년간": "사이클 반영", "장기": "역사적 저점 부근"}
           
           try:
               model = genai.GenerativeModel('models/gemini-2.0-flash')
@@ -95,18 +98,39 @@ jobs:
               [현재 데이터]: {market_stats}
               [외신 뉴스]: {chr(10).join(all_headlines[:25])}
 
-              요구사항:
-              1. 'briefing' 키: 위 데이터와 외신을 조합한 날카로운 3줄 시장 요약을 한국어로 작성.
-              2. 'analysis' 키: [당일, 주간, 월간, 년간, 장기] 각각에 대해 최근 변동 원인을 한 줄(20자 내외)로 설명.
-              3. 나머지 뉴스는 6개 섹터별로 분류.
-              4. 반드시 JSON 형식으로만 응답.
+              응답은 반드시 아래 JSON 구조와 완벽히 일치해야 합니다:
+              {{
+                  "briefing": "위 데이터와 뉴스를 융합하여 시장을 통찰하는 매우 날카로운 3줄 요약 (한국어)",
+                  "analysis": {{
+                      "당일": "오늘의 주요 변동 요인 (20자 내외)",
+                      "주간": "이번 주 매크로 모멘텀 (20자 내외)",
+                      "월간": "월간 추세선 해석 (20자 내외)",
+                      "년간": "올해 사이클 전망 (20자 내외)",
+                      "장기": "장기적 투자 뷰 (20자 내외)"
+                  }},
+                  "거시경제": [ {{"title": "실제 뉴스 제목 (한국어 번역)", "summary": "뉴스 핵심 1줄 요약"}} ],
+                  "주식시장": [ {{"title": "실제 뉴스 제목 (한국어 번역)", "summary": "뉴스 핵심 1줄 요약"}} ],
+                  "암호화폐": [ {{"title": "실제 뉴스 제목 (한국어 번역)", "summary": "뉴스 핵심 1줄 요약"}} ],
+                  "원자재": [ {{"title": "실제 뉴스 제목 (한국어 번역)", "summary": "뉴스 핵심 1줄 요약"}} ],
+                  "빅테크": [ {{"title": "실제 뉴스 제목 (한국어 번역)", "summary": "뉴스 핵심 1줄 요약"}} ],
+                  "지정학": [ {{"title": "실제 뉴스 제목 (한국어 번역)", "summary": "뉴스 핵심 1줄 요약"}} ]
+              }}
               """
-              data = json.loads(re.search(r'\{.*\}', model.generate_content(prompt).text, re.DOTALL).group())
+              # 제미나이가 딴소리 못하고 무조건 JSON만 내뱉게 강제하는 옵션
+              response = model.generate_content(prompt, generation_config={"response_mime_type": "application/json"})
+              data = json.loads(response.text)
+              
               ai_briefing = data.get("briefing", ai_briefing)
-              period_interpretation = data.get("analysis", {})
-              dynamic_news = {k: v for k, v in data.items() if k not in ["briefing", "analysis"]}
-          except:
-              period_interpretation = {"당일": "안정적 흐름", "주간": "매크로 대기", "월간": "추세 형성 중", "년간": "사이클 반영", "장기": "역사적 저점 부근"}
+              period_interpretation = data.get("analysis", period_interpretation)
+              
+              # 6대 섹터에 해당하는 뉴스만 깔끔하게 저장
+              for key in ["거시경제", "주식시장", "암호화폐", "원자재", "빅테크", "지정학"]:
+                  if key in data and data[key]:
+                      dynamic_news[key] = data[key]
+                      
+              print("✅ AI 뉴스 딥다이브 분석 성공!")
+          except Exception as e:
+              print(f"⚠️ AI 분석 중 에러 발생: {e}")
 
           # 5. indicators.json 저장
           os.makedirs('PROJECT', exist_ok=True)
