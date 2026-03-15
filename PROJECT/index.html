@@ -62,8 +62,8 @@
         .chart-btn:hover { color: white; border-color: var(--text-dim); }
         .chart-btn.active { background: #1e293b; color: var(--accent); border-color: var(--accent); }
 
-        .gauge-container { position: relative; width: 100%; max-width: 500px; margin: 0 auto; height: 250px; }
-        .gauge-text { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); text-align: center; width: 100%; }
+        .gauge-container { position: relative; width: 100%; max-width: 420px; margin: 0 auto; height: 220px; display: flex; align-items: center; justify-content: center; }
+        .gauge-text { position: absolute; top: 60%; left: 50%; transform: translate(-50%, -50%); text-align: center; width: 100%; }
 
         .earnings-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
         @media (min-width: 768px) { .earnings-grid { grid-template-columns: repeat(4, 1fr); } }
@@ -250,7 +250,7 @@
                                 <div class="flex justify-between border-b border-gray-900 pb-2">
                                     <span class="text-xs text-gray-400">주가수익비율 (P/E)</span>
                                     <span id="stat-pe" class="text-sm font-black text-white font-mono">--</span>
-                                </div>
+                                }
                                 <div class="flex justify-between border-b border-gray-900 pb-2">
                                     <span class="text-xs text-gray-400">주당순이익 (EPS)</span>
                                     <span id="stat-eps" class="text-sm font-black text-white font-mono">--</span>
@@ -721,33 +721,101 @@
             else if(score >= 75) { statusText = "Extreme Greed (극단적 탐욕)"; color = "#38bdf8"; }
             else if(score >= 55) { statusText = "Greed (탐욕)"; color = "#2dd4bf"; }
 
-            document.getElementById('gauge-score').innerText = score + '°';
-            document.getElementById('gauge-score').style.color = color;
-            document.getElementById('gauge-status').innerText = statusText;
-            document.getElementById('gauge-status').style.color = color;
+            // ★ 세련된 디자인을 위한 텍스트 색상 및 글로우 효과 추가 ★
+            const scoreEl = document.getElementById('gauge-score');
+            const statusEl = document.getElementById('gauge-status');
+            scoreEl.innerText = score + '°';
+            scoreEl.style.color = color;
+            scoreEl.style.textShadow = `0 0 15px ${color}80`; // 네온 글로우 효과
 
+            statusEl.innerText = statusText;
+            statusEl.style.color = color;
+
+            // ★ 고급스러운 '네온 고리형' 온도계 디자인 플러그인 정의 ★
+            const needlePlugin = {
+                id: 'needle',
+                afterDraw: (chart) => {
+                    const { ctx, chartArea: { width, height } } = chart;
+                    ctx.save();
+                    
+                    const cx = width / 2;
+                    const cy = height;
+                    const r = width / 2 - 10; // 반지름
+
+                    // 1. 점수 위치 계산 (반원 각도)
+                    const dataRatio = score / 100;
+                    const angle = Math.PI + (Math.PI * dataRatio);
+                    
+                    // 2. 바늘 대신 세련된 포인트 지시계 그리기
+                    ctx.translate(cx, cy);
+                    ctx.rotate(angle);
+                    
+                    // 지시계 점 그리기
+                    ctx.beginPath();
+                    ctx.arc(r, 0, 8, 0, Math.PI * 2); // 고리 위에 점
+                    ctx.fillStyle = color;
+                    ctx.shadowColor = color; // 네온 글로우
+                    ctx.shadowBlur = 15;
+                    ctx.fill();
+                    
+                    // 지시계 선 그리기 (선택 사항, 더 명확하게)
+                    ctx.beginPath();
+                    ctx.lineWidth = 2;
+                    ctx.strokeStyle = color;
+                    ctx.moveTo(0, 0);
+                    ctx.lineTo(r, 0);
+                    // ctx.stroke(); // 주석 해제 시 바늘 선이 나타납니다.
+
+                    ctx.restore();
+                }
+            };
+
+            // ★ 미니멀하고 세련된 차트 생성 ★
             masterGaugeChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['극단적 공포', '공포', '중립', '탐욕', '극단적 탐욕'],
                     datasets: [{
-                        data: [20, 20, 20, 20, 20],
-                        backgroundColor: ['#ef4444', '#f97316', '#eab308', '#2dd4bf', '#38bdf8'],
+                        data: [score, 100 - score], // 점수와 나머지
+                        backgroundColor: (context) => {
+                            const chart = context.chart;
+                            const {ctx, chartArea} = chart;
+                            if (!chartArea) return null;
+                            
+                            // 고급스러운 그라데이션 고리 효과
+                            const gradient = ctx.createLinearGradient(chartArea.left, 0, chartArea.right, 0);
+                            gradient.addColorStop(0, '#ef4444'); // 공포(Red)
+                            gradient.addColorStop(0.5, '#eab308'); // 중립(Amber)
+                            gradient.addColorStop(1, '#38bdf8'); // 탐욕(Sky)
+                            
+                            // 배경색(회색)과 결합
+                            return [
+                                gradient, // 점수 부분 (그라데이션)
+                                '#1f2937' // 나머지 부분 (어두운 회색)
+                            ];
+                        },
                         borderWidth: 0,
-                        circumference: 180,
-                        rotation: 270
+                        cutout: '85%', // 고리를 더 얇고 세련되게
+                        circumference: 180, // 반원
+                        rotation: 270, // 시작 위치
+                        borderRadius: 10, // 고리 끝을 둥글게
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    cutout: '80%',
+                    layout: { padding: { bottom: 20 } },
                     plugins: {
                         legend: { display: false },
-                        tooltip: { enabled: false }
+                        tooltip: { enabled: false },
                     },
-                    animation: { animateRotate: true, animateScale: false }
-                }
+                    animation: {
+                        animateRotate: true,
+                        animateScale: false,
+                        duration: 1500, // 부드러운 애니메이션
+                        easing: 'easeInOutQuint' // 탄력 있는 느낌
+                    }
+                },
+                plugins: [needlePlugin] // 사용자 정의 지시계 플러그인 등록
             });
         }
 
