@@ -353,7 +353,7 @@
             }
         }
 
-        // 🚀 실시간 종목 검색 기능 엔진 (야후 파이낸스 직접 호출)
+        // 🚀 실시간 종목 검색 기능 엔진 (더 빠르고 안정적인 우회망 적용)
         async function executeSearch() {
             const ticker = document.getElementById('stock-search-input').value.toUpperCase().trim();
             if(!ticker) return alert("검색할 티커(종목코드)를 입력해주세요!");
@@ -364,12 +364,14 @@
             toggleChartModal(true);
 
             try {
-                // 야후 파이낸스에서 6개월치 일봉 데이터를 실시간으로 가져옵니다.
-                const url = encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?range=6mo&interval=1d`);
-                const res = await fetch(`https://api.codetabs.com/v1/proxy/?quest=${url}`);
+                // 🚨 검색용 우회망을 더 안정적인 corsproxy.io 로 교체!
+                const targetUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?range=6mo&interval=1d`;
+                const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`;
+                
+                const res = await fetch(proxyUrl);
                 const data = await res.json();
 
-                if(!data.chart.result) throw new Error("종목을 찾을 수 없습니다.");
+                if(!data.chart || !data.chart.result) throw new Error("종목을 찾을 수 없습니다.");
 
                 const result = data.chart.result[0];
                 const timestamps = result.timestamp;
@@ -415,7 +417,7 @@
                 });
 
             } catch(e) {
-                alert(`'${ticker}' 종목을 찾을 수 없거나 데이터를 불러오지 못했습니다.\n정확한 영문 티커(예: AAPL, TSLA)를 입력해 주세요.`);
+                alert(`'${ticker}' 종목을 찾을 수 없거나 일시적인 통신 지연입니다.\n정확한 영문 티커(예: AAPL, TSLA)를 다시 입력해 주세요.`);
                 toggleChartModal(false);
             }
         }
