@@ -1,12 +1,8 @@
 {
-    "last_updated": "2026-03-15 18:49:53",
-    "master_score": 31,
+    "last_updated": "2026-03-15 20:00:49",
+    "master_score": 32,
     "market_temp": "-2.5",
-    "ai_summary": [
-        "데이터 동기화 중입니다.",
-        "시장 흐름을 분석하고 있습니다.",
-        "잠시 후 업데이트됩니다."
-    ],
+    "ai_summary": "AI가 글로벌 마켓 데이터를 동기화하고 있습니다.",
     "period_interpretation": {
         "당일": "안정적 흐름",
         "주간": "매크로 대기",
