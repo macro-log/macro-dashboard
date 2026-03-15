@@ -8,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-        :root { --bg-main: #0a0f1e; --bg-card: #161e31; --accent: #38bdf8; --text-main: #f1f5f9; --text-dim: #94a3b8; --border: #262f45; --danger: #ef4444; }
+        :root { --bg-main: #0a0f1e; --bg-card: #161e31; --accent: #38bdf8; --text-main: #f1f5f9; --text-dim: #94a3b8; --border: #262f45; --danger: #ef4444; --emerald: #10b981; }
         body { font-family: 'Pretendard', sans-serif; background-color: var(--bg-main); color: var(--text-main); margin: 0; overflow-x: hidden; }
         
         ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -165,7 +165,7 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
                 <div class="card min-h-[200px] flex flex-col justify-between">
                     <div>
                         <span class="section-label text-gray-400">Briefing</span>
@@ -193,6 +193,23 @@
                         </div>
                     </div>
                     <button onclick="switchTab('news')" class="mt-4 text-xs font-bold text-sky-400 hover:text-white text-left transition-colors">▶ 뉴스 리포트 더보기</button>
+                </div>
+
+                <div class="card min-h-[200px] border-l-4 border-emerald-500 flex flex-col">
+                    <div class="flex justify-between items-center mb-2">
+                        <div>
+                            <span class="section-label text-emerald-400">Watchlist & Value</span>
+                            <h3 class="text-lg font-bold text-white">종목 탐색기</h3>
+                        </div>
+                        <button onclick="toggleHunter()" id="hunter-toggle-btn" class="text-[9px] bg-emerald-900 text-emerald-300 px-2 py-1 rounded font-bold">MODE: 관심</button>
+                    </div>
+                    <div class="flex gap-1 mb-3">
+                        <input type="text" id="hunter-search-input" placeholder="TKR..." class="flex-grow bg-[#0a0f1e] border border-gray-800 rounded px-2 py-1 text-[10px] text-white focus:outline-none focus:border-emerald-500 uppercase font-bold" onkeypress="if(event.key === 'Enter') addFavorite()">
+                        <button onclick="addFavorite()" class="bg-emerald-600 px-2 rounded text-white text-xs font-bold">+</button>
+                    </div>
+                    <div id="explorer-content" class="scroll-list overflow-y-auto space-y-2 pr-1 flex-grow no-scrollbar" style="max-height: 120px;">
+                        <p class="text-[10px] text-gray-500 text-center py-4">종목을 추가하세요.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -280,6 +297,10 @@
         let currentCalMode = 'MACRO';
         let globalEvents = [];
 
+        // ★ 신규 변수: 종목 탐색기 모드 관리 ★
+        let currentExplorerMode = 'fav'; // 'fav' or 'hunter'
+        let currentUndervaluedData = [];
+
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -308,6 +329,64 @@
         }
 
         function removeAlert(id) { alertList = alertList.filter(a => a.id !== id); renderAlertList(); }
+
+        // ★ 신규 함수: 관심종목/Value Hunter 로직 ★
+        function toggleHunter() {
+            currentExplorerMode = (currentExplorerMode === 'fav') ? 'hunter' : 'fav';
+            document.getElementById('hunter-toggle-btn').innerText = currentExplorerMode === 'fav' ? 'MODE: 관심' : 'MODE: 저평가';
+            renderExplorer();
+        }
+
+        function addFavorite() {
+            const input = document.getElementById('hunter-search-input');
+            const ticker = input.value.toUpperCase().trim();
+            if(!ticker) return;
+            let favs = JSON.parse(localStorage.getItem('s9_favs') || '[]');
+            if(!favs.includes(ticker)) {
+                favs.push(ticker);
+                localStorage.setItem('s9_favs', JSON.stringify(favs));
+            }
+            input.value = '';
+            renderExplorer();
+        }
+
+        function removeFavorite(ticker) {
+            let favs = JSON.parse(localStorage.getItem('s9_favs') || '[]');
+            favs = favs.filter(t => t !== ticker);
+            localStorage.setItem('s9_favs', JSON.stringify(favs));
+            renderExplorer();
+        }
+
+        function renderExplorer() {
+            const container = document.getElementById('explorer-content');
+            if(currentExplorerMode === 'fav') {
+                const favs = JSON.parse(localStorage.getItem('s9_favs') || '[]');
+                if(favs.length === 0) {
+                    container.innerHTML = `<p class="text-[10px] text-gray-500 text-center py-4">등록된 관심 종목이 없습니다.</p>`;
+                } else {
+                    container.innerHTML = favs.map(t => `
+                        <div class="flex justify-between items-center bg-[#0a0f1e] p-2 rounded border border-gray-800 hover:border-emerald-500 transition-colors cursor-pointer" onclick="document.getElementById('stock-search-input').value='${t}'; executeSearch();">
+                            <span class="text-white font-bold text-xs">${t}</span>
+                            <button onclick="event.stopPropagation(); removeFavorite('${t}')" class="text-gray-600 hover:text-red-500 font-bold text-sm">×</button>
+                        </div>
+                    `).join('');
+                }
+            } else {
+                if(currentUndervaluedData.length === 0) {
+                    container.innerHTML = `<p class="text-[10px] text-gray-500 text-center py-4">저평가 데이터를 분석 중입니다.</p>`;
+                } else {
+                    container.innerHTML = currentUndervaluedData.map(s => `
+                        <div class="flex justify-between items-center bg-[#0a0f1e] p-2 rounded border ${s.is_premium ? 'border-gray-800 opacity-60' : 'border-emerald-900/50'}">
+                            <div class="flex flex-col">
+                                <span class="text-white font-bold text-xs">${s.is_premium ? '🔒 PREMIUM' : s.ticker}</span>
+                                <span class="text-[9px] text-gray-500">${s.price}</span>
+                            </div>
+                            <span class="text-emerald-400 font-black text-[10px] italic">S. ${s.score}</span>
+                        </div>
+                    `).join('');
+                }
+            }
+        }
 
         async function syncMarketPrices() {
             try {
@@ -353,7 +432,6 @@
             }
         }
 
-        // 🚀 실시간 종목 검색 기능 엔진 (이중 우회망 탑재로 안정성 극대화)
         async function executeSearch() {
             const ticker = document.getElementById('stock-search-input').value.toUpperCase().trim();
             if(!ticker) return alert("검색할 티커(종목코드)를 입력해주세요!");
@@ -366,13 +444,11 @@
                 const targetUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?range=6mo&interval=1d`;
                 let data = null;
 
-                // [플랜 A] AllOrigins 우회망
                 try {
                     const res1 = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`);
                     if(res1.ok) data = await res1.json();
                 } catch(e) { console.log("1번 망 지연"); }
 
-                // [플랜 B] CodeTabs 우회망 (A 실패 시 자동 전환)
                 if (!data) {
                     const res2 = await fetch(`https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(targetUrl)}`);
                     if(res2.ok) data = await res2.json();
@@ -540,28 +616,36 @@
                 
                 if(data.last_updated) document.getElementById('sync-time').innerText = data.last_updated;
                 
-                const tempNum = parseFloat(data.market_temp || "0");
-                document.getElementById('temp-value').innerText = data.market_temp + '°';
-                document.getElementById('temp-value').className = tempNum >= 0 ? "text-xl font-black italic text-sky-400" : "text-xl font-black italic text-red-400";
-                document.getElementById('ai-analysis-text').innerText = data.ai_summary || "데이터 분석 완료.";
-                document.getElementById('home-ai-summary').innerText = (data.ai_summary || "").substring(0, 100) + "...";
+                // ★ AI 요약 3줄 리스트 렌더링 ★
+                if(data.ai_summary && Array.isArray(data.ai_summary)) {
+                    document.getElementById('home-ai-summary').innerHTML = data.ai_summary.map(s => `<li class="mb-1">• ${s}</li>`).join('');
+                }
+
+                // ★ 저평가 종목 데이터 업데이트 ★
+                if(data.undervalued) {
+                    currentUndervaluedData = data.undervalued;
+                    renderExplorer();
+                }
                 
                 let gaugeScore = data.master_score || 50; 
                 initMasterGauge(gaugeScore); 
 
-                const fomcLabels = data.fomc_indicators.map(i => i.word);
-                if (sentimentChart) sentimentChart.destroy();
-                sentimentChart = new Chart(document.getElementById('sentimentChart'), {
-                    type: 'bar',
-                    data: { labels: fomcLabels, datasets: [{ data: data.fomc_indicators.map(i => i.sentiment_score), backgroundColor: data.fomc_indicators.map(i => i.sentiment_score >= 0 ? 'rgba(56, 189, 248, 0.7)' : 'rgba(239, 68, 68, 0.7)'), borderRadius: 4 }] },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { min: -10, max: 10, grid: { color: '#262f45' } } } }
-                });
+                // ... (FOMC 데이터 렌더링 유지) ...
+                if(data.fomc_indicators) {
+                    const fomcLabels = data.fomc_indicators.map(i => i.word);
+                    if (sentimentChart) sentimentChart.destroy();
+                    sentimentChart = new Chart(document.getElementById('sentimentChart'), {
+                        type: 'bar',
+                        data: { labels: fomcLabels, datasets: [{ data: data.fomc_indicators.map(i => i.sentiment_score), backgroundColor: data.fomc_indicators.map(i => i.sentiment_score >= 0 ? 'rgba(56, 189, 248, 0.7)' : 'rgba(239, 68, 68, 0.7)'), borderRadius: 4 }] },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { min: -10, max: 10, grid: { color: '#262f45' } } } }
+                    });
 
-                document.getElementById('indicator-list').innerHTML = data.engine_indicators.map(i => `
-                    <li class="flex justify-between items-center p-3 rounded bg-[#1e293b] border-l-4 ${i.sentiment_score >= 0 ? 'border-sky-500' : 'border-red-500'}">
-                        <div class="flex flex-col"><span class="font-bold text-white text-xs">${i.word}</span><span class="text-[9px] text-gray-500">${i.count} MENTIONS</span></div>
-                        <span class="font-mono font-black text-xs ${i.sentiment_score >= 0 ? 'text-sky-400' : 'text-red-400'}">${i.display_score}</span>
-                    </li>`).join('');
+                    document.getElementById('indicator-list').innerHTML = data.fomc_indicators.map(i => `
+                        <li class="flex justify-between items-center p-3 rounded bg-[#1e293b] border-l-4 ${i.sentiment_score >= 0 ? 'border-sky-500' : 'border-red-500'}">
+                            <div class="flex flex-col"><span class="font-bold text-white text-xs">${i.word}</span><span class="text-[9px] text-gray-500">${i.count} MENTIONS</span></div>
+                            <span class="font-mono font-black text-xs ${i.sentiment_score >= 0 ? 'text-sky-400' : 'text-red-400'}">${i.display_score}</span>
+                        </li>`).join('');
+                }
 
                 if(data.dynamic_news && Object.keys(data.dynamic_news).length > 0) {
                     const grid = document.getElementById('dynamic-news-grid');
@@ -586,17 +670,9 @@
                                         </div>
                                     </div>`;
                             });
-                        } else {
-                            newsListHtml = `<p class="text-sm text-gray-300 leading-relaxed">${items}</p>`;
                         }
                         grid.innerHTML += `<div class="card min-h-[300px] border-t-4 ${borderColors[index % 6]}"><span class="section-label ${labelColors[index % 6]}">${theme}</span><h3 class="text-lg font-bold text-white mb-3 border-b border-gray-800 pb-2 italic uppercase">Market Briefing</h3><div class="scroll-list overflow-y-auto pr-1">${newsListHtml}</div></div>`;
                     });
-                    
-                    const firstTheme = Object.keys(data.dynamic_news)[0];
-                    if(firstTheme && Array.isArray(data.dynamic_news[firstTheme])) {
-                        const firstNews = data.dynamic_news[firstTheme][0];
-                        document.getElementById('home-top-news').innerHTML = `<b>[${firstTheme}]</b><br><span class="text-sky-400 text-xs font-bold">${firstNews.title}</span>`;
-                    }
                 }
             } catch (err) { initMasterGauge(50); }
         }
@@ -668,7 +744,7 @@
 
         window.onload = () => { 
             try { fetch('./market_charts.json?v=' + Date.now()).then(r => r.json()).then(data => { allChartData = data; }); } catch(e) {}
-            updateTerminalData(); updateCalendar(); loadTrendData(); syncMarketPrices();
+            updateTerminalData(); updateCalendar(); loadTrendData(); syncMarketPrices(); renderExplorer();
             setInterval(syncMarketPrices, 5000); setInterval(updateTerminalData, 30000);
             if ("Notification" in window) Notification.requestPermission();
         };
