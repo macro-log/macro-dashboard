@@ -1,3 +1,11 @@
+<script>
+    // ★ 문지기 로직 ★
+    const isUserLoggedIn = localStorage.getItem('s9_user'); // 나중에 실제 인증으로 변경
+    if (!isUserLoggedIn) {
+        // 로그인 안 했으면 서비스 소개 페이지로 쫓아냄
+        window.location.href = 'landing.html';
+    }
+</script>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
