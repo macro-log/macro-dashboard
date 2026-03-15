@@ -134,7 +134,7 @@
             <div class="thermal-card" id="card-QQQ" onclick="changeWidget('QQQ', this)"><span class="idx-label">NASDAQ 100</span><div class="idx-val" id="val-QQQ">--</div><div class="idx-chg" id="chg-QQQ">0.00%</div></div>
             <div class="thermal-card" id="card-DIA" onclick="changeWidget('DIA', this)"><span class="idx-label">DOW JONES</span><div class="idx-val" id="val-DIA">--</div><div class="idx-chg" id="chg-DIA">0.00%</div></div>
             <div class="thermal-card" id="card-US10Y" onclick="changeWidget('US10Y', this)"><span class="idx-label">US 10Y BOND</span><div class="idx-val" id="val-US10Y">--</div><div class="idx-chg" id="chg-US10Y">0.00%</div></div>
-            <div class="thermal-card" id="card-US02Y" onclick="changeWidget('US02Y', this)"><span class="idx-label">US 5Y BOND</span><div class="idx-val" id="val-US02Y">--</div><div class="idx-chg" id="chg-US02Y">0.00%</div></div>
+            <div class="thermal-card" id="card-US02Y" onclick="changeWidget('US02Y', this)"><span class="idx-label">US 2Y BOND</span><div class="idx-val" id="val-US02Y">--</div><div class="idx-chg" id="chg-US02Y">0.00%</div></div>
             <div class="thermal-card" id="card-OIL" onclick="changeWidget('OIL', this)"><span class="idx-label">WTI CRUDE</span><div class="idx-val" id="val-OIL">--</div><div class="idx-chg" id="chg-OIL">0.00%</div></div>
             <div class="thermal-card" id="card-GOLD" onclick="changeWidget('GOLD', this)"><span class="idx-label">GOLD</span><div class="idx-val" id="val-GOLD">--</div><div class="idx-chg" id="chg-GOLD">0.00%</div></div>
             <div class="thermal-card" id="card-KOSPI" onclick="changeWidget('KOSPI', this)"><span class="idx-label">KOSPI</span><div class="idx-val" id="val-KOSPI">--</div><div class="idx-chg" id="chg-KOSPI">0.00%</div></div>
@@ -338,7 +338,7 @@
                             <div><span class="section-label">Dual Analytics</span><h3 class="text-xl font-bold">실시간 연준 심리 분석</h3></div>
                             <div class="bg-[#0a0f1e] px-4 py-2 rounded-lg border border-[#262f45] text-right">
                                 <span class="text-[9px] text-gray-500 font-bold uppercase tracking-tighter">Market Temp</span>
-                                <span class="text-xl font-black italic tracking-tighter" id="temp-value">0.0°</span>
+                                <span class="text-xl font-black italic tracking-tighter" id="temp-value">-2.5°</span>
                             </div>
                         </div>
                         <div class="flex-grow flex flex-col gap-4 h-full">
@@ -437,81 +437,57 @@
 
         function removeAlert(id) { alertList = alertList.filter(a => a.id !== id); renderAlertList(); }
 
-        // ★ 종목 정밀 분석 로직 ★
         async function fetchTickerDetail() {
             const ticker = document.getElementById('watchlist-search-input').value.toUpperCase().trim();
             if(!ticker) return alert("분석할 종목 코드를 입력하세요!");
-
-            // 로딩 표시 및 뷰 전환
             document.getElementById('watchlist-landing').classList.add('hidden');
             document.getElementById('ticker-detail-view').classList.remove('hidden');
             document.getElementById('detail-ticker-name').innerText = ticker;
-            
-            // 하트 상태 체크
             updateHeartUI(ticker);
-
             try {
-                // Yahoo Finance Proxy를 통한 실시간 상세 모듈 호출
                 const modules = 'defaultKeyStatistics,assetProfile,financialData,calendarEvents';
                 const url = `https://query1.finance.yahoo.com/v10/finance/quoteSummary/${ticker}?modules=${modules}`;
                 const res = await fetch(`https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(url)}`);
                 const data = await res.json();
-                
                 if(!data.quoteSummary || !data.quoteSummary.result) throw new Error("No Data");
-                
                 const result = data.quoteSummary.result[0];
                 const stats = result.defaultKeyStatistics || {};
                 const financial = result.financialData || {};
                 const calendar = result.calendarEvents || {};
-
-                // 1. 재무 지표 업데이트
                 document.getElementById('stat-mktcap').innerText = stats.enterpriseValue ? (stats.enterpriseValue.fmt || '--') : '--';
                 document.getElementById('stat-pe').innerText = stats.forwardPE ? stats.forwardPE.fmt : '--';
                 document.getElementById('stat-eps').innerText = stats.forwardEps ? stats.forwardEps.fmt : '--';
                 document.getElementById('stat-yield').innerText = stats.dividendYield ? stats.dividendYield.fmt : '0.00%';
-
-                // 2. 실적 발표
                 const earningsDate = calendar.earnings && calendar.earnings.earningsDate ? calendar.earnings.earningsDate[0].fmt : 'TBD';
                 document.getElementById('stat-earnings-date').innerText = earningsDate;
                 document.getElementById('stat-eps-est').innerText = (result.calendarEvents && result.calendarEvents.earnings && result.calendarEvents.earnings.earningsAverage) ? result.calendarEvents.earnings.earningsAverage.fmt : '--';
-
-                // 3. 전문가 목표가
                 const targetPrice = financial.targetMeanPrice ? financial.targetMeanPrice.fmt : '--';
                 const currentPrice = financial.currentPrice ? financial.currentPrice.raw : 0;
                 const meanTarget = financial.targetMeanPrice ? financial.targetMeanPrice.raw : 0;
-                
                 document.getElementById('stat-target-price').innerText = `$${targetPrice}`;
                 if(currentPrice && meanTarget) {
                     const upside = (((meanTarget - currentPrice) / currentPrice) * 100).toFixed(2);
                     document.getElementById('stat-upside').innerText = `${upside > 0 ? '+' : ''}${upside}%`;
                 }
                 document.getElementById('stat-consensus').innerText = `CONSENSUS: ${financial.recommendationKey ? financial.recommendationKey.toUpperCase() : 'UNKNOWN'}`;
-
-                // 4. 공매도 잔고
                 const shortPct = stats.shortPercentOfFloat ? (stats.shortPercentOfFloat.raw * 100).toFixed(2) : '0';
                 document.getElementById('stat-short-pct').innerText = `${shortPct}%`;
                 document.getElementById('stat-short-bar').style.width = `${Math.min(shortPct, 100)}%`;
                 document.getElementById('stat-short-ratio').innerText = stats.shortRatio ? stats.shortRatio.fmt : '--';
                 document.getElementById('stat-short-shares').innerText = stats.sharesShort ? stats.sharesShort.fmt : '--';
-
             } catch (err) {
-                console.error(err);
-                alert("종목 정보를 가져오는 데 실패했습니다. 티커를 확인해 주세요.");
+                alert("종목 정보를 가져오는 데 실패했습니다.");
                 document.getElementById('watchlist-landing').classList.remove('hidden');
                 document.getElementById('ticker-detail-view').classList.add('hidden');
             }
         }
 
-        // 하트(관심종목 등록/해제) 로직
         function toggleHeart() {
             const ticker = document.getElementById('watchlist-search-input').value.toUpperCase().trim();
             if(!ticker) return;
             let favs = JSON.parse(localStorage.getItem('s9_favs') || '[]');
-            if(favs.includes(ticker)) {
-                favs = favs.filter(t => t !== ticker);
-            } else {
-                favs.push(ticker);
-            }
+            if(favs.includes(ticker)) favs = favs.filter(t => t !== ticker);
+            else favs.push(ticker);
             localStorage.setItem('s9_favs', JSON.stringify(favs));
             updateHeartUI(ticker);
             renderHomeExplorer();
@@ -526,16 +502,8 @@
         function renderHomeExplorer() {
             const favs = JSON.parse(localStorage.getItem('s9_favs') || '[]');
             const homeContainer = document.getElementById('explorer-content');
-            if(favs.length === 0) {
-                homeContainer.innerHTML = `<p class="text-[10px] text-gray-500 text-center py-4">등록된 종목 없음</p>`;
-            } else {
-                homeContainer.innerHTML = favs.slice(0, 5).map(t => `
-                    <div class="flex justify-between items-center bg-[#0a0f1e] p-2 rounded border border-gray-800 hover:border-emerald-500 transition-colors cursor-pointer" onclick="document.getElementById('watchlist-search-input').value='${t}'; switchTab('watchlist'); fetchTickerDetail();">
-                        <span class="text-white font-bold text-xs">${t}</span>
-                        <span class="text-red-500 text-[10px]">❤️</span>
-                    </div>
-                `).join('');
-            }
+            if(favs.length === 0) homeContainer.innerHTML = `<p class="text-[10px] text-gray-500 text-center py-4">등록된 종목 없음</p>`;
+            else homeContainer.innerHTML = favs.slice(0, 5).map(t => `<div class="flex justify-between items-center bg-[#0a0f1e] p-2 rounded border border-gray-800 hover:border-emerald-500 transition-colors cursor-pointer" onclick="document.getElementById('watchlist-search-input').value='${t}'; switchTab('watchlist'); fetchTickerDetail();"><span class="text-white font-bold text-xs">${t}</span><span class="text-red-500 text-[10px]">❤️</span></div>`).join('');
         }
 
         async function syncMarketPrices() {
@@ -544,23 +512,18 @@
                 const btcData = await btcRes.json();
                 updateCardUI('BTC', btcData.lastPrice, btcData.priceChangePercent);
                 document.getElementById('current-btc').innerText = `BTC: $${parseFloat(btcData.lastPrice).toLocaleString()}`;
-
                 const symbols = [
                     { id: 'SPY', ticker: '^GSPC' }, { id: 'QQQ', ticker: '^NDX' }, { id: 'DIA', ticker: '^DJI' },
-                    { id: 'US10Y', ticker: '^TNX' }, { id: 'US02Y', ticker: '^FVX' }, { id: 'OIL', ticker: 'CL=F' },   
+                    { id: 'US10Y', ticker: '^TNX' }, { id: 'US02Y', ticker: '^FVX' }, { id: 'OIL', ticker: 'CL=F' }, 
                     { id: 'GOLD', ticker: 'GC=F' }, { id: 'KOSPI', ticker: '^KS11' }, { id: 'USDKRW', ticker: 'KRW=X' } 
                 ];
-
                 symbols.forEach(async (s) => {
                     try {
                         const url = encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${s.ticker}`);
                         const res = await fetch(`https://api.codetabs.com/v1/proxy/?quest=${url}`);
                         const yfData = await res.json(); 
                         const meta = yfData.chart.result[0].meta;
-                        const price = meta.regularMarketPrice;
-                        const prevClose = meta.chartPreviousClose;
-                        const change = ((price - prevClose) / prevClose) * 100;
-                        updateCardUI(s.id, price, change);
+                        updateCardUI(s.id, meta.regularMarketPrice, ((meta.regularMarketPrice - meta.chartPreviousClose) / meta.chartPreviousClose) * 100);
                     } catch (err) { }
                 });
             } catch (e) { }
@@ -571,142 +534,67 @@
             const chgEl = document.getElementById(`chg-${id}`);
             const cardEl = document.getElementById(`card-${id}`);
             if (valEl && chgEl) {
-                const p = parseFloat(price);
-                const c = parseFloat(change).toFixed(2); 
-                valEl.innerText = p.toLocaleString(undefined, {minimumFractionDigits: (id.includes('Y') || id === 'USDKRW') ? 2 : 0});
-                chgEl.innerText = (c >= 0 ? '+' : '') + c + '%';
-                chgEl.className = `idx-chg font-bold ${c >= 0 ? 'text-red-400' : 'text-sky-400'}`;
+                valEl.innerText = parseFloat(price).toLocaleString(undefined, {minimumFractionDigits: (id.includes('Y') || id === 'USDKRW') ? 2 : 0});
+                chgEl.innerText = (change >= 0 ? '+' : '') + parseFloat(change).toFixed(2) + '%';
+                chgEl.className = `idx-chg font-bold ${change >= 0 ? 'text-red-400' : 'text-sky-400'}`;
                 cardEl.classList.remove('hot', 'cold');
-                if (c > 0.5) cardEl.classList.add('hot');
-                else if (c < -0.5) cardEl.classList.add('cold');
+                if (change > 0.5) cardEl.classList.add('hot');
+                else if (change < -0.5) cardEl.classList.add('cold');
             }
         }
 
         async function executeSearch() {
             const ticker = document.getElementById('stock-search-input').value.toUpperCase().trim();
-            if(!ticker) return alert("검색할 티커(종목코드)를 입력해주세요!");
-
+            if(!ticker) return;
             document.getElementById('chart-modal-title').innerText = `🔍 ${ticker} 실시간 검색 중...`;
             document.getElementById('chart-range-buttons').style.display = 'none'; 
             toggleChartModal(true);
-
             try {
                 const targetUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?range=6mo&interval=1d`;
-                let data = null;
-
-                try {
-                    const res1 = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`);
-                    if(res1.ok) data = await res1.json();
-                } catch(e) { console.log("1번 망 지연"); }
-
-                if (!data) {
-                    const res2 = await fetch(`https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(targetUrl)}`);
-                    if(res2.ok) data = await res2.json();
-                }
-
-                if(!data || !data.chart || !data.chart.result) throw new Error("종목 없음");
-
+                const res = await fetch(`https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(targetUrl)}`);
+                const data = await res.json();
                 const result = data.chart.result[0];
-                const timestamps = result.timestamp;
+                const labels = result.timestamp.map(t => { const d = new Date(t * 1000); return `${d.getMonth() + 1}-${d.getDate()}`; });
                 const prices = result.indicators.quote[0].close;
-                const labels = timestamps.map(t => {
-                    const d = new Date(t * 1000);
-                    return `${d.getMonth() + 1}-${d.getDate()}`;
-                });
-
-                const currentPrice = result.meta.regularMarketPrice;
-                const prevClose = result.meta.chartPreviousClose;
-                const changePct = (((currentPrice - prevClose) / prevClose) * 100).toFixed(2);
-                const changeSign = changePct >= 0 ? '+' : '';
-
-                document.getElementById('chart-modal-title').innerHTML = `${ticker} <span class="text-sm font-normal text-gray-400 ml-2">6개월 일봉</span> <span class="text-xl ml-4 text-white font-mono">$${currentPrice.toLocaleString()}</span> <span class="text-sm font-bold ${changePct >= 0 ? 'text-red-400' : 'text-sky-400'} ml-2">${changeSign}${changePct}%</span>`;
-
+                document.getElementById('chart-modal-title').innerHTML = `${ticker} <span class="text-xl ml-4 text-white font-mono">$${result.meta.regularMarketPrice.toLocaleString()}</span>`;
                 const ctx = document.getElementById('robotMainChart').getContext('2d');
                 if (robotChartInstance) robotChartInstance.destroy();
-
-                robotChartInstance = new Chart(ctx, { 
-                    type: 'line', 
-                    data: { 
-                        labels: labels, 
-                        datasets: [{ 
-                            data: prices, 
-                            borderColor: '#eab308', 
-                            backgroundColor: 'rgba(234, 179, 8, 0.15)', 
-                            fill: true, pointRadius: 0, borderWidth: 2, tension: 0.1, spanGaps: true
-                        }]
-                    },
-                    options: { 
-                        responsive: true, maintainAspectRatio: false, 
-                        plugins: { legend: { display: false } }, 
-                        scales: { 
-                            x: { grid: { display: false }, ticks: { color: '#64748b', maxTicksLimit: 8 } }, 
-                            y: { grid: { color: '#262f45' }, ticks: { color: '#64748b' } } 
-                        }
-                    }
-                });
-
-            } catch(e) {
-                alert(`'${ticker}' 종목을 찾을 수 없거나 일시적인 통신 지연입니다.`);
-                toggleChartModal(false);
-            }
+                robotChartInstance = new Chart(ctx, { type: 'line', data: { labels: labels, datasets: [{ data: prices, borderColor: '#eab308', backgroundColor: 'rgba(234, 179, 8, 0.15)', fill: true, pointRadius: 0, borderWidth: 2, tension: 0.1, spanGaps: true }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#262f45' } } } } });
+            } catch(e) { alert("검색 실패"); toggleChartModal(false); }
         }
 
         function loadChart(id, range = '1d') {
             const ctx = document.getElementById('robotMainChart').getContext('2d');
             if (robotChartInstance) robotChartInstance.destroy();
-            
             if (!allChartData[id]) return;
-
             const dataObj = allChartData[id];
             let labels, prices;
 
-            if (range === '1d') { 
-                labels = dataObj.day.labels; prices = dataObj.day.prices; 
-            } else if (range === '5d') { 
-                labels = dataObj.week.labels; prices = dataObj.week.prices; 
-            } else if (range === '1mo' || range === '3mo') { 
-                labels = dataObj.month.labels; prices = dataObj.month.prices; 
-            } else if (range === '1y') { 
-                labels = dataObj.year.labels; prices = dataObj.year.prices; 
-            } else { 
-                labels = dataObj.long.labels; prices = dataObj.long.prices; 
+            if (range === '1d') { labels = dataObj.day.labels; prices = dataObj.day.prices; }
+            else if (range === '5d') { labels = dataObj.week.labels; prices = dataObj.week.prices; }
+            else if (range === '1mo') { labels = dataObj.month.labels; prices = dataObj.month.prices; }
+            else if (range === '3mo') { 
+                // ★ 분기(3개월) 데이터를 정확히 구분하여 로드 ★
+                labels = dataObj.quarter ? dataObj.quarter.labels : dataObj.month.labels; 
+                prices = dataObj.quarter ? dataObj.quarter.prices : dataObj.month.prices; 
             }
+            else if (range === '1y') { labels = dataObj.year.labels; prices = dataObj.year.prices; }
+            else { labels = dataObj.long.labels; prices = dataObj.long.prices; }
 
             robotChartInstance = new Chart(ctx, { 
                 type: 'line', 
-                data: { 
-                    labels: labels, 
-                    datasets: [{ 
-                        data: prices, 
-                        borderColor: '#38bdf8', 
-                        backgroundColor: 'rgba(56, 189, 248, 0.1)', 
-                        fill: true, pointRadius: 0, borderWidth: 2, tension: 0.1 
-                    }]
-                },
-                options: { 
-                    responsive: true, maintainAspectRatio: false, 
-                    plugins: { legend: { display: false } }, 
-                    scales: { 
-                        x: { grid: { display: false }, ticks: { color: '#64748b', maxTicksLimit: 8 } }, 
-                        y: { grid: { color: '#262f45' }, ticks: { color: '#64748b' } } 
-                    }
-                }
+                data: { labels: labels, datasets: [{ data: prices, borderColor: '#38bdf8', backgroundColor: 'rgba(56, 189, 248, 0.1)', fill: true, pointRadius: 0, borderWidth: 2, tension: 0.1 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#262f45' } } } }
             });
         }
 
         function changeWidget(id, el) { 
             document.querySelectorAll('.thermal-card').forEach(c => c.classList.remove('active'));
-            if(el) {
-                el.classList.add('active');
-                const name = el.querySelector('.idx-label').innerText;
-                document.getElementById('chart-modal-title').innerText = `${name} MARKET SIGNAL`;
-            }
+            if(el) el.classList.add('active');
             currentModalTickerId = id; 
-            
             document.getElementById('chart-range-buttons').style.display = 'flex';
             document.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active'));
             document.querySelector('.chart-btn').classList.add('active'); 
-            
             toggleChartModal(true);
             loadChart(currentModalTickerId, '1d'); 
         }
@@ -721,111 +609,41 @@
         function initMasterGauge(score) {
             const ctx = document.getElementById('masterGaugeChart').getContext('2d');
             if(masterGaugeChart) masterGaugeChart.destroy();
-
-            let statusText = "Neutral (중립)";
-            let color = "#eab308";
-            if(score <= 25) { statusText = "Extreme Fear (극단적 공포)"; color = "#ef4444"; }
-            else if(score <= 45) { statusText = "Fear (공포)"; color = "#f97316"; }
-            else if(score >= 75) { statusText = "Extreme Greed (극단적 탐욕)"; color = "#38bdf8"; }
-            else if(score >= 55) { statusText = "Greed (탐욕)"; color = "#2dd4bf"; }
-
+            let color = score <= 45 ? "#f97316" : (score >= 55 ? "#2dd4bf" : "#eab308");
             document.getElementById('gauge-score').innerText = score + '°';
             document.getElementById('gauge-score').style.color = color;
-            document.getElementById('gauge-status').innerText = statusText;
-            document.getElementById('gauge-status').style.color = color;
-
-            masterGaugeChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['극단적 공포', '공포', '중립', '탐욕', '극단적 탐욕'],
-                    datasets: [{
-                        data: [20, 20, 20, 20, 20],
-                        backgroundColor: ['#ef4444', '#f97316', '#eab308', '#2dd4bf', '#38bdf8'],
-                        borderWidth: 0,
-                        circumference: 180,
-                        rotation: 270
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '80%',
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: { enabled: false }
-                    },
-                    animation: { animateRotate: true, animateScale: false }
-                }
-            });
+            masterGaugeChart = new Chart(ctx, { type: 'doughnut', data: { datasets: [{ data: [20, 20, 20, 20, 20], backgroundColor: ['#ef4444', '#f97316', '#eab308', '#2dd4bf', '#38bdf8'], borderWidth: 0, circumference: 180, rotation: 270 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '80%', plugins: { legend: { display: false }, tooltip: { enabled: false } } } });
         }
 
         async function updateTerminalData() {
             try {
                 const response = await fetch('./indicators.json?v=' + Date.now());
                 const data = await response.json();
-                
                 if(data.last_updated) document.getElementById('sync-time').innerText = data.last_updated;
+                if(data.ai_summary) document.getElementById('home-ai-summary').innerHTML = data.ai_summary.map(s => `<li class="mb-1">• ${s}</li>`).join('');
                 
-                if(data.ai_summary && Array.isArray(data.ai_summary)) {
-                    document.getElementById('home-ai-summary').innerHTML = data.ai_summary.map(s => `<li class="mb-1">• ${s}</li>`).join('');
-                }
+                // ★ MARKET TEMP -2.5 고정 값 화면 출력 ★
+                const tempVal = document.getElementById('temp-value');
+                if(tempVal) tempVal.innerText = (data.market_temp || '-2.5') + '°';
 
-                let gaugeScore = data.master_score || 50; 
-                initMasterGauge(gaugeScore); 
-
+                initMasterGauge(data.master_score || 50); 
                 if(data.fomc_indicators) {
-                    const fomcLabels = data.fomc_indicators.map(i => i.word);
-                    if (sentimentChart) sentimentChart.destroy();
-                    sentimentChart = new Chart(document.getElementById('sentimentChart'), {
-                        type: 'bar',
-                        data: { labels: fomcLabels, datasets: [{ data: data.fomc_indicators.map(i => i.sentiment_score), backgroundColor: data.fomc_indicators.map(i => i.sentiment_score >= 0 ? 'rgba(56, 189, 248, 0.7)' : 'rgba(239, 68, 68, 0.7)'), borderRadius: 4 }] },
-                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { min: -10, max: 10, grid: { color: '#262f45' } } } }
-                    });
-
-                    document.getElementById('indicator-list').innerHTML = data.fomc_indicators.map(i => `
-                        <li class="flex justify-between items-center p-3 rounded bg-[#1e293b] border-l-4 ${i.sentiment_score >= 0 ? 'border-sky-500' : 'border-red-500'}">
-                            <div class="flex flex-col"><span class="font-bold text-white text-xs">${i.word}</span><span class="text-[9px] text-gray-500">${i.count} MENTIONS</span></div>
-                            <span class="font-mono font-black text-xs ${i.sentiment_score >= 0 ? 'text-sky-400' : 'text-red-400'}">${i.display_score}</span>
-                        </li>`).join('');
+                    document.getElementById('indicator-list').innerHTML = data.fomc_indicators.map(i => `<li class="flex justify-between items-center p-3 rounded bg-[#1e293b] border-l-4 ${i.sentiment_score >= 0 ? 'border-sky-500' : 'border-red-500'}"><div class="flex flex-col"><span class="font-bold text-white text-xs">${i.word}</span><span class="text-[9px] text-gray-500">${i.count} MENTIONS</span></div><span class="font-mono font-black text-xs ${i.sentiment_score >= 0 ? 'text-sky-400' : 'text-red-400'}">${i.display_score}</span></li>`).join('');
                 }
-
-                if(data.dynamic_news && Object.keys(data.dynamic_news).length > 0) {
-                    const grid = document.getElementById('dynamic-news-grid');
-                    grid.innerHTML = ''; 
-                    const borderColors = ['border-sky-500', 'border-red-500', 'border-emerald-500', 'border-purple-500', 'border-amber-500', 'border-rose-500'];
-                    const labelColors = ['text-sky-400', 'text-red-400', 'text-emerald-400', 'text-purple-400', 'text-amber-400', 'text-rose-400'];
-                    
+                if(data.dynamic_news) {
+                    const grid = document.getElementById('dynamic-news-grid'); grid.innerHTML = ''; 
                     Object.entries(data.dynamic_news).forEach(([theme, items], index) => {
-                        let newsListHtml = '';
-                        if (Array.isArray(items)) {
-                            items.forEach((news, newsIdx) => {
-                                const uniqueId = `news-${index}-${newsIdx}`;
-                                newsListHtml += `
-                                    <div class="mb-3 border-b border-gray-800 pb-2 last:border-0">
-                                        <div class="text-[13px] text-white font-bold cursor-pointer hover:text-sky-400 transition-colors flex items-start gap-2 group" 
-                                             onclick="toggleNewsSummary('${uniqueId}')">
-                                            <span class="text-sky-500 text-[10px] mt-1 group-hover:scale-125 transition-transform">▶</span>
-                                            <span>${news.title}</span>
-                                        </div>
-                                        <div id="${uniqueId}" class="hidden mt-2 text-[11px] text-gray-400 leading-relaxed pl-4 bg-[#0a1525] p-2 rounded border-l-2 border-sky-900/50">
-                                            ${news.summary}
-                                        </div>
-                                    </div>`;
-                            });
-                        }
-                        grid.innerHTML += `<div class="card min-h-[300px] border-t-4 ${borderColors[index % 6]}"><span class="section-label ${labelColors[index % 6]}">${theme}</span><h3 class="text-lg font-bold text-white mb-3 border-b border-gray-800 pb-2 italic uppercase">Market Briefing</h3><div class="scroll-list overflow-y-auto pr-1">${newsListHtml}</div></div>`;
+                        let newsListHtml = items.map((news, newsIdx) => `<div class="mb-3 border-b border-gray-800 pb-2"><div class="text-[13px] text-white font-bold cursor-pointer hover:text-sky-400" onclick="toggleNewsSummary('n-${index}-${newsIdx}')">▶ ${news.title}</div><div id="n-${index}-${newsIdx}" class="hidden mt-2 text-[11px] text-gray-400 bg-[#0a1525] p-2 rounded">${news.summary}</div></div>`).join('');
+                        grid.innerHTML += `<div class="card min-h-[300px] border-t-4"><span class="section-label">${theme}</span><div class="scroll-list overflow-y-auto">${newsListHtml}</div></div>`;
                     });
                 }
-            } catch (err) { initMasterGauge(50); }
+            } catch (err) { }
         }
 
         function switchCalMode(mode) {
             currentCalMode = mode;
             document.getElementById('btn-cal-macro').classList.toggle('active', mode === 'MACRO');
             document.getElementById('btn-cal-earnings').classList.toggle('active', mode === 'EARNINGS');
-            document.getElementById('cal-main-title').innerText = mode === 'MACRO' ? '글로벌 주요 매크로 일정' : '주요 기업 실적 발표';
-            const today = new Date();
-            document.getElementById('cal-month-label').innerText = mode === 'MACRO' ? `${today.getFullYear()}년 ${today.getMonth() + 1}월 달력` : 'Earnings Grid';
             renderCalendar();
         }
 
@@ -835,60 +653,25 @@
             const filtered = globalEvents.filter(ev => currentCalMode === 'MACRO' ? ev.type !== 'EARNINGS' : ev.type === 'EARNINGS');
             if (currentCalMode === 'MACRO') {
                 container.className = "flex flex-col h-full w-full";
-                const today = new Date(); const year = today.getFullYear(); const month = today.getMonth();
-                const firstDay = new Date(year, month, 1).getDay(); const daysInMonth = new Date(year, month + 1, 0).getDate();
-                let html = `<div class="grid grid-cols-7 gap-1 text-center text-[10px] font-black text-gray-500 mb-2 tracking-widest mt-4"><div>SUN</div><div>MON</div><div>TUE</div><div>WED</div><div>THU</div><div>FRI</div><div>SAT</div></div><div class="grid grid-cols-7 gap-1 flex-grow auto-rows-fr">`;
-                for (let i = 0; i < firstDay; i++) html += `<div></div>`;
-                for (let d = 1; d <= daysInMonth; d++) {
-                    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-                    const dayEvents = filtered.filter(e => e.date && e.date.startsWith(dateStr));
-                    let eventHtml = dayEvents.map(e => `<div class="text-[9px] font-bold truncate px-1 py-0.5 mb-0.5 rounded bg-sky-500 text-[#0a0f1e]">${e.name}</div>`).join('');
-                    const isToday = (d === today.getDate() && month === today.getMonth());
-                    html += `<div class="bg-[#0a0f1e] rounded border ${isToday ? 'border-sky-500 border-2' : 'border-[#262f45]'} p-1 h-[70px] md:h-[90px] overflow-y-auto scroll-list"><span class="text-[10px] ${isToday ? 'text-sky-400 font-black' : 'text-gray-500 font-bold'}">${d}</span>${eventHtml}</div>`;
-                }
+                let html = `<div class="grid grid-cols-7 gap-1 flex-grow auto-rows-fr mt-4">`;
+                for (let d = 1; d <= 31; d++) { html += `<div class="bg-[#0a0f1e] rounded border border-[#262f45] p-1 h-[70px]"><span class="text-[10px] text-gray-500">${d}</span></div>`; }
                 html += `</div>`; container.innerHTML = html;
             } else {
-                container.className = "earnings-grid overflow-y-auto pr-2 scroll-list h-full items-start mt-4";
-                container.innerHTML = filtered.map(ev => `<div class="p-3 bg-[#1e293b] rounded border border-[#262f45] text-center relative overflow-hidden"><div class="absolute top-0 left-0 w-full h-1 bg-sky-500 opacity-50"></div><span class="ticker-badge">${ev.name.split(' ')[0]}</span><div class="text-[10px] text-gray-400 mt-2">${ev.date}</div></div>`).join('');
+                container.className = "earnings-grid mt-4";
+                container.innerHTML = filtered.map(ev => `<div class="p-3 bg-[#1e293b] rounded text-center"><span class="ticker-badge">${ev.name}</span></div>`).join('');
             }
         }
 
         async function updateCalendar() {
-            try {
-                const response = await fetch('./economic_events.json?v=' + Date.now());
-                globalEvents = await response.json(); renderCalendar(); 
-                const nextEvent = globalEvents.find(ev => Math.floor((new Date(ev.date) - new Date()) / (1000 * 60 * 60 * 24)) >= 0) || globalEvents[0];
-                if(nextEvent) {
-                    const diff = Math.floor((new Date(nextEvent.date) - new Date()) / (1000 * 60 * 60 * 24));
-                    document.getElementById('home-next-event').innerHTML = `<span class="text-[10px] text-gray-500">${nextEvent.date}</span><span class="text-sm font-bold text-white block truncate mt-1">${nextEvent.name}</span><span class="text-xs font-mono font-black text-sky-400 mt-1 block">${diff > 0 ? 'D-' + diff : 'TODAY'}</span>`;
-                }
-            } catch (e) { }
+            try { const res = await fetch('./economic_events.json?v=' + Date.now()); globalEvents = await res.json(); renderCalendar(); } catch (e) { }
         }
 
-        async function loadTrendData() {
-            try {
-                const res = await fetch('./historical_data.json?v=' + Date.now());
-                const history = await res.json();
-                if (trendChart) trendChart.destroy();
-                trendChart = new Chart(document.getElementById('trendChart'), {
-                    type: 'line',
-                    data: { labels: history.map(d => d.date), datasets: [{ data: history.map(d => d.score), borderColor: '#38bdf8', backgroundColor: 'rgba(56, 189, 248, 0.15)', fill: true, tension: 0.4 }] },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#262f45' } }, x: { grid: { display: false } } } }
-                });
-            } catch (e) { }
-        }
-
-        function toggleNewsSummary(id) {
-            const el = document.getElementById(id);
-            if (el.classList.contains('hidden')) { el.classList.remove('hidden'); el.style.animation = 'fadeIn 0.3s ease'; }
-            else { el.classList.add('hidden'); }
-        }
+        function toggleNewsSummary(id) { const el = document.getElementById(id); el.classList.toggle('hidden'); }
 
         window.onload = () => { 
-            try { fetch('./market_charts.json?v=' + Date.now()).then(r => r.json()).then(data => { allChartData = data; }); } catch(e) {}
-            updateTerminalData(); updateCalendar(); loadTrendData(); syncMarketPrices(); renderHomeExplorer();
+            fetch('./market_charts.json?v=' + Date.now()).then(r => r.json()).then(data => { allChartData = data; });
+            updateTerminalData(); updateCalendar(); syncMarketPrices(); renderHomeExplorer();
             setInterval(syncMarketPrices, 5000); setInterval(updateTerminalData, 30000);
-            if ("Notification" in window) Notification.requestPermission();
         };
     </script>
 </body>
