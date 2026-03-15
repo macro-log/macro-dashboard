@@ -70,9 +70,17 @@
 <body>
     <header class="p-4 bg-[#161e31] border-b border-[#262f45] flex justify-between items-center px-8 flex-wrap gap-4">
         <div class="flex items-center gap-3">
-            <div class="w-3 h-8 bg-[#38bdf8] rounded-sm"></div>
-            <div class="flex items-center gap-4">
-                <div class="text-2xl font-black text-[#38bdf8] tracking-tighter cursor-pointer" onclick="switchTab('home')">SIGNAL 9</div>
+            <div class="cursor-pointer flex items-center gap-3" onclick="switchTab('home')">
+                <svg width="220" height="40" viewBox="0 0 220 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M35 12C35 8 32 6 28 6H15V14H28C32 14 35 16 35 20C35 24 32 26 28 26H15" stroke="#38bdf8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M48 6V26" stroke="#38bdf8" stroke-width="4" stroke-linecap="round"/>
+                    <path d="M75 20V26H60V6H75V12H68" stroke="#38bdf8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M85 26V6L100 26V6" stroke="#38bdf8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M110 26L118 6L126 26 M114 18H122" stroke="#38bdf8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M138 6V26H150" stroke="#38bdf8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="175" cy="14" r="8" stroke="#38bdf8" stroke-width="4"/>
+                    <path d="M183 14V30" stroke="#38bdf8" stroke-width="4" stroke-linecap="round"/>
+                </svg>
                 <div class="flex flex-col border-l border-gray-700 pl-4 hidden md:flex">
                     <span class="text-[8px] text-gray-500 font-bold uppercase tracking-widest">Last Sync</span>
                     <span id="sync-time" class="text-[10px] text-sky-400 font-mono italic">SYNCING...</span>
@@ -284,7 +292,7 @@
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(`tab-${tabId}`).classList.add('active');
-            if(event) event.currentTarget.classList.add('active');
+            if(event && event.currentTarget && event.currentTarget.classList) event.currentTarget.classList.add('active');
         }
 
         function toggleModal(show) { document.getElementById('alert-modal').style.display = show ? 'block' : 'none'; document.getElementById('modal-overlay').style.display = show ? 'block' : 'none'; }
@@ -353,7 +361,6 @@
             }
         }
 
-        // 🚀 실시간 종목 검색 기능 엔진 (이중 우회망 탑재로 안정성 극대화)
         async function executeSearch() {
             const ticker = document.getElementById('stock-search-input').value.toUpperCase().trim();
             if(!ticker) return alert("검색할 티커(종목코드)를 입력해주세요!");
@@ -366,13 +373,11 @@
                 const targetUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?range=6mo&interval=1d`;
                 let data = null;
 
-                // [플랜 A] AllOrigins 우회망
                 try {
                     const res1 = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`);
                     if(res1.ok) data = await res1.json();
                 } catch(e) { console.log("1번 망 지연"); }
 
-                // [플랜 B] CodeTabs 우회망 (A 실패 시 자동 전환)
                 if (!data) {
                     const res2 = await fetch(`https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(targetUrl)}`);
                     if(res2.ok) data = await res2.json();
