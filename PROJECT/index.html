@@ -273,11 +273,24 @@
         </div>
 
         <div id="tab-news" class="tab-content">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="dynamic-news-grid">
-                <div class="col-span-full text-center py-20">
-                    <span class="inline-block animate-spin text-4xl mb-4">⚙️</span>
-                    <p class="text-gray-400 font-bold">AI 로봇이 전 세계 최신 뉴스를 6개 테마로 분석 중입니다...</p>
-                    <p class="text-xs text-gray-500 mt-2">※ 깃허브 액션이 완료되면 자동으로 표시됩니다.</p>
+            <div class="flex flex-col lg:flex-row gap-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5 flex-grow" id="dynamic-news-grid">
+                    <div class="col-span-full text-center py-20">
+                        <span class="inline-block animate-spin text-4xl mb-4">⚙️</span>
+                        <p class="text-gray-400 font-bold">AI 로봇이 전 세계 최신 뉴스를 6개 테마로 분석 중입니다...</p>
+                        <p class="text-xs text-gray-500 mt-2">※ 깃허브 액션이 완료되면 자동으로 표시됩니다.</p>
+                    </div>
+                </div>
+                
+                <div class="card w-full lg:w-80 h-fit sticky top-5 border-l-4 border-red-500 shrink-0">
+                    <span class="section-label text-red-400">Favorite Watchlist</span>
+                    <h3 class="text-lg font-bold text-white mb-4">❤️ 관심종목 퀵 등록</h3>
+                    <div class="flex gap-1 mb-4">
+                        <input type="text" id="news-fav-input" placeholder="티커 입력..." class="flex-grow bg-[#0a0f1e] border border-gray-800 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-red-500 uppercase font-bold" onkeypress="if(event.key === 'Enter') addNewsFavorite()">
+                        <button onclick="addNewsFavorite()" class="bg-red-600 px-3 rounded text-white text-sm font-bold hover:bg-red-500 transition-colors">❤️</button>
+                    </div>
+                    <div id="news-fav-list" class="scroll-list space-y-2 overflow-y-auto max-h-[500px] pr-1 no-scrollbar">
+                        </div>
                 </div>
             </div>
         </div>
@@ -348,6 +361,22 @@
             }
             input.value = '';
             renderExplorer();
+            renderNewsFavorites(); // 뉴스 탭 연동
+        }
+
+        // 뉴스 탭 전용 추가 함수
+        function addNewsFavorite() {
+            const input = document.getElementById('news-fav-input');
+            const ticker = input.value.toUpperCase().trim();
+            if(!ticker) return;
+            let favs = JSON.parse(localStorage.getItem('s9_favs') || '[]');
+            if(!favs.includes(ticker)) {
+                favs.push(ticker);
+                localStorage.setItem('s9_favs', JSON.stringify(favs));
+            }
+            input.value = '';
+            renderNewsFavorites();
+            renderExplorer(); // 홈 탭 연동
         }
 
         function removeFavorite(ticker) {
@@ -355,6 +384,7 @@
             favs = favs.filter(t => t !== ticker);
             localStorage.setItem('s9_favs', JSON.stringify(favs));
             renderExplorer();
+            renderNewsFavorites();
         }
 
         function renderExplorer() {
@@ -386,6 +416,25 @@
                     `).join('');
                 }
             }
+        }
+
+        // 뉴스 탭 하트 종목 렌더링
+        function renderNewsFavorites() {
+            const container = document.getElementById('news-fav-list');
+            const favs = JSON.parse(localStorage.getItem('s9_favs') || '[]');
+            if(favs.length === 0) {
+                container.innerHTML = `<p class="text-[11px] text-gray-600 text-center py-10 italic">하트를 눌러<br>관심종목을 등록하세요.</p>`;
+                return;
+            }
+            container.innerHTML = favs.map(t => `
+                <div class="flex justify-between items-center bg-[#1e293b] p-3 rounded-lg border border-gray-800 hover:border-red-900 transition-all cursor-pointer group" onclick="document.getElementById('stock-search-input').value='${t}'; executeSearch();">
+                    <div class="flex items-center gap-3">
+                        <span class="text-red-500 animate-pulse">❤️</span>
+                        <span class="text-white font-black text-sm tracking-tighter">${t}</span>
+                    </div>
+                    <button onclick="event.stopPropagation(); removeFavorite('${t}')" class="text-gray-600 hover:text-red-500 font-bold text-lg opacity-0 group-hover:opacity-100 transition-opacity">×</button>
+                </div>
+            `).join('');
         }
 
         async function syncMarketPrices() {
@@ -744,7 +793,9 @@
 
         window.onload = () => { 
             try { fetch('./market_charts.json?v=' + Date.now()).then(r => r.json()).then(data => { allChartData = data; }); } catch(e) {}
-            updateTerminalData(); updateCalendar(); loadTrendData(); syncMarketPrices(); renderExplorer();
+            updateTerminalData(); updateCalendar(); loadTrendData(); syncMarketPrices(); 
+            renderExplorer(); 
+            renderNewsFavorites(); // 뉴스 탭 하트 리스트 초기화
             setInterval(syncMarketPrices, 5000); setInterval(updateTerminalData, 30000);
             if ("Notification" in window) Notification.requestPermission();
         };
