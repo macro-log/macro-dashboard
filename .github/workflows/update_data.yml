@@ -166,9 +166,13 @@ jobs:
                   "fomc_indicators": fomc_data, "engine_indicators": fomc_data, "dynamic_news": dynamic_news
               }, f, ensure_ascii=False, indent=4)
 
-          # 7. 차트 엔진 (유지)
+          # 7. 차트 엔진 (★유가, 금, 코스피, 2년물 추가! 다른 로직은 그대로 유지★)
           try:
-              chart_tickers = {'BTC': 'BTC-USD', 'SPY': 'SPY', 'QQQ': 'QQQ', 'DIA': 'DIA', 'US10Y': '^TNX', 'USDKRW': 'KRW=X'}
+              chart_tickers = {
+                  'BTC': 'BTC-USD', 'SPY': 'SPY', 'QQQ': 'QQQ', 'DIA': 'DIA', 
+                  'US10Y': '^TNX', 'US02Y': '^FVX', 'OIL': 'CL=F', 'GOLD': 'GC=F', 
+                  'KOSPI': '^KS11', 'USDKRW': 'KRW=X'
+              }
               chart_data = {}
               for name, tkr in chart_tickers.items():
                   try:
@@ -200,5 +204,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "프리미엄 외신(WSJ, 블룸버그) 연동 및 번역체 제거 패치 🚀" || echo "No changes"
+          git commit -m "누락된 4종 차트 데이터 완벽 복원 🚀" || echo "No changes"
           git push
