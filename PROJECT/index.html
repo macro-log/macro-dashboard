@@ -353,31 +353,36 @@
             }
         }
 
-        // 🚀 실시간 종목 검색 기능 엔진 (더 빠르고 안정적인 우회망 적용)
+        // 🚀 실시간 종목 검색 기능 엔진 (이중 우회망 탑재로 안정성 극대화)
         async function executeSearch() {
             const ticker = document.getElementById('stock-search-input').value.toUpperCase().trim();
             if(!ticker) return alert("검색할 티커(종목코드)를 입력해주세요!");
 
-            // 모달 열고 로딩 상태 표시
             document.getElementById('chart-modal-title').innerText = `🔍 ${ticker} 실시간 검색 중...`;
-            document.getElementById('chart-range-buttons').style.display = 'none'; // 커스텀 검색 시 버튼 숨김
+            document.getElementById('chart-range-buttons').style.display = 'none'; 
             toggleChartModal(true);
 
             try {
-                // 🚨 검색용 우회망을 더 안정적인 corsproxy.io 로 교체!
                 const targetUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?range=6mo&interval=1d`;
-                const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`;
-                
-                const res = await fetch(proxyUrl);
-                const data = await res.json();
+                let data = null;
 
-                if(!data.chart || !data.chart.result) throw new Error("종목을 찾을 수 없습니다.");
+                // [플랜 A] AllOrigins 우회망
+                try {
+                    const res1 = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`);
+                    if(res1.ok) data = await res1.json();
+                } catch(e) { console.log("1번 망 지연"); }
+
+                // [플랜 B] CodeTabs 우회망 (A 실패 시 자동 전환)
+                if (!data) {
+                    const res2 = await fetch(`https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(targetUrl)}`);
+                    if(res2.ok) data = await res2.json();
+                }
+
+                if(!data || !data.chart || !data.chart.result) throw new Error("종목 없음");
 
                 const result = data.chart.result[0];
                 const timestamps = result.timestamp;
                 const prices = result.indicators.quote[0].close;
-
-                // 타임스탬프를 'MM-DD' 날짜 형식으로 변환
                 const labels = timestamps.map(t => {
                     const d = new Date(t * 1000);
                     return `${d.getMonth() + 1}-${d.getDate()}`;
@@ -388,10 +393,8 @@
                 const changePct = (((currentPrice - prevClose) / prevClose) * 100).toFixed(2);
                 const changeSign = changePct >= 0 ? '+' : '';
 
-                // 타이틀에 실시간 가격과 등락률 표시
                 document.getElementById('chart-modal-title').innerHTML = `${ticker} <span class="text-sm font-normal text-gray-400 ml-2">6개월 일봉</span> <span class="text-xl ml-4 text-white font-mono">$${currentPrice.toLocaleString()}</span> <span class="text-sm font-bold ${changePct >= 0 ? 'text-red-400' : 'text-sky-400'} ml-2">${changeSign}${changePct}%</span>`;
 
-                // 기존 차트 파괴 후 검색된 종목 차트 그리기
                 const ctx = document.getElementById('robotMainChart').getContext('2d');
                 if (robotChartInstance) robotChartInstance.destroy();
 
@@ -401,7 +404,7 @@
                         labels: labels, 
                         datasets: [{ 
                             data: prices, 
-                            borderColor: '#eab308', // 검색 종목은 특별하게 노란색(Gold)으로 표시
+                            borderColor: '#eab308', 
                             backgroundColor: 'rgba(234, 179, 8, 0.15)', 
                             fill: true, pointRadius: 0, borderWidth: 2, tension: 0.1, spanGaps: true
                         }]
@@ -417,7 +420,7 @@
                 });
 
             } catch(e) {
-                alert(`'${ticker}' 종목을 찾을 수 없거나 일시적인 통신 지연입니다.\n정확한 영문 티커(예: AAPL, TSLA)를 다시 입력해 주세요.`);
+                alert(`'${ticker}' 종목을 찾을 수 없거나 일시적인 통신 지연입니다.`);
                 toggleChartModal(false);
             }
         }
@@ -474,7 +477,6 @@
             }
             currentModalTickerId = id; 
             
-            // 일반 위젯 클릭 시에는 기간 버튼(당일, 주간 등)을 다시 보이게 함
             document.getElementById('chart-range-buttons').style.display = 'flex';
             document.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active'));
             document.querySelector('.chart-btn').classList.add('active'); 
@@ -564,13 +566,11 @@
                 if(data.dynamic_news && Object.keys(data.dynamic_news).length > 0) {
                     const grid = document.getElementById('dynamic-news-grid');
                     grid.innerHTML = ''; 
-                    
                     const borderColors = ['border-sky-500', 'border-red-500', 'border-emerald-500', 'border-purple-500', 'border-amber-500', 'border-rose-500'];
                     const labelColors = ['text-sky-400', 'text-red-400', 'text-emerald-400', 'text-purple-400', 'text-amber-400', 'text-rose-400'];
                     
                     Object.entries(data.dynamic_news).forEach(([theme, items], index) => {
                         let newsListHtml = '';
-                        
                         if (Array.isArray(items)) {
                             items.forEach((news, newsIdx) => {
                                 const uniqueId = `news-${index}-${newsIdx}`;
@@ -589,13 +589,7 @@
                         } else {
                             newsListHtml = `<p class="text-sm text-gray-300 leading-relaxed">${items}</p>`;
                         }
-
-                        grid.innerHTML += `
-                            <div class="card min-h-[300px] border-t-4 ${borderColors[index % 6]}">
-                                <span class="section-label ${labelColors[index % 6]}">${theme}</span>
-                                <h3 class="text-lg font-bold text-white mb-3 border-b border-gray-800 pb-2 italic uppercase">Market Briefing</h3>
-                                <div class="scroll-list overflow-y-auto pr-1">${newsListHtml}</div>
-                            </div>`;
+                        grid.innerHTML += `<div class="card min-h-[300px] border-t-4 ${borderColors[index % 6]}"><span class="section-label ${labelColors[index % 6]}">${theme}</span><h3 class="text-lg font-bold text-white mb-3 border-b border-gray-800 pb-2 italic uppercase">Market Briefing</h3><div class="scroll-list overflow-y-auto pr-1">${newsListHtml}</div></div>`;
                     });
                     
                     const firstTheme = Object.keys(data.dynamic_news)[0];
@@ -604,9 +598,7 @@
                         document.getElementById('home-top-news').innerHTML = `<b>[${firstTheme}]</b><br><span class="text-sky-400 text-xs font-bold">${firstNews.title}</span>`;
                     }
                 }
-            } catch (err) { 
-                initMasterGauge(50); 
-            }
+            } catch (err) { initMasterGauge(50); }
         }
 
         function switchCalMode(mode) {
@@ -614,27 +606,19 @@
             document.getElementById('btn-cal-macro').classList.toggle('active', mode === 'MACRO');
             document.getElementById('btn-cal-earnings').classList.toggle('active', mode === 'EARNINGS');
             document.getElementById('cal-main-title').innerText = mode === 'MACRO' ? '글로벌 주요 매크로 일정' : '주요 기업 실적 발표';
-            
             const today = new Date();
             document.getElementById('cal-month-label').innerText = mode === 'MACRO' ? `${today.getFullYear()}년 ${today.getMonth() + 1}월 달력` : 'Earnings Grid';
-            
             renderCalendar();
         }
 
         function renderCalendar() {
             const container = document.getElementById('calendar-container');
             container.innerHTML = '';
-            
             const filtered = globalEvents.filter(ev => currentCalMode === 'MACRO' ? ev.type !== 'EARNINGS' : ev.type === 'EARNINGS');
-
             if (currentCalMode === 'MACRO') {
                 container.className = "flex flex-col h-full w-full";
-                const today = new Date();
-                const year = today.getFullYear();
-                const month = today.getMonth();
-                const firstDay = new Date(year, month, 1).getDay();
-                const daysInMonth = new Date(year, month + 1, 0).getDate();
-                
+                const today = new Date(); const year = today.getFullYear(); const month = today.getMonth();
+                const firstDay = new Date(year, month, 1).getDay(); const daysInMonth = new Date(year, month + 1, 0).getDate();
                 let html = `<div class="grid grid-cols-7 gap-1 text-center text-[10px] font-black text-gray-500 mb-2 tracking-widest mt-4"><div>SUN</div><div>MON</div><div>TUE</div><div>WED</div><div>THU</div><div>FRI</div><div>SAT</div></div><div class="grid grid-cols-7 gap-1 flex-grow auto-rows-fr">`;
                 for (let i = 0; i < firstDay; i++) html += `<div></div>`;
                 for (let d = 1; d <= daysInMonth; d++) {
@@ -644,8 +628,7 @@
                     const isToday = (d === today.getDate() && month === today.getMonth());
                     html += `<div class="bg-[#0a0f1e] rounded border ${isToday ? 'border-sky-500 border-2' : 'border-[#262f45]'} p-1 h-[70px] md:h-[90px] overflow-y-auto scroll-list"><span class="text-[10px] ${isToday ? 'text-sky-400 font-black' : 'text-gray-500 font-bold'}">${d}</span>${eventHtml}</div>`;
                 }
-                html += `</div>`;
-                container.innerHTML = html;
+                html += `</div>`; container.innerHTML = html;
             } else {
                 container.className = "earnings-grid overflow-y-auto pr-2 scroll-list h-full items-start mt-4";
                 container.innerHTML = filtered.map(ev => `<div class="p-3 bg-[#1e293b] rounded border border-[#262f45] text-center relative overflow-hidden"><div class="absolute top-0 left-0 w-full h-1 bg-sky-500 opacity-50"></div><span class="ticker-badge">${ev.name.split(' ')[0]}</span><div class="text-[10px] text-gray-400 mt-2">${ev.date}</div></div>`).join('');
@@ -655,8 +638,7 @@
         async function updateCalendar() {
             try {
                 const response = await fetch('./economic_events.json?v=' + Date.now());
-                globalEvents = await response.json(); 
-                renderCalendar(); 
+                globalEvents = await response.json(); renderCalendar(); 
                 const nextEvent = globalEvents.find(ev => Math.floor((new Date(ev.date) - new Date()) / (1000 * 60 * 60 * 24)) >= 0) || globalEvents[0];
                 if(nextEvent) {
                     const diff = Math.floor((new Date(nextEvent.date) - new Date()) / (1000 * 60 * 60 * 24));
@@ -680,25 +662,14 @@
 
         function toggleNewsSummary(id) {
             const el = document.getElementById(id);
-            const isHidden = el.classList.contains('hidden');
-            if (isHidden) {
-                el.classList.remove('hidden');
-                el.style.animation = 'fadeIn 0.3s ease';
-            } else {
-                el.classList.add('hidden');
-            }
+            if (el.classList.contains('hidden')) { el.classList.remove('hidden'); el.style.animation = 'fadeIn 0.3s ease'; }
+            else { el.classList.add('hidden'); }
         }
 
         window.onload = () => { 
-            // 초기 데이터 로딩 시 파일이 아직 없어서 나는 에러 방지
-            try {
-                fetch('./market_charts.json?v=' + Date.now()).then(r => r.json()).then(data => { allChartData = data; });
-            } catch(e) {}
-
-            updateTerminalData(); updateCalendar(); loadTrendData();
-            syncMarketPrices();
-            setInterval(syncMarketPrices, 5000); 
-            setInterval(updateTerminalData, 30000);
+            try { fetch('./market_charts.json?v=' + Date.now()).then(r => r.json()).then(data => { allChartData = data; }); } catch(e) {}
+            updateTerminalData(); updateCalendar(); loadTrendData(); syncMarketPrices();
+            setInterval(syncMarketPrices, 5000); setInterval(updateTerminalData, 30000);
             if ("Notification" in window) Notification.requestPermission();
         };
     </script>
