@@ -74,7 +74,6 @@ jobs:
           # 4. [프리미엄] 월스트리트저널(WSJ), 블룸버그, 로이터 전용 뉴스 수집
           def fetch_premium_news():
               headlines = []
-              # WSJ 공식 마켓 피드 + 구글뉴스(블룸버그/로이터 필터링)
               urls = [
                   "https://feeds.a.dj.com/rss/RSSMarketsMain.xml",
                   "https://news.google.com/rss/search?q=when:1d+AND+(source:Bloomberg+OR+source:Reuters)+market+finance&hl=en-US&gl=US&ceid=US:en"
@@ -93,7 +92,7 @@ jobs:
 
           all_headlines = fetch_premium_news()
 
-          # 5. [의역 특화] 제미나이 AI 분석 (안전필터 해제 및 번역체 제거)
+          # 5. [의역 특화] 제미나이 AI 분석
           dynamic_news = {}
           ai_briefing = "AI가 글로벌 마켓 데이터를 동기화하고 있습니다."
           period_interpretation = {"당일": "안정적 흐름", "주간": "매크로 대기", "월간": "추세 형성 중", "년간": "사이클 반영", "장기": "역사적 위치 파악 중"}
@@ -109,8 +108,7 @@ jobs:
 
               [🚨번역 및 작성 철칙🚨]
               1. 기계적인 '번역체'나 '직역'을 절대 피하세요.
-              2. 한국 여의도 증권가 리포트나 국내 1군 경제지(매일경제 등)의 실제 헤드라인처럼 아주 자연스럽고 세련되게 "의역"하세요.
-              (잘못된 예: 미국 주식이 인플레이션 두려움에 떨어지다 -> 올바른 예: 미 증시, 인플레 공포 재점화에 하락 마감)
+              2. 한국 여의도 증권가 리포트나 국내 1군 경제지 헤드라인처럼 아주 자연스럽고 세련되게 "의역"하세요.
               3. 불필요한 서술어를 빼고 핵심만 날카롭게 요약하세요.
 
               응답 JSON 구조:
@@ -123,41 +121,35 @@ jobs:
                       "년간": "올해 경제 사이클 전망",
                       "장기": "장기적 투자 패러다임 뷰"
                   }},
-                  "거시경제": [ {{"title": "여의도 스타일의 세련된 한국어 제목", "summary": "핵심 1줄 요약"}} ],
-                  "주식시장": [ {{"title": "여의도 스타일의 세련된 한국어 제목", "summary": "핵심 1줄 요약"}} ],
-                  "암호화폐": [ {{"title": "여의도 스타일의 세련된 한국어 제목", "summary": "핵심 1줄 요약"}} ],
-                  "원자재": [ {{"title": "여의도 스타일의 세련된 한국어 제목", "summary": "핵심 1줄 요약"}} ],
-                  "빅테크": [ {{"title": "여의도 스타일의 세련된 한국어 제목", "summary": "핵심 1줄 요약"}} ],
-                  "지정학": [ {{"title": "여의도 스타일의 세련된 한국어 제목", "summary": "핵심 1줄 요약"}} ]
+                  "거시경제": [ {{"title": "여의도 스타일의 제목", "summary": "1줄 요약"}} ],
+                  "주식시장": [ {{"title": "여의도 스타일의 제목", "summary": "1줄 요약"}} ],
+                  "암호화폐": [ {{"title": "여의도 스타일의 제목", "summary": "1줄 요약"}} ],
+                  "원자재": [ {{"title": "여의도 스타일의 제목", "summary": "1줄 요약"}} ],
+                  "빅테크": [ {{"title": "여의도 스타일의 제목", "summary": "1줄 요약"}} ],
+                  "지정학": [ {{"title": "여의도 스타일의 제목", "summary": "1줄 요약"}} ]
               }}
               """
-              
-              # 폭락, 유혈사태 등 자극적인 금융 용어 때문에 AI가 멈추지 않도록 안전 필터 전면 해제
               safety_settings = {
                   'HARM_CATEGORY_HATE_SPEECH': 'BLOCK_NONE',
                   'HARM_CATEGORY_HARASSMENT': 'BLOCK_NONE',
                   'HARM_CATEGORY_SEXUALLY_EXPLICIT': 'BLOCK_NONE',
                   'HARM_CATEGORY_DANGEROUS_CONTENT': 'BLOCK_NONE'
               }
-
               response = model.generate_content(
                   prompt, 
                   generation_config={"response_mime_type": "application/json"},
                   safety_settings=safety_settings
               )
-              
               data = json.loads(response.text)
               ai_briefing = data.get("briefing", ai_briefing)
               period_interpretation = data.get("analysis", period_interpretation)
-              
               for key in ["거시경제", "주식시장", "암호화폐", "원자재", "빅테크", "지정학"]:
                   if key in data and data[key]:
                       dynamic_news[key] = data[key]
-              print("✅ 프리미엄 뉴스 분석 & 세련된 번역 완료!")
           except Exception as e:
-              print(f"⚠️ AI 분석 에러 (안전필터/JSON 파싱): {e}")
+              print(f"⚠️ AI 분석 에러: {e}")
 
-          # 6. indicators.json 저장
+          # 6. indicators.json 저장 (market_temp -2.5 고정)
           os.makedirs('PROJECT', exist_ok=True)
           with open('PROJECT/indicators.json', 'w', encoding='utf-8') as f:
               json.dump({
@@ -166,9 +158,13 @@ jobs:
                   "fomc_indicators": fomc_data, "engine_indicators": fomc_data, "dynamic_news": dynamic_news
               }, f, ensure_ascii=False, indent=4)
 
-          # 7. 차트 엔진 (유지)
+          # 7. 차트 엔진 (★ 누락된 지표 추가 및 분기간/월간 데이터 구분 ★)
           try:
-              chart_tickers = {'BTC': 'BTC-USD', 'SPY': 'SPY', 'QQQ': 'QQQ', 'DIA': 'DIA', 'US10Y': '^TNX', 'USDKRW': 'KRW=X'}
+              chart_tickers = {
+                  'BTC': 'BTC-USD', 'SPY': 'SPY', 'QQQ': 'QQQ', 'DIA': 'DIA', 
+                  'US10Y': '^TNX', 'US02Y': '^FVX', 'OIL': 'CL=F', 'GOLD': 'GC=F', 
+                  'KOSPI': '^KS11', 'USDKRW': 'KRW=X'
+              }
               chart_data = {}
               for name, tkr in chart_tickers.items():
                   try:
@@ -183,11 +179,19 @@ jobs:
                       d_raw = tk.history(period="7d", interval="15m")
                       day_data = sync_data(d_raw[d_raw.index.date == d_raw.index[-1].date()], '%H:%M') if not d_raw.empty else {"labels": [], "prices": []}
                       week_data = sync_data(tk.history(period="1mo", interval="1h").tail(168), '%m-%d %H:00')
-                      month_data = sync_data(tk.history(period="6mo", interval="1d").tail(30), '%m-%d')
+                      
+                      # ★ 월간(1개월) vs 분기간(3개월) 구분 ★
+                      month_data = sync_data(tk.history(period="1mo", interval="1d"), '%m-%d')
+                      quarter_data = sync_data(tk.history(period="3mo", interval="1d"), '%m-%d')
+                      
                       year_data = sync_data(tk.history(period="2y", interval="1d").tail(365), '%Y-%m')
                       long_data = sync_data(tk.history(period="max", interval="1wk"), '%Y')
 
-                      chart_data[name] = {"labels": day_data["labels"], "prices": day_data["prices"], "day": day_data, "week": week_data, "month": month_data, "year": year_data, "long": long_data}
+                      chart_data[name] = {
+                          "day": day_data, "week": week_data, "month": month_data, 
+                          "quarter": quarter_data, "year": year_data, "long": long_data,
+                          "labels": day_data["labels"], "prices": day_data["prices"]
+                      }
                   except: continue
               with open('PROJECT/market_charts.json', 'w', encoding='utf-8') as f:
                   json.dump(chart_data, f, ensure_ascii=False)
@@ -200,5 +204,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "프리미엄 외신(WSJ, 블룸버그) 연동 및 번역체 제거 패치 🚀" || echo "No changes"
+          git commit -m "지표 추가 및 분기간 데이터 구분 업데이트 🚀" || echo "No changes"
           git push
