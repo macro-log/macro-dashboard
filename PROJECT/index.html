@@ -143,6 +143,7 @@
 
         <nav class="tab-menu mt-2 no-scrollbar">
             <button class="tab-btn active" onclick="switchTab('home')">메인 상황실</button>
+            <button class="tab-btn" onclick="switchTab('watchlist')">관심종목</button>
             <button class="tab-btn" onclick="switchTab('ai')">AI & 심리 분석</button>
             <button class="tab-btn" onclick="switchTab('calendar')">매크로 일정</button>
             <button class="tab-btn" onclick="switchTab('news')">동적 뉴스 리포트</button>
@@ -198,18 +199,123 @@
                 <div class="card min-h-[200px] border-l-4 border-emerald-500 flex flex-col">
                     <div class="flex justify-between items-center mb-2">
                         <div>
-                            <span class="section-label text-emerald-400">Watchlist & Value</span>
-                            <h3 class="text-lg font-bold text-white">종목 탐색기</h3>
+                            <span class="section-label text-emerald-400">Quick Look</span>
+                            <h3 class="text-lg font-bold text-white">관심종목 현황</h3>
                         </div>
-                        <button onclick="toggleHunter()" id="hunter-toggle-btn" class="text-[9px] bg-emerald-900 text-emerald-300 px-2 py-1 rounded font-bold">MODE: 관심</button>
-                    </div>
-                    <div class="flex gap-1 mb-3">
-                        <input type="text" id="hunter-search-input" placeholder="TKR..." class="flex-grow bg-[#0a0f1e] border border-gray-800 rounded px-2 py-1 text-[10px] text-white focus:outline-none focus:border-emerald-500 uppercase font-bold" onkeypress="if(event.key === 'Enter') addFavorite()">
-                        <button onclick="addFavorite()" class="bg-emerald-600 px-2 rounded text-white text-xs font-bold">+</button>
                     </div>
                     <div id="explorer-content" class="scroll-list overflow-y-auto space-y-2 pr-1 flex-grow no-scrollbar" style="max-height: 120px;">
-                        <p class="text-[10px] text-gray-500 text-center py-4">종목을 추가하세요.</p>
+                        <p class="text-[10px] text-gray-500 text-center py-4">데이터 로딩 중...</p>
                     </div>
+                    <button onclick="switchTab('watchlist')" class="mt-3 text-[10px] font-bold text-emerald-400 hover:text-white text-left transition-colors">▶ 종목 상세 관리</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-watchlist" class="tab-content">
+            <div class="card min-h-[700px] border-l-4 border-emerald-500">
+                <div class="flex justify-between items-center mb-8 pb-4 border-b border-gray-800">
+                    <div>
+                        <span class="section-label">Institutional Analysis Center</span>
+                        <h3 class="text-3xl font-black text-white tracking-tighter">종목 정밀 분석실</h3>
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" id="watchlist-search-input" placeholder="티커 입력 (예: TSLA)" class="bg-[#0a0f1e] border border-gray-800 rounded-lg px-6 py-3 text-sm text-white focus:outline-none focus:border-emerald-500 uppercase font-black w-64" onkeypress="if(event.key === 'Enter') fetchTickerDetail()">
+                        <button onclick="fetchTickerDetail()" class="bg-emerald-600 px-8 rounded-lg text-white font-black hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-900/20">분석하기 🔍</button>
+                    </div>
+                </div>
+                
+                <div id="ticker-detail-view" class="hidden animate-fadeIn">
+                    <div class="flex items-center gap-4 mb-8">
+                        <h4 id="detail-ticker-name" class="text-5xl font-black text-white italic">--</h4>
+                        <div class="bg-[#1e293b] px-4 py-1 rounded text-emerald-400 text-xs font-bold border border-emerald-900/50">LIVE SIGNAL</div>
+                        <button onclick="toggleHeart()" id="detail-heart-btn" class="text-3xl hover:scale-110 transition-transform">🤍</button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="bg-[#0a0f1e] p-6 rounded-xl border border-gray-800 border-t-4 border-sky-500">
+                            <span class="text-[10px] text-gray-500 font-black uppercase tracking-widest mb-4 block">01. Financial Metrics</span>
+                            <div class="space-y-4">
+                                <div class="flex justify-between border-b border-gray-900 pb-2">
+                                    <span class="text-xs text-gray-400">시가총액 (Mkt Cap)</span>
+                                    <span id="stat-mktcap" class="text-sm font-black text-white font-mono">--</span>
+                                </div>
+                                <div class="flex justify-between border-b border-gray-900 pb-2">
+                                    <span class="text-xs text-gray-400">주가수익비율 (P/E)</span>
+                                    <span id="stat-pe" class="text-sm font-black text-white font-mono">--</span>
+                                </div>
+                                <div class="flex justify-between border-b border-gray-900 pb-2">
+                                    <span class="text-xs text-gray-400">주당순이익 (EPS)</span>
+                                    <span id="stat-eps" class="text-sm font-black text-white font-mono">--</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-xs text-gray-400">배당수익률 (Yield)</span>
+                                    <span id="stat-yield" class="text-sm font-black text-emerald-400 font-mono">--</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-[#0a0f1e] p-6 rounded-xl border border-gray-800 border-t-4 border-amber-500">
+                            <span class="text-[10px] text-gray-500 font-black uppercase tracking-widest mb-4 block">02. Earnings Schedule</span>
+                            <div class="flex flex-col items-center justify-center py-4">
+                                <span class="text-xs text-gray-500 mb-1">Next Earnings Date</span>
+                                <span id="stat-earnings-date" class="text-2xl font-black text-white mb-4">--</span>
+                                <div class="w-full bg-[#1e293b] p-3 rounded text-center">
+                                    <span class="text-[10px] text-gray-500 block">EPS Estimate</span>
+                                    <span id="stat-eps-est" class="text-lg font-black text-amber-400">--</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-[#0a0f1e] p-6 rounded-xl border border-gray-800 border-t-4 border-purple-500">
+                            <span class="text-[10px] text-gray-500 font-black uppercase tracking-widest mb-4 block">03. Analyst Targets</span>
+                            <div class="space-y-4">
+                                <div class="text-center pb-4">
+                                    <span class="text-[10px] text-gray-500 block mb-1">Average Target Price</span>
+                                    <span id="stat-target-price" class="text-3xl font-black text-white tracking-tighter">--</span>
+                                </div>
+                                <div class="flex justify-between items-center bg-[#1e293b] p-3 rounded">
+                                    <span class="text-xs text-gray-400">Upside Potential</span>
+                                    <span id="stat-upside" class="text-sm font-black text-emerald-400">--</span>
+                                </div>
+                                <div class="text-center pt-2">
+                                    <span id="stat-consensus" class="text-[10px] font-black px-3 py-1 bg-purple-900 text-purple-200 rounded-full">CONSENSUS: BUY</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-[#0a0f1e] p-6 rounded-xl border border-gray-800 border-t-4 border-red-500">
+                            <span class="text-[10px] text-gray-500 font-black uppercase tracking-widest mb-4 block">04. Short Interest</span>
+                            <div class="space-y-4">
+                                <div class="flex flex-col gap-1">
+                                    <div class="flex justify-between">
+                                        <span class="text-xs text-gray-400">Short % of Float</span>
+                                        <span id="stat-short-pct" class="text-sm font-black text-red-400">--</span>
+                                    </div>
+                                    <div class="w-full bg-gray-900 h-1.5 rounded-full overflow-hidden mt-1">
+                                        <div id="stat-short-bar" class="bg-red-500 h-full" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between border-b border-gray-900 pb-2">
+                                    <span class="text-xs text-gray-400">Short Ratio (Days)</span>
+                                    <span id="stat-short-ratio" class="text-sm font-black text-white font-mono">--</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-xs text-gray-400">Shares Short</span>
+                                    <span id="stat-short-shares" class="text-sm font-black text-white font-mono">--</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 flex justify-center">
+                        <button onclick="toggleChartModal(true); loadChart(document.getElementById('watchlist-search-input').value.toUpperCase().trim(), '1d');" class="text-xs font-bold text-gray-500 hover:text-emerald-400 border border-gray-800 px-6 py-2 rounded-full transition-all">실시간 기술적 차트 딥다이브</button>
+                    </div>
+                </div>
+
+                <div id="watchlist-landing" class="flex flex-col items-center justify-center py-40 opacity-50">
+                    <span class="text-6xl mb-6">🛰️</span>
+                    <p class="text-gray-400 font-bold">분석하고 싶은 티커를 입력하세요.</p>
+                    <p class="text-xs text-gray-600 mt-2">전문가 컨센서스와 공매도 잔고를 실시간으로 스캔합니다.</p>
                 </div>
             </div>
         </div>
@@ -273,24 +379,11 @@
         </div>
 
         <div id="tab-news" class="tab-content">
-            <div class="flex flex-col lg:flex-row gap-5">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5 flex-grow" id="dynamic-news-grid">
-                    <div class="col-span-full text-center py-20">
-                        <span class="inline-block animate-spin text-4xl mb-4">⚙️</span>
-                        <p class="text-gray-400 font-bold">AI 로봇이 전 세계 최신 뉴스를 6개 테마로 분석 중입니다...</p>
-                        <p class="text-xs text-gray-500 mt-2">※ 깃허브 액션이 완료되면 자동으로 표시됩니다.</p>
-                    </div>
-                </div>
-                
-                <div class="card w-full lg:w-80 h-fit sticky top-5 border-l-4 border-red-500 shrink-0">
-                    <span class="section-label text-red-400">Favorite Watchlist</span>
-                    <h3 class="text-lg font-bold text-white mb-4">❤️ 관심종목 퀵 등록</h3>
-                    <div class="flex gap-1 mb-4">
-                        <input type="text" id="news-fav-input" placeholder="티커 입력..." class="flex-grow bg-[#0a0f1e] border border-gray-800 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-red-500 uppercase font-bold" onkeypress="if(event.key === 'Enter') addNewsFavorite()">
-                        <button onclick="addNewsFavorite()" class="bg-red-600 px-3 rounded text-white text-sm font-bold hover:bg-red-500 transition-colors">❤️</button>
-                    </div>
-                    <div id="news-fav-list" class="scroll-list space-y-2 overflow-y-auto max-h-[500px] pr-1 no-scrollbar">
-                        </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="dynamic-news-grid">
+                <div class="col-span-full text-center py-20">
+                    <span class="inline-block animate-spin text-4xl mb-4">⚙️</span>
+                    <p class="text-gray-400 font-bold">AI 로봇이 전 세계 최신 뉴스를 6개 테마로 분석 중입니다...</p>
+                    <p class="text-xs text-gray-500 mt-2">※ 깃허브 액션이 완료되면 자동으로 표시됩니다.</p>
                 </div>
             </div>
         </div>
@@ -310,15 +403,16 @@
         let currentCalMode = 'MACRO';
         let globalEvents = [];
 
-        // ★ 신규 변수: 종목 탐색기 모드 관리 ★
-        let currentExplorerMode = 'fav'; // 'fav' or 'hunter'
-        let currentUndervaluedData = [];
-
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(`tab-${tabId}`).classList.add('active');
-            if(event) event.currentTarget.classList.add('active');
+            const btns = document.querySelectorAll('.tab-btn');
+            btns.forEach(btn => {
+                if(btn.getAttribute('onclick').includes(`'${tabId}'`)) {
+                    btn.classList.add('active');
+                }
+            });
         }
 
         function toggleModal(show) { document.getElementById('alert-modal').style.display = show ? 'block' : 'none'; document.getElementById('modal-overlay').style.display = show ? 'block' : 'none'; }
@@ -343,98 +437,105 @@
 
         function removeAlert(id) { alertList = alertList.filter(a => a.id !== id); renderAlertList(); }
 
-        // ★ 신규 함수: 관심종목/Value Hunter 로직 ★
-        function toggleHunter() {
-            currentExplorerMode = (currentExplorerMode === 'fav') ? 'hunter' : 'fav';
-            document.getElementById('hunter-toggle-btn').innerText = currentExplorerMode === 'fav' ? 'MODE: 관심' : 'MODE: 저평가';
-            renderExplorer();
-        }
+        // ★ 종목 정밀 분석 로직 ★
+        async function fetchTickerDetail() {
+            const ticker = document.getElementById('watchlist-search-input').value.toUpperCase().trim();
+            if(!ticker) return alert("분석할 종목 코드를 입력하세요!");
 
-        function addFavorite() {
-            const input = document.getElementById('hunter-search-input');
-            const ticker = input.value.toUpperCase().trim();
-            if(!ticker) return;
-            let favs = JSON.parse(localStorage.getItem('s9_favs') || '[]');
-            if(!favs.includes(ticker)) {
-                favs.push(ticker);
-                localStorage.setItem('s9_favs', JSON.stringify(favs));
-            }
-            input.value = '';
-            renderExplorer();
-            renderNewsFavorites(); // 뉴스 탭 연동
-        }
+            // 로딩 표시 및 뷰 전환
+            document.getElementById('watchlist-landing').classList.add('hidden');
+            document.getElementById('ticker-detail-view').classList.remove('hidden');
+            document.getElementById('detail-ticker-name').innerText = ticker;
+            
+            // 하트 상태 체크
+            updateHeartUI(ticker);
 
-        // 뉴스 탭 전용 추가 함수
-        function addNewsFavorite() {
-            const input = document.getElementById('news-fav-input');
-            const ticker = input.value.toUpperCase().trim();
-            if(!ticker) return;
-            let favs = JSON.parse(localStorage.getItem('s9_favs') || '[]');
-            if(!favs.includes(ticker)) {
-                favs.push(ticker);
-                localStorage.setItem('s9_favs', JSON.stringify(favs));
-            }
-            input.value = '';
-            renderNewsFavorites();
-            renderExplorer(); // 홈 탭 연동
-        }
+            try {
+                // Yahoo Finance Proxy를 통한 실시간 상세 모듈 호출
+                const modules = 'defaultKeyStatistics,assetProfile,financialData,calendarEvents';
+                const url = `https://query1.finance.yahoo.com/v10/finance/quoteSummary/${ticker}?modules=${modules}`;
+                const res = await fetch(`https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(url)}`);
+                const data = await res.json();
+                
+                if(!data.quoteSummary || !data.quoteSummary.result) throw new Error("No Data");
+                
+                const result = data.quoteSummary.result[0];
+                const stats = result.defaultKeyStatistics || {};
+                const financial = result.financialData || {};
+                const calendar = result.calendarEvents || {};
 
-        function removeFavorite(ticker) {
-            let favs = JSON.parse(localStorage.getItem('s9_favs') || '[]');
-            favs = favs.filter(t => t !== ticker);
-            localStorage.setItem('s9_favs', JSON.stringify(favs));
-            renderExplorer();
-            renderNewsFavorites();
-        }
+                // 1. 재무 지표 업데이트
+                document.getElementById('stat-mktcap').innerText = stats.enterpriseValue ? (stats.enterpriseValue.fmt || '--') : '--';
+                document.getElementById('stat-pe').innerText = stats.forwardPE ? stats.forwardPE.fmt : '--';
+                document.getElementById('stat-eps').innerText = stats.forwardEps ? stats.forwardEps.fmt : '--';
+                document.getElementById('stat-yield').innerText = stats.dividendYield ? stats.dividendYield.fmt : '0.00%';
 
-        function renderExplorer() {
-            const container = document.getElementById('explorer-content');
-            if(currentExplorerMode === 'fav') {
-                const favs = JSON.parse(localStorage.getItem('s9_favs') || '[]');
-                if(favs.length === 0) {
-                    container.innerHTML = `<p class="text-[10px] text-gray-500 text-center py-4">등록된 관심 종목이 없습니다.</p>`;
-                } else {
-                    container.innerHTML = favs.map(t => `
-                        <div class="flex justify-between items-center bg-[#0a0f1e] p-2 rounded border border-gray-800 hover:border-emerald-500 transition-colors cursor-pointer" onclick="document.getElementById('stock-search-input').value='${t}'; executeSearch();">
-                            <span class="text-white font-bold text-xs">${t}</span>
-                            <button onclick="event.stopPropagation(); removeFavorite('${t}')" class="text-gray-600 hover:text-red-500 font-bold text-sm">×</button>
-                        </div>
-                    `).join('');
+                // 2. 실적 발표
+                const earningsDate = calendar.earnings && calendar.earnings.earningsDate ? calendar.earnings.earningsDate[0].fmt : 'TBD';
+                document.getElementById('stat-earnings-date').innerText = earningsDate;
+                document.getElementById('stat-eps-est').innerText = (result.calendarEvents && result.calendarEvents.earnings && result.calendarEvents.earnings.earningsAverage) ? result.calendarEvents.earnings.earningsAverage.fmt : '--';
+
+                // 3. 전문가 목표가
+                const targetPrice = financial.targetMeanPrice ? financial.targetMeanPrice.fmt : '--';
+                const currentPrice = financial.currentPrice ? financial.currentPrice.raw : 0;
+                const meanTarget = financial.targetMeanPrice ? financial.targetMeanPrice.raw : 0;
+                
+                document.getElementById('stat-target-price').innerText = `$${targetPrice}`;
+                if(currentPrice && meanTarget) {
+                    const upside = (((meanTarget - currentPrice) / currentPrice) * 100).toFixed(2);
+                    document.getElementById('stat-upside').innerText = `${upside > 0 ? '+' : ''}${upside}%`;
                 }
+                document.getElementById('stat-consensus').innerText = `CONSENSUS: ${financial.recommendationKey ? financial.recommendationKey.toUpperCase() : 'UNKNOWN'}`;
+
+                // 4. 공매도 잔고
+                const shortPct = stats.shortPercentOfFloat ? (stats.shortPercentOfFloat.raw * 100).toFixed(2) : '0';
+                document.getElementById('stat-short-pct').innerText = `${shortPct}%`;
+                document.getElementById('stat-short-bar').style.width = `${Math.min(shortPct, 100)}%`;
+                document.getElementById('stat-short-ratio').innerText = stats.shortRatio ? stats.shortRatio.fmt : '--';
+                document.getElementById('stat-short-shares').innerText = stats.sharesShort ? stats.sharesShort.fmt : '--';
+
+            } catch (err) {
+                console.error(err);
+                alert("종목 정보를 가져오는 데 실패했습니다. 티커를 확인해 주세요.");
+                document.getElementById('watchlist-landing').classList.remove('hidden');
+                document.getElementById('ticker-detail-view').classList.add('hidden');
+            }
+        }
+
+        // 하트(관심종목 등록/해제) 로직
+        function toggleHeart() {
+            const ticker = document.getElementById('watchlist-search-input').value.toUpperCase().trim();
+            if(!ticker) return;
+            let favs = JSON.parse(localStorage.getItem('s9_favs') || '[]');
+            if(favs.includes(ticker)) {
+                favs = favs.filter(t => t !== ticker);
             } else {
-                if(currentUndervaluedData.length === 0) {
-                    container.innerHTML = `<p class="text-[10px] text-gray-500 text-center py-4">저평가 데이터를 분석 중입니다.</p>`;
-                } else {
-                    container.innerHTML = currentUndervaluedData.map(s => `
-                        <div class="flex justify-between items-center bg-[#0a0f1e] p-2 rounded border ${s.is_premium ? 'border-gray-800 opacity-60' : 'border-emerald-900/50'}">
-                            <div class="flex flex-col">
-                                <span class="text-white font-bold text-xs">${s.is_premium ? '🔒 PREMIUM' : s.ticker}</span>
-                                <span class="text-[9px] text-gray-500">${s.price}</span>
-                            </div>
-                            <span class="text-emerald-400 font-black text-[10px] italic">S. ${s.score}</span>
-                        </div>
-                    `).join('');
-                }
+                favs.push(ticker);
             }
+            localStorage.setItem('s9_favs', JSON.stringify(favs));
+            updateHeartUI(ticker);
+            renderHomeExplorer();
         }
 
-        // 뉴스 탭 하트 종목 렌더링
-        function renderNewsFavorites() {
-            const container = document.getElementById('news-fav-list');
+        function updateHeartUI(ticker) {
             const favs = JSON.parse(localStorage.getItem('s9_favs') || '[]');
+            const btn = document.getElementById('detail-heart-btn');
+            btn.innerText = favs.includes(ticker) ? '❤️' : '🤍';
+        }
+
+        function renderHomeExplorer() {
+            const favs = JSON.parse(localStorage.getItem('s9_favs') || '[]');
+            const homeContainer = document.getElementById('explorer-content');
             if(favs.length === 0) {
-                container.innerHTML = `<p class="text-[11px] text-gray-600 text-center py-10 italic">하트를 눌러<br>관심종목을 등록하세요.</p>`;
-                return;
-            }
-            container.innerHTML = favs.map(t => `
-                <div class="flex justify-between items-center bg-[#1e293b] p-3 rounded-lg border border-gray-800 hover:border-red-900 transition-all cursor-pointer group" onclick="document.getElementById('stock-search-input').value='${t}'; executeSearch();">
-                    <div class="flex items-center gap-3">
-                        <span class="text-red-500 animate-pulse">❤️</span>
-                        <span class="text-white font-black text-sm tracking-tighter">${t}</span>
+                homeContainer.innerHTML = `<p class="text-[10px] text-gray-500 text-center py-4">등록된 종목 없음</p>`;
+            } else {
+                homeContainer.innerHTML = favs.slice(0, 5).map(t => `
+                    <div class="flex justify-between items-center bg-[#0a0f1e] p-2 rounded border border-gray-800 hover:border-emerald-500 transition-colors cursor-pointer" onclick="document.getElementById('watchlist-search-input').value='${t}'; switchTab('watchlist'); fetchTickerDetail();">
+                        <span class="text-white font-bold text-xs">${t}</span>
+                        <span class="text-red-500 text-[10px]">❤️</span>
                     </div>
-                    <button onclick="event.stopPropagation(); removeFavorite('${t}')" class="text-gray-600 hover:text-red-500 font-bold text-lg opacity-0 group-hover:opacity-100 transition-opacity">×</button>
-                </div>
-            `).join('');
+                `).join('');
+            }
         }
 
         async function syncMarketPrices() {
@@ -665,21 +766,13 @@
                 
                 if(data.last_updated) document.getElementById('sync-time').innerText = data.last_updated;
                 
-                // ★ AI 요약 3줄 리스트 렌더링 ★
                 if(data.ai_summary && Array.isArray(data.ai_summary)) {
                     document.getElementById('home-ai-summary').innerHTML = data.ai_summary.map(s => `<li class="mb-1">• ${s}</li>`).join('');
                 }
 
-                // ★ 저평가 종목 데이터 업데이트 ★
-                if(data.undervalued) {
-                    currentUndervaluedData = data.undervalued;
-                    renderExplorer();
-                }
-                
                 let gaugeScore = data.master_score || 50; 
                 initMasterGauge(gaugeScore); 
 
-                // ... (FOMC 데이터 렌더링 유지) ...
                 if(data.fomc_indicators) {
                     const fomcLabels = data.fomc_indicators.map(i => i.word);
                     if (sentimentChart) sentimentChart.destroy();
@@ -793,9 +886,7 @@
 
         window.onload = () => { 
             try { fetch('./market_charts.json?v=' + Date.now()).then(r => r.json()).then(data => { allChartData = data; }); } catch(e) {}
-            updateTerminalData(); updateCalendar(); loadTrendData(); syncMarketPrices(); 
-            renderExplorer(); 
-            renderNewsFavorites(); // 뉴스 탭 하트 리스트 초기화
+            updateTerminalData(); updateCalendar(); loadTrendData(); syncMarketPrices(); renderHomeExplorer();
             setInterval(syncMarketPrices, 5000); setInterval(updateTerminalData, 30000);
             if ("Notification" in window) Notification.requestPermission();
         };
