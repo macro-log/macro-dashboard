@@ -526,31 +526,13 @@
             }
         }
 
+        // ★ [핵심 1] 오류를 유발하던 야후 파이낸스 직접 호출 부분을 삭제하고 바이낸스(비트코인)만 남겼습니다 ★
         async function syncMarketPrices() {
             try {
                 const btcRes = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT');
                 const btcData = await btcRes.json();
                 updateCardUI('BTC', btcData.lastPrice, btcData.priceChangePercent);
                 document.getElementById('current-btc').innerText = `BTC: $${parseFloat(btcData.lastPrice).toLocaleString()}`;
-
-                const symbols = [
-                    { id: 'SPY', ticker: '^GSPC' }, { id: 'QQQ', ticker: '^NDX' }, { id: 'DIA', ticker: '^DJI' },
-                    { id: 'US10Y', ticker: '^TNX' }, { id: 'US02Y', ticker: '^FVX' }, { id: 'OIL', ticker: 'CL=F' },   
-                    { id: 'GOLD', ticker: 'GC=F' }, { id: 'KOSPI', ticker: '^KS11' }, { id: 'USDKRW', ticker: 'KRW=X' } 
-                ];
-
-                symbols.forEach(async (s) => {
-                    try {
-                        const url = encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${s.ticker}`);
-                        const res = await fetch(`https://api.codetabs.com/v1/proxy/?quest=${url}`);
-                        const yfData = await res.json(); 
-                        const meta = yfData.chart.result[0].meta;
-                        const price = meta.regularMarketPrice;
-                        const prevClose = meta.chartPreviousClose;
-                        const change = ((price - prevClose) / prevClose) * 100;
-                        updateCardUI(s.id, price, change);
-                    } catch (err) { }
-                });
             } catch (e) { }
         }
 
@@ -737,7 +719,7 @@
                     
                     const cx = width / 2;
                     const cy = height;
-                    const r = width / 2; // 바깥쪽 궤적 기준
+                    const r = width / 2;
 
                     const dataRatio = score / 100;
                     const angle = Math.PI + (Math.PI * dataRatio);
@@ -745,18 +727,17 @@
                     ctx.translate(cx, cy);
                     ctx.rotate(angle);
                     
-                    // 보내주신 사진처럼 바깥에서 안쪽을 가리키는 비어있는 세모(투명+테두리) 모양
                     ctx.beginPath();
-                    ctx.moveTo(r + 2, 0);     // 뾰족한 끝 (게이지 트랙 바로 바깥쪽)
-                    ctx.lineTo(r + 16, 7);    // 세모 바닥 부분 (바깥쪽으로 뻗음)
+                    ctx.moveTo(r + 2, 0);    
+                    ctx.lineTo(r + 16, 7);   
                     ctx.lineTo(r + 16, -7);
                     ctx.closePath();
                     
-                    ctx.fillStyle = '#0a0f1e'; // 배경색과 동일하게 채워서 안이 비어보이게
+                    ctx.fillStyle = '#0a0f1e'; 
                     ctx.fill();
                     
                     ctx.lineWidth = 2.5;
-                    ctx.strokeStyle = color; // 온도 색상에 맞춘 테두리
+                    ctx.strokeStyle = color; 
                     ctx.shadowColor = color; 
                     ctx.shadowBlur = 10;
                     ctx.stroke();
@@ -790,7 +771,6 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    // 세모가 글씨나 캔버스 밖으로 잘리지 않도록 상단/좌우 여백을 충분히 줍니다.
                     layout: { padding: { top: 20, bottom: 20, left: 25, right: 25 } },
                     plugins: {
                         legend: { display: false },
@@ -807,6 +787,7 @@
             });
         }
 
+        // ★ [핵심 2] 파이썬이 만든 indicators.json을 안전하게 읽어와 카드를 채우도록 변경했습니다 ★
         async function updateTerminalData() {
             try {
                 const response = await fetch('./indicators.json?v=' + Date.now());
@@ -814,6 +795,22 @@
                 
                 if(data.last_updated) document.getElementById('sync-time').innerText = data.last_updated;
                 
+                // --- 새롭게 추가된 부분: indicators.json의 데이터를 카드로 보냅니다 ---
+                if (data.stock_financials) {
+                    const sf = data.stock_financials;
+                    const mapping = {
+                        'SPY': 'SPY', 'QQQ': 'QQQ', 'DIA': 'DIA',
+                        '^TNX': 'US10Y', '^FVX': 'US02Y', 'CL=F': 'OIL', 'GC=F': 'GOLD',
+                        '^KS11': 'KOSPI', 'KRW=X': 'USDKRW'
+                    };
+                    for (const [jsonKey, cardId] of Object.entries(mapping)) {
+                        if (sf[jsonKey]) {
+                            updateCardUI(cardId, sf[jsonKey].price, sf[jsonKey].change);
+                        }
+                    }
+                }
+                // ----------------------------------------------------------------
+
                 if(data.ai_summary && Array.isArray(data.ai_summary)) {
                     document.getElementById('home-ai-summary').innerHTML = data.ai_summary.map(s => `<li class="mb-1">• ${s}</li>`).join('');
                 }
