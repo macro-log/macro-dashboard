@@ -1,9 +1,164 @@
 {
-    "last_updated": "2026-03-16 21:02:35",
+    "last_updated": "2026-03-16 21:31:05",
     "master_score": 36,
-    "score_delta": "+1",
+    "score_delta": "유지",
     "market_temp": "-2.5",
-    "ai_summary": "분석 중...",
+    "stock_financials": {
+        "BTC-USD": {
+            "price": 73812.31,
+            "change": 1.4,
+            "name": "Bitcoin USD",
+            "marketCap": 1476449665024,
+            "per": "N/A",
+            "dividend": "N/A",
+            "summary": "정보 없음..."
+        },
+        "SPY": {
+            "price": 662.29,
+            "change": -0.57,
+            "name": "State Street SPDR S&P 500 ETF T",
+            "marketCap": 607837814784,
+            "per": "N/A",
+            "dividend": 106.0,
+            "summary": "The trust seeks to achieve its investment objective by holding a portfolio of the common stocks that are included in the index (the “Portfolio”), with..."
+        },
+        "QQQ": {
+            "price": 593.72,
+            "change": -0.59,
+            "name": "Invesco QQQ Trust, Series 1",
+            "marketCap": 233391325184,
+            "per": "N/A",
+            "dividend": 46.0,
+            "summary": "To maintain the correspondence between the composition and weights of the securities in the trust (the \"securities\") and the stocks in the NASDAQ-100 ..."
+        },
+        "DIA": {
+            "price": 466.41,
+            "change": -0.23,
+            "name": "State Street SPDR Dow Jones Ind",
+            "marketCap": 37892497408,
+            "per": "N/A",
+            "dividend": 140.0,
+            "summary": "The Trust’s Portfolio consists of substantially all of the component common stocks that comprise the DJIA, which are weighted in accordance with the t..."
+        },
+        "^VIX": {
+            "price": 24.92,
+            "change": -8.35,
+            "name": "CBOE Volatility Index",
+            "marketCap": "N/A",
+            "per": "N/A",
+            "dividend": "N/A",
+            "summary": "정보 없음..."
+        },
+        "GC=F": {
+            "price": 5020.3,
+            "change": -0.64,
+            "name": "Gold Apr 26",
+            "marketCap": "N/A",
+            "per": "N/A",
+            "dividend": "N/A",
+            "summary": "정보 없음..."
+        },
+        "HYG": {
+            "price": 79.2,
+            "change": -0.19,
+            "name": "iShares iBoxx $ High Yield Corp",
+            "marketCap": 15491519488,
+            "per": 1320.0,
+            "dividend": 577.0,
+            "summary": "The underlying index is a rules-based index consisting of U.S. dollar-denominated, high yield corporate bonds for sale in the U.S. The fund will inves..."
+        },
+        "XLY": {
+            "price": 110.86,
+            "change": -0.59,
+            "name": "State Street Consumer Discretio",
+            "marketCap": 13331248128,
+            "per": "N/A",
+            "dividend": 81.0,
+            "summary": "The Advisor employs a replication strategy. The fund generally invests substantially all, but at least 95%, of its total assets in the securities comp..."
+        },
+        "XLP": {
+            "price": 84.74,
+            "change": 0.58,
+            "name": "State Street Consumer Staples S",
+            "marketCap": 17809975296,
+            "per": "N/A",
+            "dividend": 238.0,
+            "summary": "In seeking to track the performance of the index, the fund employs a replication strategy. It generally invests substantially all, but at least 95%, o..."
+        },
+        "^TNX": {
+            "price": 4.28,
+            "change": 0.16,
+            "name": "CBOE Interest Rate 10 Year T No",
+            "marketCap": "N/A",
+            "per": "N/A",
+            "dividend": "N/A",
+            "summary": "정보 없음..."
+        },
+        "^TYX": {
+            "price": 4.91,
+            "change": 0.51,
+            "name": "Treasury Yield 30 Years",
+            "marketCap": "N/A",
+            "per": "N/A",
+            "dividend": "N/A",
+            "summary": "정보 없음..."
+        },
+        "AAPL": {
+            "price": 250.12,
+            "change": -2.21,
+            "name": "Apple Inc.",
+            "marketCap": 3676245065728,
+            "per": 26.906572,
+            "dividend": 42.0,
+            "summary": "Apple Inc. designs, manufactures, and markets smartphones, personal computers, tablets, wearables, and accessories worldwide. The company offers iPhon..."
+        },
+        "TSLA": {
+            "price": 391.2,
+            "change": -0.96,
+            "name": "Tesla, Inc.",
+            "marketCap": 1467951349760,
+            "per": 139.19579,
+            "dividend": "N/A",
+            "summary": "Tesla, Inc. designs, develops, manufactures, leases, and sells electric vehicles, and energy generation and storage systems in the United States, Chin..."
+        },
+        "NVDA": {
+            "price": 180.25,
+            "change": -1.58,
+            "name": "NVIDIA Corporation",
+            "marketCap": 4380976218112,
+            "per": 16.695673,
+            "dividend": 2.0,
+            "summary": "NVIDIA Corporation operates as a data center scale AI infrastructure company. The company operates through two segments, Compute & Networking, and Gra..."
+        },
+        "MSFT": {
+            "price": 395.55,
+            "change": -1.57,
+            "name": "Microsoft Corporation",
+            "marketCap": 2939877064704,
+            "per": 20.990755,
+            "dividend": 92.0,
+            "summary": "Microsoft Corporation develops and supports software, services, devices, and solutions worldwide. The Productivity and Business Processes segment offe..."
+        },
+        "GOOGL": {
+            "price": 302.28,
+            "change": -0.42,
+            "name": "Alphabet Inc.",
+            "marketCap": 3656681259008,
+            "per": 22.539068,
+            "dividend": 28.0,
+            "summary": "Alphabet Inc. offers various products and platforms in the United States, Europe, the Middle East, Africa, the Asia-Pacific, Canada, and Latin America..."
+        },
+        "AMZN": {
+            "price": 207.67,
+            "change": -0.89,
+            "name": "Amazon.com, Inc.",
+            "marketCap": 2229321072640,
+            "per": 22.230072,
+            "dividend": "N/A",
+            "summary": "Amazon.com, Inc. engages in the retail sale of consumer products, advertising, and subscriptions service through online and physical stores in North A..."
+        }
+    },
+    "ai_summary": "데이터 분석 중...",
     "period_interpretation": {},
     "fomc_indicators": [
         {
