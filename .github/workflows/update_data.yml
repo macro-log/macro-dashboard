@@ -58,7 +58,7 @@ jobs:
           current_vix = round(raw['^VIX']['Close'].iloc[-1], 2) if '^VIX' in raw else 20.0
           market_stats = f"VIX: {current_vix}, S&P500: {get_chg('SPY')}%, Nasdaq: {get_chg('QQQ')}%, BTC: {get_chg('BTC-USD')}%"
 
-          # [엔진] 9대 지표 실시간 스코어 계산 (사용자 로직 보존)
+          # [엔진] 9대 지표 실시간 스코어 계산 (사용자 오리지널 로직 보존)
           def calculate_master_score():
               try:
                   def get_s(val, mid, span): return max(0, min(100, (val - (mid - span)) * (100 / (2 * span))))
@@ -76,7 +76,10 @@ jobs:
                   
                   def get_mfi(t):
                       if t not in raw: return 1.0
-                      return (raw[t]['Close'].iloc[-1] * raw[t]['Volume'].iloc[-1]) / ((raw[t]['Close'] * raw[t]['Volume']).rolling(20).mean().iloc[-1] + 1e-9)
+                      vol = raw[t]['Volume'].iloc[-1]
+                      if vol == 0: return 1.0
+                      return (raw[t]['Close'].iloc[-1] * vol) / ((raw[t]['Close'] * raw[t]['Volume']).rolling(20).mean().iloc[-1] + 1e-9)
+                  
                   s8 = get_s(get_mfi('QQQ') / get_mfi('DIA'), 1, 0.5) * 0.04
                   s9 = 2.0
                   if '^TYX' in raw and '^TNX' in raw:
@@ -103,7 +106,7 @@ jobs:
               return list(set(headlines))
           all_headlines = fetch_premium_news()
 
-          # 5. 제미나이 AI 분석
+          # 5. 제미나이 AI 분석 (형식 보존)
           dynamic_news, ai_briefing = {}, ["분석 중..."]
           try:
               model = genai.GenerativeModel('gemini-1.5-flash')
@@ -122,7 +125,7 @@ jobs:
                   "ai_summary": ai_briefing, "fomc_indicators": fomc_data, "dynamic_news": dynamic_news
               }, f, ensure_ascii=False, indent=4)
 
-          # 7. 차트 엔진 (★NaN 에러 방지★)
+          # 7. 차트 엔진 (★NaN 에러 방지 - Last Valid Data 사용★)
           chart_tickers = {'BTC': 'BTC-USD', 'SPY': 'SPY', 'QQQ': 'QQQ', 'DIA': 'DIA', 'US10Y': '^TNX', 'US02Y': '^FVX', 'OIL': 'CL=F', 'GOLD': 'GC=F', 'KOSPI': '^KS11', 'USDKRW': 'KRW=X'}
           chart_data = {}
           for name, tkr in chart_tickers.items():
@@ -130,7 +133,7 @@ jobs:
                   tk = yf.Ticker(tkr)
                   def sync_data(df, label_fmt):
                       if df.empty: return {"labels": [], "prices": []}
-                      # ffill()로 NaN을 직전 데이터로 채워 에러 방지
+                      # ffill()로 NaN을 직전 데이터로 채워 에러 방지 후 남은 공백은 0 처리
                       df_filled = df['Close'].ffill().fillna(0)
                       return {"labels": df_filled.index.strftime(label_fmt).tolist(), "prices": [round(float(x), 2) for x in df_filled.tolist()]}
                   
@@ -153,5 +156,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "🚀 Clean conflict markers and fix NaN errors" || echo "No changes"
+          git commit -m "🚀 Fix NaN errors and sync data to root" || echo "No changes"
           git push
