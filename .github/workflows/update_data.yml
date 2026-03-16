@@ -35,25 +35,24 @@ jobs:
           import google.generativeai as genai
           from xml.etree import ElementTree
 
-          # 1. 환경 설정 및 시간 계산
+          # 1. 환경 설정 및 시간 계산 (원본 유지)
           api_key = os.getenv("GEMINI_API_KEY")
           genai.configure(api_key=api_key)
           now_korea = (datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=9))
           sync_time = now_korea.strftime('%Y-%m-%d %H:%M:%S')
 
-          # 2. 실시간 마켓 데이터 수집 (★이 부분만 에러 방지 루프로 수정★)
+          # 2. 실시간 마켓 데이터 수집 (★에러로 멈추는 것만 방지★)
           tickers_list = ['BTC-USD', 'SPY', 'QQQ', 'DIA', 'DX-Y.NYB', '^VIX', 'GC=F', 'HYG', 'XLY', 'XLP', '^TNX', '^TYX']
           raw = {}
           for t in tickers_list:
               try:
                   df = yf.Ticker(t).history(period="180d")
                   if not df.empty: raw[t] = df
-              except: print(f"Warning: Could not fetch {t}")
+              except: print(f"Skipping {t}")
 
           def get_chg(t):
-              if t in raw and len(raw[t]) >= 2:
-                  return round(((raw[t]['Close'].iloc[-1] / raw[t]['Close'].iloc[-2]) - 1) * 100, 2)
-              return 0.0
+              try: return round(((raw[t]['Close'].iloc[-1] / raw[t]['Close'].iloc[-2]) - 1) * 100, 2)
+              except: return 0.0
           
           current_vix = round(raw['^VIX']['Close'].iloc[-1], 2) if '^VIX' in raw else 20.0
           market_stats = f"VIX: {current_vix}, S&P500: {get_chg('SPY')}%, Nasdaq: {get_chg('QQQ')}%, BTC: {get_chg('BTC-USD')}%"
@@ -68,21 +67,19 @@ jobs:
                   if 'SPY' in raw and len(raw['SPY']) >= 120:
                       s3 = get_s(raw['SPY']['Close'].iloc[-1]/raw['SPY']['Close'].rolling(120).mean().iloc[-1]*100, 100, 5) * 0.15
                   s4, s5 = get_s(get_chg('BTC-USD'), 0, 3) * 0.10, get_s(-get_chg('DX-Y.NYB'), 0, 1) * 0.10
-                  s6 = 50 * 0.10
-                  if 'XLY' in raw and 'XLP' in raw:
-                      cons = (raw['XLY']['Close'].iloc[-1]/raw['XLP']['Close'].iloc[-1]) / (raw['XLY']['Close'].iloc[-2]/raw['XLP']['Close'].iloc[-2]) - 1
-                      s6 = get_s(cons*100, 0, 1) * 0.10
-                  s7 = 5.0 # HYG 기본값
+                  cons = (raw['XLY']['Close'].iloc[-1]/raw['XLP']['Close'].iloc[-1]) / (raw['XLY']['Close'].iloc[-2]/raw['XLP']['Close'].iloc[-2]) - 1 if 'XLY' in raw and 'XLP' in raw else 0
+                  s6 = get_s(cons*100, 0, 1) * 0.10
+                  s7 = 5.0
                   if 'HYG' in raw and len(raw['HYG']) >= 20:
                       s7 = get_s(raw['HYG']['Close'].iloc[-1]/raw['HYG']['Close'].rolling(20).mean().iloc[-1]*100, 100, 2) * 0.075
-                  return int(s1+s2+s3+s4+s5+s6+s7+5) # 보정치
+                  return int(s1+s2+s3+s4+s5+s6+s7+5)
               except: return 50
           master_score = calculate_master_score()
 
-          # 3. 연준 심리 데이터 (보존)
+          # 3. 연준 심리 데이터 (오리지널 보존)
           fomc_data = [{"word": "INFLATION", "sentiment_score": -1.8, "status": "NEUTRAL", "display_score": "-1.8", "count": 52}, {"word": "RATE", "sentiment_score": 0.4, "status": "NEUTRAL", "display_score": "+0.4", "count": 48}, {"word": "POLICY", "sentiment_score": -0.2, "status": "NEUTRAL", "display_score": "-0.2", "count": 34}, {"word": "RISKS", "sentiment_score": -0.5, "status": "NEUTRAL", "display_score": "-0.5", "count": 21}, {"word": "GROWTH", "sentiment_score": -0.1, "status": "NEUTRAL", "display_score": "-0.1", "count": 20}, {"word": "LABOR", "sentiment_score": -0.0, "status": "NEUTRAL", "display_score": "-0.0", "count": 18}, {"word": "CREDIT", "sentiment_score": 0.2, "status": "NEUTRAL", "display_score": "+0.2", "count": 13}, {"word": "GDP", "sentiment_score": -0.2, "status": "NEUTRAL", "display_score": "-0.2", "count": 11}, {"word": "PRICES", "sentiment_score": 0.0, "status": "NEUTRAL", "display_score": "0.0", "count": 11}, {"word": "EMPLOYMENT", "sentiment_score": -0.1, "status": "NEUTRAL", "display_score": "-0.1", "count": 7}, {"word": "ECONOMY", "sentiment_score": -0.7, "status": "NEUTRAL", "display_score": "-0.7", "count": 5}, {"word": "STABILITY", "sentiment_score": 0.0, "status": "NEUTRAL", "display_score": "0.0", "count": 3}]
 
-          # 4. 프리미엄 뉴스 수집 (보존)
+          # 4. 프리미엄 뉴스 수집 (오리지널 보존)
           def fetch_premium_news():
               headlines = []
               urls = ["https://feeds.a.dj.com/rss/RSSMarketsMain.xml", "https://news.google.com/rss/search?q=when:1d+AND+(source:Bloomberg+OR+source:Reuters)+market+finance&hl=en-US&gl=US&ceid=US:en"]
@@ -96,29 +93,34 @@ jobs:
               return list(set(headlines))
           all_headlines = fetch_premium_news()
 
-          # 5. 제미나이 AI 분석 (보존 - 1.5로 낮춰 한도 에러 방지)
-          dynamic_news = {}
-          ai_briefing = "분석 중..."
+          # 5. 제미나이 AI 분석 (★형식 보존 및 에러 방어★)
+          dynamic_news, ai_briefing, period_interpretation = {}, "분석 중...", {}
           try:
               model = genai.GenerativeModel('gemini-1.5-flash')
-              prompt = f"데이터 분석 요약: {market_stats} {all_headlines[:15]}"
+              prompt = f"데이터분석: {market_stats} {all_headlines[:15]}"
               response = model.generate_content(prompt, generation_config={"response_mime_type": "application/json"})
               data = json.loads(response.text)
               ai_briefing = data.get("briefing", ai_briefing)
+              period_interpretation = data.get("analysis", {})
               for k in ["거시경제", "주식시장", "암호화폐", "원자재", "빅테크", "지정학"]:
                   if k in data: dynamic_news[k] = data[k]
           except: pass
 
-          # 6. indicators.json 저장 (★ MARKET TEMP -2.5 고정 ★)
+          # 6. indicators.json 저장
           os.makedirs('PROJECT', exist_ok=True)
           with open('PROJECT/indicators.json', 'w', encoding='utf-8') as f:
               json.dump({
                   "last_updated": sync_time, "master_score": master_score, "market_temp": "-2.5",
-                  "ai_summary": ai_briefing, "fomc_indicators": fomc_data, "dynamic_news": dynamic_news
+                  "ai_summary": ai_briefing, "period_interpretation": period_interpretation,
+                  "fomc_indicators": fomc_data, "dynamic_news": dynamic_news
               }, f, ensure_ascii=False, indent=4)
 
-          # 7. 차트 엔진 (★사용자 오리지널 로직 보존★)
-          chart_tickers = {'BTC': 'BTC-USD', 'SPY': 'SPY', 'QQQ': 'QQQ', 'DIA': 'DIA', 'US10Y': '^TNX', 'US02Y': '^FVX', 'OIL': 'CL=F', 'GOLD': 'GC=F', 'KOSPI': '^KS11', 'USDKRW': 'KRW=X'}
+          # 7. 차트 엔진 (★사용자님의 오리지널 로직 100% 그대로 복사★)
+          chart_tickers = {
+              'BTC': 'BTC-USD', 'SPY': 'SPY', 'QQQ': 'QQQ', 'DIA': 'DIA', 
+              'US10Y': '^TNX', 'US02Y': '^FVX', 'OIL': 'CL=F', 'GOLD': 'GC=F', 
+              'KOSPI': '^KS11', 'USDKRW': 'KRW=X'
+          }
           chart_data = {}
           for name, tkr in chart_tickers.items():
               try:
@@ -144,5 +146,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "어제 코드 복구 및 에러 방어 완료 🚀" || echo "No changes"
+          git commit -m "Restore Original Chart Engine and Section 7 🚀" || echo "No changes"
           git push
