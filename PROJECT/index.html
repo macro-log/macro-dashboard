@@ -445,30 +445,99 @@
 
         function removeAlert(id) { alertList = alertList.filter(a => a.id !== id); renderAlertList(); }
 
+        // ★ [핵심 1] 오류 수정: TSLA 등 이미 수집된 데이터는 오류 없이 화면에 바로 그리도록 예외처리를 강화했습니다 ★
         async function fetchTickerDetail() {
             const ticker = document.getElementById('watchlist-search-input').value.toUpperCase().trim();
             if(!ticker) return alert("분석할 종목 코드를 입력하세요!");
+            
             document.getElementById('watchlist-landing').classList.add('hidden');
             document.getElementById('ticker-detail-view').classList.remove('hidden');
             document.getElementById('detail-ticker-name').innerText = ticker;
             updateHeartUI(ticker);
+            
+            let isSuccessFromJSON = false;
+
+            // 1단계: 우리가 안전하게 모아둔 indicators.json 먼저 뒤져보기 (에러 나도 죽지 않게 try-catch로 단단히 감쌈)
+            try {
+                const resJSON = await fetch('./indicators.json?v=' + Date.now());
+                const data = await resJSON.json();
+                
+                if (data.stock_financials && data.stock_financials[ticker]) {
+                    const info = data.stock_financials[ticker];
+                    
+                    if (info.price && info.price !== "N/A") {
+                        let mktCap = info.marketCap;
+                        if (typeof mktCap === 'number') {
+                            if (mktCap >= 1e12) mktCap = '$' + (mktCap / 1e12).toFixed(2) + 'T';
+                            else if (mktCap >= 1e9) mktCap = '$' + (mktCap / 1e9).toFixed(2) + 'B';
+                            else mktCap = mktCap.toLocaleString();
+                        }
+                        
+                        let pe = typeof info.per === 'number' ? info.per.toFixed(2) : info.per;
+                        let eps = typeof info.eps === 'number' ? info.eps.toFixed(2) : info.eps;
+
+                        document.getElementById('stat-mktcap').innerText = mktCap !== "N/A" ? mktCap : '--';
+                        document.getElementById('stat-pe').innerText = pe !== "N/A" ? pe : '--';
+                        document.getElementById('stat-eps').innerText = eps !== "N/A" ? eps : '--';
+                        document.getElementById('stat-yield').innerText = info.dividend !== "N/A" ? info.dividend + '%' : '0.00%';
+                        
+                        if (info.target !== "N/A" && typeof info.target === 'number' && typeof info.price === 'number') {
+                            document.getElementById('stat-target-price').innerText = `$${info.target}`;
+                            const upside = (((info.target - info.price) / info.price) * 100).toFixed(2);
+                            document.getElementById('stat-upside').innerText = `${upside > 0 ? '+' : ''}${upside}%`;
+                            document.getElementById('stat-consensus').innerText = upside > 10 ? 'CONSENSUS: BUY' : 'CONSENSUS: HOLD';
+                        } else {
+                            document.getElementById('stat-target-price').innerText = '--';
+                            document.getElementById('stat-upside').innerText = '--';
+                            document.getElementById('stat-consensus').innerText = 'CONSENSUS: UNKNOWN';
+                        }
+
+                        // 야후를 직접 찌르지 않아 얻을 수 없는 세부 정보들은 빈칸으로 예쁘게 둡니다
+                        document.getElementById('stat-earnings-date').innerText = 'N/A';
+                        document.getElementById('stat-eps-est').innerText = '--';
+                        document.getElementById('stat-short-pct').innerText = '--';
+                        document.getElementById('stat-short-bar').style.width = '0%';
+                        document.getElementById('stat-short-ratio').innerText = '--';
+                        document.getElementById('stat-short-shares').innerText = '--';
+                        
+                        isSuccessFromJSON = true;
+                    }
+                }
+            } catch (err) {
+                console.log("JSON 데이터 읽기 중 무시해도 되는 에러 발생:", err);
+            }
+
+            // indicators.json에서 성공적으로 화면에 그렸다면 여기서 함수를 즉시 종료합니다. (야후 차단 완벽 회피)
+            if (isSuccessFromJSON) return;
+
+            // 2단계: 만약 JSON에 없는 생전 처음 보는 종목을 검색했다면, 그때만 야후를 조심스럽게 우회해서 찔러봅니다.
             try {
                 const modules = 'defaultKeyStatistics,assetProfile,financialData,calendarEvents';
-                const url = `https://query1.finance.yahoo.com/v10/finance/quoteSummary/${ticker}?modules=${modules}`;
-                const res = await fetch(`https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(url)}`);
-                const data = await res.json();
-                if(!data.quoteSummary || !data.quoteSummary.result) throw new Error("No Data");
-                const result = data.quoteSummary.result[0];
+                const targetUrl = `https://query1.finance.yahoo.com/v10/finance/quoteSummary/${ticker}?modules=${modules}`;
+                
+                let res = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`).catch(() => null);
+                if(!res || !res.ok) {
+                    res = await fetch(`https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(targetUrl)}`).catch(() => null);
+                }
+                if(!res || !res.ok) throw new Error("우회 서버 모두 차단됨");
+
+                const yfData = await res.json();
+                if(!yfData.quoteSummary || !yfData.quoteSummary.result) throw new Error("데이터 없음");
+                
+                const result = yfData.quoteSummary.result[0];
                 const stats = result.defaultKeyStatistics || {};
                 const financial = result.financialData || {};
                 const calendar = result.calendarEvents || {};
+                
                 document.getElementById('stat-mktcap').innerText = stats.enterpriseValue ? (stats.enterpriseValue.fmt || '--') : '--';
                 document.getElementById('stat-pe').innerText = stats.forwardPE ? stats.forwardPE.fmt : '--';
                 document.getElementById('stat-eps').innerText = stats.forwardEps ? stats.forwardEps.fmt : '--';
                 document.getElementById('stat-yield').innerText = stats.dividendYield ? stats.dividendYield.fmt : '0.00%';
+                
                 const earningsDate = calendar.earnings && calendar.earnings.earningsDate ? calendar.earnings.earningsDate[0].fmt : 'TBD';
                 document.getElementById('stat-earnings-date').innerText = earningsDate;
                 document.getElementById('stat-eps-est').innerText = (result.calendarEvents && result.calendarEvents.earnings && result.calendarEvents.earnings.earningsAverage) ? result.calendarEvents.earnings.earningsAverage.fmt : '--';
+                
                 const targetPrice = financial.targetMeanPrice ? financial.targetMeanPrice.fmt : '--';
                 const currentPrice = financial.currentPrice ? financial.currentPrice.raw : 0;
                 const meanTarget = financial.targetMeanPrice ? financial.targetMeanPrice.raw : 0;
@@ -478,14 +547,16 @@
                     document.getElementById('stat-upside').innerText = `${upside > 0 ? '+' : ''}${upside}%`;
                 }
                 document.getElementById('stat-consensus').innerText = `CONSENSUS: ${financial.recommendationKey ? financial.recommendationKey.toUpperCase() : 'UNKNOWN'}`;
+                
                 const shortPct = stats.shortPercentOfFloat ? (stats.shortPercentOfFloat.raw * 100).toFixed(2) : '0';
                 document.getElementById('stat-short-pct').innerText = `${shortPct}%`;
                 document.getElementById('stat-short-bar').style.width = `${Math.min(shortPct, 100)}%`;
                 document.getElementById('stat-short-ratio').innerText = stats.shortRatio ? stats.shortRatio.fmt : '--';
                 document.getElementById('stat-short-shares').innerText = stats.sharesShort ? stats.sharesShort.fmt : '--';
+
             } catch (err) {
                 console.error(err);
-                alert("종목 정보를 가져오는 데 실패했습니다. 티커를 확인해 주세요.");
+                alert("해당 종목을 찾지 못했거나, 야후 서버에서 외부 접근을 일시적으로 차단했습니다.");
                 document.getElementById('watchlist-landing').classList.remove('hidden');
                 document.getElementById('ticker-detail-view').classList.add('hidden');
             }
@@ -526,14 +597,43 @@
             }
         }
 
-        // ★ [핵심 1] 오류를 유발하던 야후 파이낸스 직접 호출 부분을 삭제하고 바이낸스(비트코인)만 남겼습니다 ★
+        // ★ [핵심 2] 자동 실시간 업데이트 기능 부활: 30초 간격으로 우회로를 통해 야후 데이터를 몰래 가져옵니다 ★
         async function syncMarketPrices() {
+            // 비트코인은 바이낸스에서 실시간으로 가져옵니다 (차단 안 당함)
             try {
                 const btcRes = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT');
                 const btcData = await btcRes.json();
                 updateCardUI('BTC', btcData.lastPrice, btcData.priceChangePercent);
                 document.getElementById('current-btc').innerText = `BTC: $${parseFloat(btcData.lastPrice).toLocaleString()}`;
             } catch (e) { }
+
+            // 나머지 S&P 500 등은 무료 프록시 2개를 돌려가며 데이터를 가져옵니다.
+            const symbols = [
+                { id: 'SPY', ticker: 'SPY' }, { id: 'QQQ', ticker: 'QQQ' }, { id: 'DIA', ticker: 'DIA' },
+                { id: 'US10Y', ticker: '^TNX' }, { id: 'US02Y', ticker: '^FVX' }, { id: 'OIL', ticker: 'CL=F' },
+                { id: 'GOLD', ticker: 'GC=F' }, { id: 'KOSPI', ticker: '^KS11' }, { id: 'USDKRW', ticker: 'KRW=X' }
+            ];
+
+            symbols.forEach(async (s) => {
+                try {
+                    const url = encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${s.ticker}?interval=1m&range=1d`);
+                    // 프록시 1번 시도
+                    let res = await fetch(`https://api.allorigins.win/raw?url=${url}`).catch(() => null);
+                    // 실패하면 프록시 2번 시도
+                    if (!res || !res.ok) {
+                        res = await fetch(`https://api.codetabs.com/v1/proxy/?quest=${url}`).catch(() => null);
+                    }
+                    
+                    if (res && res.ok) {
+                        const yfData = await res.json();
+                        const meta = yfData.chart.result[0].meta;
+                        const price = meta.regularMarketPrice;
+                        const prevClose = meta.chartPreviousClose;
+                        const change = ((price - prevClose) / prevClose) * 100;
+                        updateCardUI(s.id, price, change); // 카드 숫자 업데이트!
+                    }
+                } catch (err) { }
+            });
         }
 
         function updateCardUI(id, price, change) {
@@ -787,7 +887,6 @@
             });
         }
 
-        // ★ [핵심 2] 파이썬이 만든 indicators.json을 안전하게 읽어와 카드를 채우도록 변경했습니다 ★
         async function updateTerminalData() {
             try {
                 const response = await fetch('./indicators.json?v=' + Date.now());
@@ -795,7 +894,7 @@
                 
                 if(data.last_updated) document.getElementById('sync-time').innerText = data.last_updated;
                 
-                // --- 새롭게 추가된 부분: indicators.json의 데이터를 카드로 보냅니다 ---
+                // 만약 방금 30초 갱신이 실패했어도, 안전한 json 데이터로 기본값을 채워줍니다
                 if (data.stock_financials) {
                     const sf = data.stock_financials;
                     const mapping = {
@@ -804,12 +903,11 @@
                         '^KS11': 'KOSPI', 'KRW=X': 'USDKRW'
                     };
                     for (const [jsonKey, cardId] of Object.entries(mapping)) {
-                        if (sf[jsonKey]) {
+                        if (sf[jsonKey] && document.getElementById(`val-${cardId}`).innerText === '--') {
                             updateCardUI(cardId, sf[jsonKey].price, sf[jsonKey].change);
                         }
                     }
                 }
-                // ----------------------------------------------------------------
 
                 if(data.ai_summary && Array.isArray(data.ai_summary)) {
                     document.getElementById('home-ai-summary').innerHTML = data.ai_summary.map(s => `<li class="mb-1">• ${s}</li>`).join('');
@@ -941,7 +1039,13 @@
         window.onload = () => { 
             fetch('./market_charts.json?v=' + Date.now()).then(r => r.json()).then(data => { allChartData = data; }); 
             updateTerminalData(); updateCalendar(); loadTrendData(); syncMarketPrices(); renderHomeExplorer();
-            setInterval(syncMarketPrices, 5000); setInterval(updateTerminalData, 30000);
+            
+            // ★ 중요: 야후 차단을 막기 위해 5초가 아닌 '30초' 간격으로 실시간 가격을 몰래 가져옵니다!
+            setInterval(syncMarketPrices, 30000); 
+            
+            // indicators.json 파일은 1분마다 새로 읽습니다.
+            setInterval(updateTerminalData, 60000); 
+            
             if ("Notification" in window) Notification.requestPermission();
         };
     </script>
