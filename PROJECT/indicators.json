@@ -1,7 +1,7 @@
 {
-    "last_updated": "2026-03-16 23:03:14",
-    "master_score": 47,
-    "score_delta": "+4",
+    "last_updated": "2026-03-16 23:16:59",
+    "master_score": 50,
+    "score_delta": "+3",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
@@ -234,6 +234,17 @@
             "dividend": "N/A",
             "target": 280.5484,
             "summary": "Amazon.com, Inc. engages in the retail sale of consumer products, advertising, and subscriptions service through online and physical stores in North A..."
+        },
+        "DX-Y.NYB": {
+            "price": 0.0,
+            "change": 0.0,
+            "name": "DX-Y.NYB",
+            "marketCap": "N/A",
+            "per": "N/A",
+            "eps": "N/A",
+            "dividend": "N/A",
+            "target": "N/A",
+            "summary": "정보 수집 중..."
         }
     },
     "ai_summary": "데이터 분석 중...",
