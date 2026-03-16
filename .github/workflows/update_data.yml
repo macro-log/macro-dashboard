@@ -31,24 +31,17 @@ jobs:
           import warnings
           warnings.filterwarnings("ignore", category=FutureWarning)
           import yfinance as yf
-          import json, os, requests, re, datetime, urllib.request, math
+          import json, os, requests, re, datetime, urllib.request, time
           import google.generativeai as genai
           from xml.etree import ElementTree
 
-          # ★ 1. 야후 파이낸스 봇 차단 우회용 가짜 브라우저 세션 ★
-          session = requests.Session()
-          session.headers.update({
-              "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-              "Accept": "*/*",
-              "Accept-Encoding": "gzip, deflate, br",
-              "Connection": "keep-alive"
-          })
-
+          # 환경 설정
           api_key = os.getenv("GEMINI_API_KEY")
           genai.configure(api_key=api_key)
           now_korea = (datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=9))
           sync_time = now_korea.strftime('%Y-%m-%d %H:%M:%S')
 
+          # 1. 과거 데이터 불러오기 (기억 장치)
           old_indicators = {}
           old_charts = {}
           try:
@@ -60,45 +53,60 @@ jobs:
 
           tickers_list = ['BTC-USD', 'SPY', 'QQQ', 'DIA', 'DX-Y.NYB', '^VIX', 'GC=F', 'HYG', 'XLY', 'XLP', '^TNX', '^TYX', '^FVX', 'CL=F', '^KS11', 'KRW=X', 'AAPL', 'TSLA', 'NVDA', 'MSFT', 'GOOGL', 'AMZN']
           raw = {}
-          stock_financials = old_indicators.get("stock_financials", {})
+          stock_financials = {}
+          old_sf = old_indicators.get("stock_financials", {})
 
-          # 2. 마켓 데이터 수집 (세션 적용)
+          # 2. 마켓 데이터 수집 (★기억 유지 + 0.5초 딜레이 방어막 탑재★)
           for t in tickers_list:
-              if t not in stock_financials:
-                  stock_financials[t] = {"price": 0.0, "change": 0.0, "name": t, "marketCap": "N/A", "per": "N/A", "eps": "N/A", "dividend": "N/A", "target": "N/A", "summary": "정보 수집 중..."}
+              # [기억 복원] 야후가 막혀도 빈칸이 되지 않도록 이전 데이터를 1차로 깔아둡니다.
+              prev_data = old_sf.get(t, {})
+              stock_financials[t] = {
+                  "price": prev_data.get("price", 0.0),
+                  "change": prev_data.get("change", 0.0),
+                  "name": prev_data.get("name", t),
+                  "marketCap": prev_data.get("marketCap", "N/A"),
+                  "per": prev_data.get("per", "N/A"),
+                  "eps": prev_data.get("eps", "N/A"),
+                  "dividend": prev_data.get("dividend", "N/A"),
+                  "target": prev_data.get("target", "N/A"),
+                  "summary": prev_data.get("summary", "정보 수집 중...")
+              }
+
               try:
-                  # session 파라미터를 넣어 봇 차단을 우회합니다.
-                  tk = yf.Ticker(t, session=session)
-                  df = tk.history(period="1mo")
-                  
-                  current_p = stock_financials[t].get("price", 0.0)
-                  change_p = stock_financials[t].get("change", 0.0)
+                  tk = yf.Ticker(t)
+                  df = tk.history(period="180d") # 180일치로 넉넉하게!
                   
                   if not df.empty:
                       df = df.ffill().fillna(0)
                       raw[t] = df
+                      
+                      # 최신 가격으로 덮어쓰기
                       current_p = float(df['Close'].iloc[-1])
                       if len(df) >= 2:
                           prev_p = float(df['Close'].iloc[-2])
-                          if prev_p != 0 and not math.isnan(current_p):
-                              change_p = round(((current_p / prev_p) - 1) * 100, 2)
-                  
+                          change_p = round(((current_p / prev_p) - 1) * 100, 2) if prev_p != 0 else 0.0
+                      else:
+                          change_p = 0.0
+                      
+                      stock_financials[t]["price"] = round(current_p, 2)
+                      stock_financials[t]["change"] = change_p
+
+                  # 재무정보 수집 시도
                   try:
                       info = tk.info
-                      if info:
+                      if info and 'shortName' in info:
                           stock_financials[t].update({
-                              "price": round(current_p, 2),
-                              "change": change_p,
                               "name": info.get('shortName', t),
-                              "marketCap": info.get('marketCap', "N/A"),
-                              "per": info.get('forwardPE', info.get('trailingPE', "N/A")),
-                              "eps": info.get('forwardEps', info.get('trailingEps', "N/A")),
-                              "dividend": round(info.get('dividendYield', 0) * 100, 2) if info.get('dividendYield') else "N/A",
-                              "target": info.get('targetMeanPrice', "N/A"),
-                              "summary": str(info.get('longBusinessSummary', '정보 없음'))[:150] + "..."
+                              "marketCap": info.get('marketCap', stock_financials[t]["marketCap"]),
+                              "per": info.get('forwardPE', info.get('trailingPE', stock_financials[t]["per"])),
+                              "eps": info.get('forwardEps', info.get('trailingEps', stock_financials[t]["eps"])),
+                              "dividend": round(info.get('dividendYield', 0) * 100, 2) if info.get('dividendYield') else stock_financials[t]["dividend"],
+                              "target": info.get('targetMeanPrice', stock_financials[t]["target"]),
+                              "summary": str(info.get('longBusinessSummary', stock_financials[t]["summary"]))[:150] + "..."
                           })
                   except: pass
               except: pass
+              time.sleep(0.5) # ★ 차단 방지를 위해 0.5초 휴식
 
           def get_safe_chg(t):
               return stock_financials.get(t, {}).get("change", 0.0)
@@ -116,10 +124,8 @@ jobs:
                       gc_val = -((raw['GC=F']['Close'].iloc[-1]/raw['GC=F']['Close'].iloc[-2]-1)*100)
                   s2 = get_s(gc_val, 0, 2) * 0.15
                   s3 = 50 * 0.15
-                  if 'SPY' in raw:
-                      spy_df = yf.Ticker('SPY', session=session).history(period="180d")
-                      if len(spy_df) >= 120:
-                          s3 = get_s(spy_df['Close'].iloc[-1]/spy_df['Close'].rolling(120).mean().iloc[-1]*100, 100, 5) * 0.15
+                  if 'SPY' in raw and len(raw['SPY']) >= 120:
+                      s3 = get_s(raw['SPY']['Close'].iloc[-1]/raw['SPY']['Close'].rolling(120).mean().iloc[-1]*100, 100, 5) * 0.15
                   s4, s5 = get_s(get_safe_chg('BTC-USD'), 0, 3) * 0.10, get_s(-get_safe_chg('DX-Y.NYB'), 0, 1) * 0.10
                   cons = 0
                   if 'XLY' in raw and 'XLP' in raw:
@@ -183,20 +189,16 @@ jobs:
                   "dynamic_news": dynamic_news
               }, f, ensure_ascii=False, indent=4)
 
-          # 7. 차트 엔진 (세션 적용하여 데이터 증발 방지)
+          # 7. 차트 엔진 (★차트도 기억 유지! 실패 시 이전 차트 보존★)
           chart_tickers = {'BTC': 'BTC-USD', 'SPY': 'SPY', 'QQQ': 'QQQ', 'DIA': 'DIA', 'US10Y': '^TNX', 'US02Y': '^FVX', 'OIL': 'CL=F', 'GOLD': 'GC=F', 'KOSPI': '^KS11', 'USDKRW': 'KRW=X'}
           chart_data = old_charts if isinstance(old_charts, dict) else {}
           
           for name, tkr in chart_tickers.items():
               if name not in chart_data or not isinstance(chart_data[name], dict):
-                  chart_data[name] = {
-                      "day": {"labels": ["00:00"], "prices": [0.0]}, "week": {"labels": ["00:00"], "prices": [0.0]},
-                      "month": {"labels": ["00:00"], "prices": [0.0]}, "quarter": {"labels": ["00:00"], "prices": [0.0]},
-                      "year": {"labels": ["00:00"], "prices": [0.0]}, "long": {"labels": ["00:00"], "prices": [0.0]}
-                  }
+                  chart_data[name] = {"day": None, "week": None, "month": None, "quarter": None, "year": None, "long": None}
               
               try:
-                  tk = yf.Ticker(tkr, session=session) # 여기서도 세션 적용
+                  tk = yf.Ticker(tkr)
                   def get_data(period, interval, fmt):
                       try:
                           df = tk.history(period=period, interval=interval)
@@ -209,7 +211,7 @@ jobs:
                   d_data = get_data("5d", "15m", '%H:%M')
                   if d_data: 
                       d_data["labels"], d_data["prices"] = d_data["labels"][-50:], d_data["prices"][-50:]
-                      chart_data[name]["day"] = d_data
+                      chart_data[name]["day"] = d_data # 성공했을 때만 덮어씀!
                   
                   w_data = get_data("5d", "1h", '%m-%d %H:00')
                   if w_data: chart_data[name]["week"] = w_data
@@ -222,6 +224,7 @@ jobs:
                   l_data = get_data("max", "1mo", '%Y')
                   if l_data: chart_data[name]["long"] = l_data
               except: pass
+              time.sleep(0.5) # 차트도 천천히!
           
           with open('PROJECT/market_charts.json', 'w', encoding='utf-8') as f:
               json.dump(chart_data, f, ensure_ascii=False)
@@ -232,5 +235,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "🚀 Critical Fix: Bypassed Yahoo Finance IP Ban with Session" || echo "No changes"
+          git commit -m "🚀 Complete Overhaul: Memory Fallback & Rate Limit Protection" || echo "No changes"
           git push
