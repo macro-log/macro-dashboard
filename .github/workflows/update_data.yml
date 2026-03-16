@@ -38,7 +38,7 @@ jobs:
 
           # 환경 설정
           api_key = os.getenv("GEMINI_API_KEY")
-          fmp_key = os.getenv("FMP_API_KEY")
+          fmp_key = os.getenv("FMP_API_KEY") or "1opq2WKRuLAnZ6jsP9ySOQGfVaszJCJt" # 사용자 제공 키 적용
           genai.configure(api_key=api_key)
           now_korea = (datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=9))
           sync_time = now_korea.strftime('%Y-%m-%d %H:%M:%S')
@@ -108,15 +108,40 @@ jobs:
               fmp_sym = t.replace('-USD', 'USD')
               if fmp_sym in fmp_data:
                   fd = fmp_data[fmp_sym]
-                  stock_financials[t].update({
+                  
+                  # 1. 기본 Quote 데이터 업데이트
+                  update_data = {
                       "price": round(fd.get("price", stock_financials[t]["price"]), 2),
                       "change": round(fd.get("changesPercentage", stock_financials[t]["change"]), 2),
                       "name": fd.get("name", stock_financials[t]["name"]),
                       "marketCap": f"${round(fd.get('marketCap', 0) / 1000000000, 2)}B" if fd.get('marketCap') else "N/A",
-                      "per": round(fd.get("pe", 0), 2) if fd.get("pe") else "N/A",
-                      "eps": round(fd.get("eps", 0), 2) if fd.get("eps") else "N/A",
                       "summary": "공식 실시간 API 연동 완료"
-                  })
+                  }
+                  
+                  # 2. 정확한 P/E, EPS, 배당률(TTM)을 위해 FMP key-metrics-ttm 호출
+                  if fmp_key:
+                      try:
+                          m_url = f"https://financialmodelingprep.com/api/v3/key-metrics-ttm/{fmp_sym}?apikey={fmp_key}"
+                          m_res = requests.get(m_url, timeout=5).json()
+                          if m_res and isinstance(m_res, list):
+                              metrics = m_res[0]
+                              update_data["per"] = round(metrics.get("peRatioTTM", fd.get("pe", 0)), 2) if metrics.get("peRatioTTM") else (round(fd.get("pe", 0), 2) if fd.get("pe") else "N/A")
+                              update_data["eps"] = round(fd.get("eps", 0), 2) if fd.get("eps") else "N/A"
+                              
+                              raw_yield = metrics.get("dividendYieldPercentageTTM")
+                              # 잘못된 과거 메모리를 지우고, 값이 있을 때만 정상 퍼센티지로 업데이트
+                              update_data["dividend"] = round(raw_yield * 100, 2) if raw_yield else "N/A"
+                          else:
+                              # ETF 등 key-metrics 가 없는 경우 (과거 잘못된 메모리 초기화)
+                              update_data["per"] = round(fd.get("pe", 0), 2) if fd.get("pe") else "N/A"
+                              update_data["eps"] = round(fd.get("eps", 0), 2) if fd.get("eps") else "N/A"
+                              update_data["dividend"] = "N/A"
+                      except:
+                          update_data["per"] = round(fd.get("pe", 0), 2) if fd.get("pe") else "N/A"
+                          update_data["eps"] = round(fd.get("eps", 0), 2) if fd.get("eps") else "N/A"
+                          update_data["dividend"] = "N/A"
+                  
+                  stock_financials[t].update(update_data)
               else:
                   # FMP에 없는 한국 지수나 특수 종목만 야후 info로 예비 수집 (실패해도 이전 기억 유지됨)
                   try:
@@ -125,9 +150,9 @@ jobs:
                           stock_financials[t].update({
                               "name": info.get('shortName', t),
                               "marketCap": info.get('marketCap', stock_financials[t]["marketCap"]),
-                              "per": info.get('forwardPE', info.get('trailingPE', stock_financials[t]["per"])),
-                              "eps": info.get('forwardEps', info.get('trailingEps', stock_financials[t]["eps"])),
-                              "dividend": round(info.get('dividendYield', 0) * 100, 2) if info.get('dividendYield') else stock_financials[t]["dividend"],
+                              "per": info.get('trailingPE', info.get('forwardPE', stock_financials[t]["per"])), # trailing 우선!
+                              "eps": info.get('trailingEps', info.get('forwardEps', stock_financials[t]["eps"])), # trailing 우선!
+                              "dividend": round(info.get('dividendYield', 0) * 100, 2) if info.get('dividendYield') else "N/A", # 과거 엉뚱한 값 방지
                               "target": info.get('targetMeanPrice', stock_financials[t]["target"]),
                               "summary": str(info.get('longBusinessSummary', stock_financials[t]["summary"]))[:150] + "..."
                           })
