@@ -809,7 +809,7 @@
 
         async function updateTerminalData() {
             try {
-                const response = await fetch('./indicators.json?v=' + Date.now());
+                const response = await fetch('./PROJECT/indicators.json?v=' + Date.now());
                 const data = await response.json();
                 
                 if(data.last_updated) document.getElementById('sync-time').innerText = data.last_updated;
