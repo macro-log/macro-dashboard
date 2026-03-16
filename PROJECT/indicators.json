@@ -1,11 +1,9 @@
 {
-    "last_updated": "2026-03-16 16:54:05",
-    "master_score": 125,
+    "last_updated": "2026-03-16 17:43:50",
+    "master_score": 36,
     "market_temp": "-2.5",
-    "ai_summary": [
-        "데이터를 분석 중입니다...",
-        "잠시 후 다시 확인해주세요."
-    ],
+    "ai_summary": "분석 중...",
+    "period_interpretation": {},
     "fomc_indicators": [
         {
             "word": "INFLATION",
