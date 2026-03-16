@@ -90,5 +90,12 @@
             "count": 3
         }
     ],
-    "dynamic_news": {}
+    "dynamic_news": {
+        "🔥 AI & 반도체 테마": [
+            {
+                "title": "엔비디아, 차세대 AI 칩 발표 임박",
+                "summary": "테스트 요약 내용입니다."
+            }
+        ]
+    }
 }
