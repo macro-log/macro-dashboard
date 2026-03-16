@@ -85,20 +85,45 @@ jobs:
               return list(set(headlines))
           all_headlines = fetch_premium_news()
 
-          # 5. 제미나이 AI 분석 (보존)
+          # 5. 제미나이 AI 분석 (수정 완료)
           dynamic_news = {}
-          ai_briefing = "분석 중..."
+          ai_briefing = ["데이터를 분석 중입니다...", "잠시 후 다시 확인해주세요."]
           period_interpretation = {}
           try:
               model = genai.GenerativeModel('gemini-2.0-flash')
-              prompt = f"데이터 분석 및 요약 요청: {market_stats} {all_headlines[:20]}"
-              response = model.generate_content(prompt, generation_config={"response_mime_type": "application/json"})
+              prompt = f"""
+              다음 시장 데이터와 최신 글로벌 뉴스 헤드라인을 분석해서 오직 JSON 형식으로만 응답해.
+              
+              [시장 데이터]
+              {{market_stats}}
+              
+              [뉴스 헤드라인]
+              {{all_headlines[:20]}}
+              
+              [필수 출력 JSON 양식]
+              {{{{
+                  "briefing": [
+                      "전체 시장 상황 요약 1줄",
+                      "전체 시장 상황 요약 1줄",
+                      "전체 시장 상황 요약 1줄"
+                  ],
+                  "거시경제": [{{{{"title": "관련 뉴스 제목 (한국어 번역)", "summary": "뉴스 핵심 요약 2줄 (한국어)"}}}}],
+                  "주식시장": [{{{{"title": "관련 뉴스 제목 (한국어 번역)", "summary": "뉴스 핵심 요약 2줄 (한국어)"}}}}],
+                  "암호화폐": [{{{{"title": "관련 뉴스 제목 (한국어 번역)", "summary": "뉴스 핵심 요약 2줄 (한국어)"}}}}],
+                  "원자재": [{{{{"title": "관련 뉴스 제목 (한국어 번역)", "summary": "뉴스 핵심 요약 2줄 (한국어)"}}}}],
+                  "빅테크": [{{{{"title": "관련 뉴스 제목 (한국어 번역)", "summary": "뉴스 핵심 요약 2줄 (한국어)"}}}}],
+                  "지정학": [{{{{"title": "관련 뉴스 제목 (한국어 번역)", "summary": "뉴스 핵심 요약 2줄 (한국어)"}}}}]
+              }}}}
+              """
+              response = model.generate_content(prompt, generation_config={{"response_mime_type": "application/json"}})
               data = json.loads(response.text)
               ai_briefing = data.get("briefing", ai_briefing)
               period_interpretation = data.get("analysis", period_interpretation)
               for k in ["거시경제", "주식시장", "암호화폐", "원자재", "빅테크", "지정학"]:
-                  if k in data: dynamic_news[k] = data[k]
-          except: pass
+                  if k in data and data[k]: 
+                      dynamic_news[k] = data[k]
+          except Exception as e: 
+              print(f"AI Analysis Error: {{e}}")
 
           # 6. indicators.json 저장 (★ MARKET TEMP -2.5 고정 ★)
           os.makedirs('PROJECT', exist_ok=True)
