@@ -107,7 +107,7 @@ jobs:
           dynamic_news = {}
           ai_briefing = ["시장을 분석 중입니다...", "최신 데이터를 불러오는 중입니다.", "잠시 후 업데이트됩니다."]
           try:
-              model = genai.GenerativeModel('gemini-2.0-flash')
+              model = genai.GenerativeModel('gemini-1.5-flash')
               # index.html이 인식할 수 있도록 카테고리명을 명확히 지정하고 한국어 요약을 요청합니다.
               prompt = f"""
               Analyze market stats ({market_stats}) and news headlines ({all_headlines[:20]}).
