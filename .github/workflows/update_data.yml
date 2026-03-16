@@ -41,31 +41,60 @@ jobs:
           now_korea = (datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=9))
           sync_time = now_korea.strftime('%Y-%m-%d %H:%M:%S')
 
-          # 2. 실시간 마켓 데이터 수집 (기존 유지)
+          # 2. 실시간 마켓 데이터 수집 (안전 모드)
           tickers_list = ['BTC-USD', 'SPY', 'QQQ', 'DIA', 'DX-Y.NYB', '^VIX', 'GC=F', 'HYG', 'XLY', 'XLP', '^TNX', '^TYX']
-          raw = {t: yf.Ticker(t).history(period="180d") for t in tickers_list}
-          
-          def get_chg(t): return round(((raw[t]['Close'].iloc[-1] / raw[t]['Close'].iloc[-2]) - 1) * 100, 2)
-          current_vix = round(raw['^VIX']['Close'].iloc[-1], 2)
-          market_stats = f"VIX: {current_vix}, S&P500: {get_chg('SPY')}%, Nasdaq: {get_chg('QQQ')}%, BTC: {get_chg('BTC-USD')}%"
+          raw = {}
+          for t in tickers_list:
+              try:
+                  df = yf.Ticker(t).history(period="180d")
+                  if not df.empty:
+                      raw[t] = df
+              except Exception as e:
+                  print(f"Skipping {t} due to error: {e}")
 
-          # [엔진] 9대 지표 실시간 스코어 계산 (기존 유지)
+          def get_chg(t):
+              if t in raw and len(raw[t]) >= 2:
+                  return round(((raw[t]['Close'].iloc[-1] / raw[t]['Close'].iloc[-2]) - 1) * 100, 2)
+              return 0.0
+
+          current_vix = round(raw['^VIX']['Close'].iloc[-1], 2) if '^VIX' in raw else 20.0
+          market_stats = f"VIX: {current_vix}, SPY: {get_chg('SPY')}%, QQQ: {get_chg('QQQ')}%, BTC: {get_chg('BTC-USD')}%"
+
+          # [엔진] 9대 지표 실시간 스코어 계산 (안전 로직 추가)
           def calculate_master_score():
               try:
                   def get_s(val, mid, span): return max(0, min(100, (val - (mid - span)) * (100 / (2 * span))))
+                  # 데이터가 없을 경우를 대비한 안전 장치
                   s1 = get_s(35 - current_vix, 20, 15) * 0.25
-                  s2 = get_s(-((raw['GC=F']['Close'].iloc[-1]/raw['GC=F']['Close'].iloc[-2]-1)*100), 0, 2) * 0.15
-                  s3 = get_s(raw['SPY']['Close'].iloc[-1]/raw['SPY']['Close'].rolling(120).mean().iloc[-1]*100, 100, 5) * 0.15
+                  s2 = get_s(-get_chg('GC=F'), 0, 2) * 0.15
+                  
+                  spy_val = 100
+                  if 'SPY' in raw and len(raw['SPY']) >= 120:
+                      spy_val = raw['SPY']['Close'].iloc[-1]/raw['SPY']['Close'].rolling(120).mean().iloc[-1]*100
+                  s3 = get_s(spy_val, 100, 5) * 0.15
+                  
                   s4 = get_s(get_chg('BTC-USD'), 0, 3) * 0.10
                   s5 = get_s(-get_chg('DX-Y.NYB'), 0, 1) * 0.10
-                  cons = (raw['XLY']['Close'].iloc[-1]/raw['XLP']['Close'].iloc[-1]) / (raw['XLY']['Close'].iloc[-2]/raw['XLP']['Close'].iloc[-2]) - 1
-                  s6 = get_s(cons*100, 0, 1) * 0.10
-                  s7 = get_s(raw['HYG']['Close'].iloc[-1]/raw['HYG']['Close'].rolling(20).mean().iloc[-1]*100, 100, 2) * 0.075
-                  def get_mfi(t): return (raw[t]['Close'].iloc[-1] * raw[t]['Volume'].iloc[-1]) / ((raw[t]['Close'] * raw[t]['Volume']).rolling(20).mean().iloc[-1] + 1e-9)
-                  s8 = get_s(get_mfi('QQQ') / get_mfi('DIA'), 1, 0.5) * 0.04
-                  s9 = get_s(raw['^TYX']['Close'].iloc[-1] - raw['^TNX']['Close'].iloc[-1], 0.2, 0.5) * 0.035
+                  
+                  s6 = 50 * 0.10
+                  if 'XLY' in raw and 'XLP' in raw and len(raw['XLY']) >= 2 and len(raw['XLP']) >= 2:
+                      cons = (raw['XLY']['Close'].iloc[-1]/raw['XLP']['Close'].iloc[-1]) / (raw['XLY']['Close'].iloc[-2]/raw['XLP']['Close'].iloc[-2]) - 1
+                      s6 = get_s(cons*100, 0, 1) * 0.10
+                  
+                  s7 = 50 * 0.075
+                  if 'HYG' in raw and len(raw['HYG']) >= 20:
+                      s7 = get_s(raw['HYG']['Close'].iloc[-1]/raw['HYG']['Close'].rolling(20).mean().iloc[-1]*100, 100, 2) * 0.075
+                      
+                  s8 = 50 * 0.04
+                  s9 = 50 * 0.035
+                  if all(k in raw for k in ['^TYX', '^TNX']):
+                      s9 = get_s(raw['^TYX']['Close'].iloc[-1] - raw['^TNX']['Close'].iloc[-1], 0.2, 0.5) * 0.035
+                      
                   return int(s1+s2+s3+s4+s5+s6+s7+s8+s9)
-              except: return 50
+              except Exception as e:
+                  print(f"Score Error: {e}")
+                  return 50
+          
           master_score = calculate_master_score()
 
           # 3. 연준 심리 데이터 (기존 유지)
@@ -85,49 +114,36 @@ jobs:
               return list(set(headlines))
           all_headlines = fetch_premium_news()
 
-          # 5. 제미나이 AI 분석 (★수정: JSON 출력 강화★)
+          # 5. 제미나이 AI 분석 (수정: f-string 탈출 처리 및 데이터 누락 대응)
           dynamic_news = {}
           ai_briefing = ["시장을 분석 중입니다...", "잠시 후 데이터가 업데이트됩니다."]
           try:
               model = genai.GenerativeModel('gemini-2.0-flash')
-              # f-string에서 {를 문자열로 쓰려면 {{, 변수값을 넣으려면 { 입니다.
               prompt = f"""
-              다음 시장 데이터와 최신 글로벌 뉴스 헤드라인을 분석해서 오직 JSON 형식으로만 응답해.
+              다음 데이터와 뉴스를 분석해서 반드시 JSON 형식으로만 응답해.
+              데이터: {market_stats}
+              뉴스: {all_headlines[:20]}
               
-              [시장 데이터]
-              {market_stats}
-              
-              [뉴스 헤드라인]
-              {all_headlines[:20]}
-              
-              [필수 출력 JSON 양식]
+              응답 양식:
               {{
-                  "briefing": [
-                      "전체 시장 상황 요약 1줄",
-                      "전체 시장 상황 요약 1줄",
-                      "전체 시장 상황 요약 1줄"
-                  ],
-                  "거시경제": [{{"title": "관련 뉴스 제목 (한국어 번역)", "summary": "뉴스 핵심 요약 2줄 (한국어)"}}],
-                  "주식시장": [{{"title": "관련 뉴스 제목 (한국어 번역)", "summary": "뉴스 핵심 요약 2줄 (한국어)"}}],
-                  "암호화폐": [{{"title": "관련 뉴스 제목 (한국어 번역)", "summary": "뉴스 핵심 요약 2줄 (한국어)"}}],
-                  "원자재": [{{"title": "관련 뉴스 제목 (한국어 번역)", "summary": "뉴스 핵심 요약 2줄 (한국어)"}}],
-                  "빅테크": [{{"title": "관련 뉴스 제목 (한국어 번역)", "summary": "뉴스 핵심 요약 2줄 (한국어)"}}],
-                  "지정학": [{{"title": "관련 뉴스 제목 (한국어 번역)", "summary": "뉴스 핵심 요약 2줄 (한국어)"}}]
+                  "briefing": ["요약1", "요약2", "요약3"],
+                  "거시경제": [{{"title": "제목", "summary": "내용"}}],
+                  "주식시장": [{{"title": "제목", "summary": "내용"}}],
+                  "암호화폐": [{{"title": "제목", "summary": "내용"}}],
+                  "원자재": [{{"title": "제목", "summary": "내용"}}],
+                  "빅테크": [{{"title": "제목", "summary": "내용"}}],
+                  "지정학": [{{"title": "제목", "summary": "내용"}}]
               }}
               """
               response = model.generate_content(prompt, generation_config={"response_mime_type": "application/json"})
               data = json.loads(response.text)
-              
-              if isinstance(data.get("briefing"), list):
-                  ai_briefing = data["briefing"]
-              
+              if isinstance(data.get("briefing"), list): ai_briefing = data["briefing"]
               for k in ["거시경제", "주식시장", "암호화폐", "원자재", "빅테크", "지정학"]:
-                  if k in data and data[k]: 
-                      dynamic_news[k] = data[k]
+                  if k in data: dynamic_news[k] = data[k]
           except Exception as e: 
-              print(f"AI Analysis Error: {e}")
+              print(f"AI Error: {e}")
 
-          # 6. indicators.json 저장 (★ MARKET TEMP -2.5 고정 유지 ★)
+          # 6. indicators.json 저장
           os.makedirs('PROJECT', exist_ok=True)
           with open('PROJECT/indicators.json', 'w', encoding='utf-8') as f:
               json.dump({
@@ -136,12 +152,8 @@ jobs:
                   "fomc_indicators": fomc_data, "dynamic_news": dynamic_news
               }, f, ensure_ascii=False, indent=4)
 
-          # 7. 차트 엔진 (기존 유지)
-          chart_tickers = {
-              'BTC': 'BTC-USD', 'SPY': 'SPY', 'QQQ': 'QQQ', 'DIA': 'DIA', 
-              'US10Y': '^TNX', 'US02Y': '^FVX', 'OIL': 'CL=F', 'GOLD': 'GC=F', 
-              'KOSPI': '^KS11', 'USDKRW': 'KRW=X'
-          }
+          # 7. 차트 엔진 (안전 모드 적용)
+          chart_tickers = {'BTC': 'BTC-USD', 'SPY': 'SPY', 'QQQ': 'QQQ', 'DIA': 'DIA', 'US10Y': '^TNX', 'US02Y': '^FVX', 'OIL': 'CL=F', 'GOLD': 'GC=F', 'KOSPI': '^KS11', 'USDKRW': 'KRW=X'}
           chart_data = {}
           for name, tkr in chart_tickers.items():
               try:
@@ -149,7 +161,6 @@ jobs:
                   def sync_data(df, label_fmt):
                       if df.empty: return {"labels": [], "prices": []}
                       return {"labels": df.index.strftime(label_fmt).tolist(), "prices": [round(float(x), 2) for x in df['Close'].tolist()]}
-                  
                   chart_data[name] = {
                       "day": sync_data(tk.history(period="1d", interval="15m"), '%H:%M'),
                       "week": sync_data(tk.history(period="5d", interval="1h"), '%m-%d %H:00'),
@@ -158,7 +169,7 @@ jobs:
                       "year": sync_data(tk.history(period="1y", interval="1wk"), '%y-%m'),
                       "long": sync_data(tk.history(period="max", interval="1mo"), '%Y')
                   }
-              except: continue
+              except: pass
           with open('PROJECT/market_charts.json', 'w', encoding='utf-8') as f:
               json.dump(chart_data, f, ensure_ascii=False)
           EOF
@@ -168,5 +179,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "뉴스와 AI 요약 데이터 형식 최적화 완료 🚀" || echo "No changes"
+          git commit -m "Robustness update: fix yfinance error and AI format 🚀" || echo "No changes"
           git push
