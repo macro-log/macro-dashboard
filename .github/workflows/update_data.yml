@@ -41,7 +41,7 @@ jobs:
           now_korea = (datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=9))
           sync_time = now_korea.strftime('%Y-%m-%d %H:%M:%S')
 
-          # 2. 실시간 마켓 데이터 수집
+          # 2. 실시간 마켓 데이터 수집 (기존 유지)
           tickers_list = ['BTC-USD', 'SPY', 'QQQ', 'DIA', 'DX-Y.NYB', '^VIX', 'GC=F', 'HYG', 'XLY', 'XLP', '^TNX', '^TYX']
           raw = {t: yf.Ticker(t).history(period="180d") for t in tickers_list}
           
@@ -49,7 +49,7 @@ jobs:
           current_vix = round(raw['^VIX']['Close'].iloc[-1], 2)
           market_stats = f"VIX: {current_vix}, S&P500: {get_chg('SPY')}%, Nasdaq: {get_chg('QQQ')}%, BTC: {get_chg('BTC-USD')}%"
 
-          # [엔진] 9대 지표 실시간 스코어 계산
+          # [엔진] 9대 지표 실시간 스코어 계산 (기존 유지)
           def calculate_master_score():
               try:
                   def get_s(val, mid, span): return max(0, min(100, (val - (mid - span)) * (100 / (2 * span))))
@@ -68,10 +68,10 @@ jobs:
               except: return 50
           master_score = calculate_master_score()
 
-          # 3. 연준 심리 데이터 (보존)
+          # 3. 연준 심리 데이터 (기존 유지)
           fomc_data = [{"word": "INFLATION", "sentiment_score": -1.8, "status": "NEUTRAL", "display_score": "-1.8", "count": 52}, {"word": "RATE", "sentiment_score": 0.4, "status": "NEUTRAL", "display_score": "+0.4", "count": 48}, {"word": "POLICY", "sentiment_score": -0.2, "status": "NEUTRAL", "display_score": "-0.2", "count": 34}, {"word": "RISKS", "sentiment_score": -0.5, "status": "NEUTRAL", "display_score": "-0.5", "count": 21}, {"word": "GROWTH", "sentiment_score": -0.1, "status": "NEUTRAL", "display_score": "-0.1", "count": 20}, {"word": "LABOR", "sentiment_score": -0.0, "status": "NEUTRAL", "display_score": "-0.0", "count": 18}, {"word": "CREDIT", "sentiment_score": 0.2, "status": "NEUTRAL", "display_score": "+0.2", "count": 13}, {"word": "GDP", "sentiment_score": -0.2, "status": "NEUTRAL", "display_score": "-0.2", "count": 11}, {"word": "PRICES", "sentiment_score": 0.0, "status": "NEUTRAL", "display_score": "0.0", "count": 11}, {"word": "EMPLOYMENT", "sentiment_score": -0.1, "status": "NEUTRAL", "display_score": "-0.1", "count": 7}, {"word": "ECONOMY", "sentiment_score": -0.7, "status": "NEUTRAL", "display_score": "-0.7", "count": 5}, {"word": "STABILITY", "sentiment_score": 0.0, "status": "NEUTRAL", "display_score": "0.0", "count": 3}]
 
-          # 4. 프리미엄 뉴스 수집 (보존)
+          # 4. 프리미엄 뉴스 수집 (기존 유지)
           def fetch_premium_news():
               headlines = []
               urls = ["https://feeds.a.dj.com/rss/RSSMarketsMain.xml", "https://news.google.com/rss/search?q=when:1d+AND+(source:Bloomberg+OR+source:Reuters)+market+finance&hl=en-US&gl=US&ceid=US:en"]
@@ -85,56 +85,58 @@ jobs:
               return list(set(headlines))
           all_headlines = fetch_premium_news()
 
-          # 5. 제미나이 AI 분석 (수정 완료)
+          # 5. 제미나이 AI 분석 (★수정: JSON 출력 강화★)
           dynamic_news = {}
-          ai_briefing = ["데이터를 분석 중입니다...", "잠시 후 다시 확인해주세요."]
-          period_interpretation = {}
+          ai_briefing = ["시장을 분석 중입니다...", "잠시 후 데이터가 업데이트됩니다."]
           try:
               model = genai.GenerativeModel('gemini-2.0-flash')
+              # f-string에서 {를 문자열로 쓰려면 {{, 변수값을 넣으려면 { 입니다.
               prompt = f"""
               다음 시장 데이터와 최신 글로벌 뉴스 헤드라인을 분석해서 오직 JSON 형식으로만 응답해.
               
               [시장 데이터]
-              {{market_stats}}
+              {market_stats}
               
               [뉴스 헤드라인]
-              {{all_headlines[:20]}}
+              {all_headlines[:20]}
               
               [필수 출력 JSON 양식]
-              {{{{
+              {{
                   "briefing": [
                       "전체 시장 상황 요약 1줄",
                       "전체 시장 상황 요약 1줄",
                       "전체 시장 상황 요약 1줄"
                   ],
-                  "거시경제": [{{{{"title": "관련 뉴스 제목 (한국어 번역)", "summary": "뉴스 핵심 요약 2줄 (한국어)"}}}}],
-                  "주식시장": [{{{{"title": "관련 뉴스 제목 (한국어 번역)", "summary": "뉴스 핵심 요약 2줄 (한국어)"}}}}],
-                  "암호화폐": [{{{{"title": "관련 뉴스 제목 (한국어 번역)", "summary": "뉴스 핵심 요약 2줄 (한국어)"}}}}],
-                  "원자재": [{{{{"title": "관련 뉴스 제목 (한국어 번역)", "summary": "뉴스 핵심 요약 2줄 (한국어)"}}}}],
-                  "빅테크": [{{{{"title": "관련 뉴스 제목 (한국어 번역)", "summary": "뉴스 핵심 요약 2줄 (한국어)"}}}}],
-                  "지정학": [{{{{"title": "관련 뉴스 제목 (한국어 번역)", "summary": "뉴스 핵심 요약 2줄 (한국어)"}}}}]
-              }}}}
+                  "거시경제": [{{"title": "관련 뉴스 제목 (한국어 번역)", "summary": "뉴스 핵심 요약 2줄 (한국어)"}}],
+                  "주식시장": [{{"title": "관련 뉴스 제목 (한국어 번역)", "summary": "뉴스 핵심 요약 2줄 (한국어)"}}],
+                  "암호화폐": [{{"title": "관련 뉴스 제목 (한국어 번역)", "summary": "뉴스 핵심 요약 2줄 (한국어)"}}],
+                  "원자재": [{{"title": "관련 뉴스 제목 (한국어 번역)", "summary": "뉴스 핵심 요약 2줄 (한국어)"}}],
+                  "빅테크": [{{"title": "관련 뉴스 제목 (한국어 번역)", "summary": "뉴스 핵심 요약 2줄 (한국어)"}}],
+                  "지정학": [{{"title": "관련 뉴스 제목 (한국어 번역)", "summary": "뉴스 핵심 요약 2줄 (한국어)"}}]
+              }}
               """
-              response = model.generate_content(prompt, generation_config={{"response_mime_type": "application/json"}})
+              response = model.generate_content(prompt, generation_config={"response_mime_type": "application/json"})
               data = json.loads(response.text)
-              ai_briefing = data.get("briefing", ai_briefing)
-              period_interpretation = data.get("analysis", period_interpretation)
+              
+              if isinstance(data.get("briefing"), list):
+                  ai_briefing = data["briefing"]
+              
               for k in ["거시경제", "주식시장", "암호화폐", "원자재", "빅테크", "지정학"]:
                   if k in data and data[k]: 
                       dynamic_news[k] = data[k]
           except Exception as e: 
-              print(f"AI Analysis Error: {{e}}")
+              print(f"AI Analysis Error: {e}")
 
-          # 6. indicators.json 저장 (★ MARKET TEMP -2.5 고정 ★)
+          # 6. indicators.json 저장 (★ MARKET TEMP -2.5 고정 유지 ★)
           os.makedirs('PROJECT', exist_ok=True)
           with open('PROJECT/indicators.json', 'w', encoding='utf-8') as f:
               json.dump({
                   "last_updated": sync_time, "master_score": master_score, "market_temp": "-2.5",
-                  "ai_summary": ai_briefing, "period_interpretation": period_interpretation,
+                  "ai_summary": ai_briefing, "period_interpretation": {},
                   "fomc_indicators": fomc_data, "dynamic_news": dynamic_news
               }, f, ensure_ascii=False, indent=4)
 
-          # 7. 차트 엔진 (★ 지표 추가 및 분기 데이터 구분 ★)
+          # 7. 차트 엔진 (기존 유지)
           chart_tickers = {
               'BTC': 'BTC-USD', 'SPY': 'SPY', 'QQQ': 'QQQ', 'DIA': 'DIA', 
               'US10Y': '^TNX', 'US02Y': '^FVX', 'OIL': 'CL=F', 'GOLD': 'GC=F', 
@@ -152,7 +154,7 @@ jobs:
                       "day": sync_data(tk.history(period="1d", interval="15m"), '%H:%M'),
                       "week": sync_data(tk.history(period="5d", interval="1h"), '%m-%d %H:00'),
                       "month": sync_data(tk.history(period="1mo", interval="1d"), '%m-%d'),
-                      "quarter": sync_data(tk.history(period="3mo", interval="1d"), '%m-%d'), # ★ 3개월 데이터
+                      "quarter": sync_data(tk.history(period="3mo", interval="1d"), '%m-%d'),
                       "year": sync_data(tk.history(period="1y", interval="1wk"), '%y-%m'),
                       "long": sync_data(tk.history(period="max", interval="1mo"), '%Y')
                   }
@@ -166,5 +168,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "지표 추가 및 MARKET TEMP 고정 완료 🚀" || echo "No changes"
+          git commit -m "뉴스와 AI 요약 데이터 형식 최적화 완료 🚀" || echo "No changes"
           git push
