@@ -50,36 +50,56 @@ jobs:
                   with open('PROJECT/market_charts.json', 'r', encoding='utf-8') as f: old_charts = json.load(f)
           except: pass
 
-          # 2. 실시간 마켓 데이터 수집 (개별 수집으로 에러 방지)
-          tickers_list = ['BTC-USD', 'SPY', 'QQQ', 'DIA', 'DX-Y.NYB', '^VIX', 'GC=F', 'HYG', 'XLY', 'XLP', '^TNX', '^TYX']
+          # 2. 실시간 마켓 데이터 수집 (지표용 + 검색용 재무제표 수집)
+          # 검색 결과를 보고 싶은 종목들을 리스트에 추가했습니다.
+          tickers_list = ['BTC-USD', 'SPY', 'QQQ', 'DIA', 'DX-Y.NYB', '^VIX', 'GC=F', 'HYG', 'XLY', 'XLP', '^TNX', '^TYX', 'AAPL', 'TSLA', 'NVDA', 'MSFT', 'GOOGL', 'AMZN']
           raw = {}
+          stock_financials = {} 
+
           for t in tickers_list:
               try:
-                  # 데이터 누락을 방지하기 위해 ffill() 추가
-                  df = yf.Ticker(t).history(period="180d").ffill()
-                  if not df.empty: raw[t] = df
+                  tk = yf.Ticker(t)
+                  # 데이터 누락 방지를 위해 ffill() 사용
+                  df = tk.history(period="180d").ffill()
+                  if not df.empty:
+                      raw[t] = df
+                      
+                      # 종목별 등락률 및 재무 데이터 (검색창 출력용)
+                      current_p = round(df['Close'].iloc[-1], 2)
+                      prev_p = df['Close'].iloc[-2]
+                      change_p = round(((current_p / prev_p) - 1) * 100, 2)
+                      
+                      # yfinance info에서 재무 항목 추출
+                      info = tk.info
+                      stock_financials[t] = {
+                          "price": current_p,
+                          "change": change_p,
+                          "name": info.get('shortName', t),
+                          "marketCap": info.get('marketCap', "N/A"),
+                          "per": info.get('forwardPE', "N/A"),
+                          "dividend": round(info.get('dividendYield', 0) * 100, 2) if info.get('dividendYield') else "N/A",
+                          "summary": info.get('longBusinessSummary', "정보 없음")[:150] + "..."
+                      }
               except: print(f"Skipping {t}")
 
-          # [안전장치] 데이터가 없을 경우 에러 없이 0을 반환하여 Exit 1 방지
+          # [안전장치] 데이터 부재 시 0 반환
           def get_safe_chg(t):
-              try: 
-                  if t in raw and len(raw[t]) >= 2:
-                      return round(((raw[t]['Close'].iloc[-1] / raw[t]['Close'].iloc[-2]) - 1) * 100, 2)
-                  return 0.0
+              try: return stock_financials[t]['change'] if t in stock_financials else 0.0
               except: return 0.0
 
-          current_vix = round(raw['^VIX']['Close'].iloc[-1], 2) if ('^VIX' in raw and len(raw['^VIX']) > 0) else 20.0
+          current_vix = round(raw['^VIX']['Close'].iloc[-1], 2) if ('^VIX' in raw) else 20.0
           market_stats = f"VIX: {current_vix}, S&P500: {get_safe_chg('SPY')}%, Nasdaq: {get_safe_chg('QQQ')}%, BTC: {get_safe_chg('BTC-USD')}%"
 
-          # [엔진] 9대 지표 실시간 스코어 계산 (오리지널 로직 보존)
+          # [엔진] 9대 지표 실시간 스코어 계산 (사용자 오리지널 로직 보존)
           def calculate_master_score():
               try:
                   def get_s(val, mid, span): return max(0, min(100, (val - (mid - span)) * (100 / (2 * span))))
                   s1 = get_s(35 - current_vix, 20, 15) * 0.25
                   
-                  s2 = 7.5
+                  gc_val = 0.0
                   if 'GC=F' in raw and len(raw['GC=F']) >= 2:
-                      s2 = get_s(-((raw['GC=F']['Close'].iloc[-1]/raw['GC=F']['Close'].iloc[-2]-1)*100), 0, 2) * 0.15
+                      gc_val = -((raw['GC=F']['Close'].iloc[-1]/raw['GC=F']['Close'].iloc[-2]-1)*100)
+                  s2 = get_s(gc_val, 0, 2) * 0.15
                   
                   s3 = 50 * 0.15
                   if 'SPY' in raw and len(raw['SPY']) >= 120:
@@ -109,7 +129,7 @@ jobs:
               except: return old_indicators.get("master_score", 50)
           master_score = calculate_master_score()
 
-          # ★ [Master Score 2.0] 변화량(Delta) 계산 추가 ★
+          # [변화량 계산] 어제 대비 점수 변동폭
           prev_score = old_indicators.get("master_score", master_score)
           delta = master_score - prev_score
           delta_text = f"{'+' if delta > 0 else ''}{delta}" if delta != 0 else "유지"
@@ -132,10 +152,10 @@ jobs:
           all_headlines = fetch_premium_news()
 
           # 5. 제미나이 AI 분석 (보존)
-          dynamic_news, ai_briefing, period_interpretation = {}, "분석 중...", {}
+          dynamic_news, ai_briefing, period_interpretation = {}, "데이터 분석 중...", {}
           try:
               model = genai.GenerativeModel('gemini-2.0-flash')
-              prompt = f"데이터 분석 및 요약 요청: {market_stats} {all_headlines[:20]}"
+              prompt = f"데이터 분석 및 요약 요청: {market_stats} {all_headlines[:20]}. 한국어로 JSON 응답."
               response = model.generate_content(prompt, generation_config={"response_mime_type": "application/json"})
               data = json.loads(response.text)
               ai_briefing = data.get("briefing", ai_briefing)
@@ -144,7 +164,7 @@ jobs:
                   if k in data: dynamic_news[k] = data[k]
           except: pass
 
-          # 6. indicators.json 저장 (★score_delta 필드 추가★)
+          # 6. indicators.json 저장 (모든 데이터 통합)
           os.makedirs('PROJECT', exist_ok=True)
           with open('PROJECT/indicators.json', 'w', encoding='utf-8') as f:
               json.dump({
@@ -152,13 +172,14 @@ jobs:
                   "master_score": master_score, 
                   "score_delta": delta_text, 
                   "market_temp": "-2.5",
+                  "stock_financials": stock_financials,
                   "ai_summary": ai_briefing, 
                   "period_interpretation": period_interpretation,
                   "fomc_indicators": fomc_data, 
                   "dynamic_news": dynamic_news
               }, f, ensure_ascii=False, indent=4)
 
-          # 7. 차트 엔진 (★NaN 에러 방지 - 장 마감 대응 보강★)
+          # 7. 차트 엔진 (★NaN 방지 및 장 마감 대응 보강★)
           chart_tickers = {'BTC': 'BTC-USD', 'SPY': 'SPY', 'QQQ': 'QQQ', 'DIA': 'DIA', 'US10Y': '^TNX', 'US02Y': '^FVX', 'OIL': 'CL=F', 'GOLD': 'GC=F', 'KOSPI': '^KS11', 'USDKRW': 'KRW=X'}
           chart_data = old_charts 
           for name, tkr in chart_tickers.items():
@@ -166,14 +187,12 @@ jobs:
                   tk = yf.Ticker(tkr)
                   def sync_data(df, label_fmt):
                       if df is None or df.empty: return None
-                      # ★ffill()로 NaN 값을 직전 데이터로 채워 JSON "NaN" 에러를 방지합니다.
                       prices = df['Close'].ffill().fillna(0).tolist()
                       return {"labels": df.index.strftime(label_fmt).tolist(), "prices": [round(float(x), 2) for x in prices]}
                   
-                  # ★ 장 마감 시간에도 데이터가 나오도록 5일치 조회 후 마지막 50개(약 하루치) 사용
+                  # 장 마감 시간에도 데이터가 나오도록 5일치 조회 후 마지막 50개 사용
                   hist_day = tk.history(period="5d", interval="15m")
                   new_day = sync_data(hist_day.tail(50), '%H:%M')
-                  
                   if new_day:
                       chart_data[name] = {
                           "day": new_day,
@@ -194,5 +213,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "🚀 Upgrade: Fixed Chart Visibility & Added score_delta" || echo "No changes"
+          git commit -m "🚀 Perfect Overwrite: AI, News, Financials, and Charts Fixed" || echo "No changes"
           git push
