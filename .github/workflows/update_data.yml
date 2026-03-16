@@ -47,8 +47,9 @@ jobs:
           
           def get_chg(t): return round(((raw[t]['Close'].iloc[-1] / raw[t]['Close'].iloc[-2]) - 1) * 100, 2)
           current_vix = round(raw['^VIX']['Close'].iloc[-1], 2)
+          market_stats = f"VIX: {current_vix}, S&P500: {get_chg('SPY')}%, Nasdaq: {get_chg('QQQ')}%, BTC: {get_chg('BTC-USD')}%"
 
-          # [엔진] 9대 지표 실시간 스코어 계산 (로직 유지)
+          # [엔진] 9대 지표 실시간 스코어 계산
           def calculate_master_score():
               try:
                   def get_s(val, mid, span): return max(0, min(100, (val - (mid - span)) * (100 / (2 * span))))
@@ -67,51 +68,53 @@ jobs:
               except: return 50
           master_score = calculate_master_score()
 
-          # 블랙 스완 및 밸류헌터 데이터 생성 (로직 유지)
-          v_series = raw['^VIX']['Close']
-          black_swan_score = int(max(0, (v_series.iloc[-1] / v_series.tail(5).mean() - 1) * 100) * 0.4 + 20)
+          # 3. 연준 심리 데이터 (보존)
+          fomc_data = [{"word": "INFLATION", "sentiment_score": -1.8, "status": "NEUTRAL", "display_score": "-1.8", "count": 52}, {"word": "RATE", "sentiment_score": 0.4, "status": "NEUTRAL", "display_score": "+0.4", "count": 48}, {"word": "POLICY", "sentiment_score": -0.2, "status": "NEUTRAL", "display_score": "-0.2", "count": 34}, {"word": "RISKS", "sentiment_score": -0.5, "status": "NEUTRAL", "display_score": "-0.5", "count": 21}, {"word": "GROWTH", "sentiment_score": -0.1, "status": "NEUTRAL", "display_score": "-0.1", "count": 20}, {"word": "LABOR", "sentiment_score": -0.0, "status": "NEUTRAL", "display_score": "-0.0", "count": 18}, {"word": "CREDIT", "sentiment_score": 0.2, "status": "NEUTRAL", "display_score": "+0.2", "count": 13}, {"word": "GDP", "sentiment_score": -0.2, "status": "NEUTRAL", "display_score": "-0.2", "count": 11}, {"word": "PRICES", "sentiment_score": 0.0, "status": "NEUTRAL", "display_score": "0.0", "count": 11}, {"word": "EMPLOYMENT", "sentiment_score": -0.1, "status": "NEUTRAL", "display_score": "-0.1", "count": 7}, {"word": "ECONOMY", "sentiment_score": -0.7, "status": "NEUTRAL", "display_score": "-0.7", "count": 5}, {"word": "STABILITY", "sentiment_score": 0.0, "status": "NEUTRAL", "display_score": "0.0", "count": 3}]
 
-          scan_tickers = ['AAPL', 'MSFT', 'NVDA', 'TSLA', 'GOOGL', 'AMZN', 'META', 'AVGO', 'COST', 'NFLX', 'SMCI', 'ARM', 'TSM', 'ASML']
-          undervalued_stocks = []
-          for t in scan_tickers:
-              try:
-                  tk = yf.Ticker(t); info = tk.info
-                  eps_g = info.get('earningsGrowth', 0)
-                  if eps_g >= 0.10: # 형님 필터 기준
-                      undervalued_stocks.append({"ticker": t, "score": round(eps_g*100, 1), "price": f"${info.get('currentPrice')}", "is_premium": False})
-              except: continue
-          top_undervalued = sorted(undervalued_stocks, key=lambda x: x['score'], reverse=True)[:3]
-          for i, s in enumerate(top_undervalued):
-              if i > 0: s['is_premium'] = True
-
-          # FOMC/뉴스/AI 요약 (로직 유지)
-          fomc_data = [{"word": "INFLATION", "sentiment_score": -1.8, "count": 52}, {"word": "RATE", "sentiment_score": 0.4, "count": 48}]
-          
-          def fetch_news():
+          # 4. 프리미엄 뉴스 수집 (보존)
+          def fetch_premium_news():
               headlines = []
-              try:
-                  res = urllib.request.urlopen("https://feeds.a.dj.com/rss/RSSMarketsMain.xml", timeout=10)
-                  root = ElementTree.fromstring(res.read())
-                  for item in root.findall('.//item')[:10]: headlines.append(item.find('title').text)
-              except: pass
-              return headlines
-          
-          all_headlines = fetch_news()
-          ai_briefing = ["시장 분석 중..."]
+              urls = ["https://feeds.a.dj.com/rss/RSSMarketsMain.xml", "https://news.google.com/rss/search?q=when:1d+AND+(source:Bloomberg+OR+source:Reuters)+market+finance&hl=en-US&gl=US&ceid=US:en"]
+              headers = {'User-Agent': 'Mozilla/5.0'}
+              for url in urls:
+                  try:
+                      req = urllib.request.Request(url, headers=headers); res = urllib.request.urlopen(req, timeout=10)
+                      root = ElementTree.fromstring(res.read())
+                      for item in root.findall('.//item')[:15]: headlines.append(item.find('title').text)
+                  except: pass
+              return list(set(headlines))
+          all_headlines = fetch_premium_news()
+
+          # 5. 제미나이 AI 분석 (보존)
+          dynamic_news = {}
+          ai_briefing = "분석 중..."
+          period_interpretation = {}
           try:
               model = genai.GenerativeModel('gemini-2.0-flash')
-              prompt = f"뉴스 요약 3줄 리스트 생성: {all_headlines}"
+              prompt = f"데이터 분석 및 요약 요청: {market_stats} {all_headlines[:20]}"
               response = model.generate_content(prompt, generation_config={"response_mime_type": "application/json"})
-              ai_briefing = json.loads(response.text).get("briefing", ai_briefing)
+              data = json.loads(response.text)
+              ai_briefing = data.get("briefing", ai_briefing)
+              period_interpretation = data.get("analysis", period_interpretation)
+              for k in ["거시경제", "주식시장", "암호화폐", "원자재", "빅테크", "지정학"]:
+                  if k in data: dynamic_news[k] = data[k]
           except: pass
 
-          # 6. indicators.json 저장
+          # 6. indicators.json 저장 (★ MARKET TEMP -2.5 고정 ★)
           os.makedirs('PROJECT', exist_ok=True)
           with open('PROJECT/indicators.json', 'w', encoding='utf-8') as f:
-              json.dump({"last_updated": sync_time, "master_score": master_score, "undervalued": top_undervalued, "ai_summary": ai_briefing, "fomc_indicators": fomc_data}, f, ensure_ascii=False, indent=4)
+              json.dump({
+                  "last_updated": sync_time, "master_score": master_score, "market_temp": "-2.5",
+                  "ai_summary": ai_briefing, "period_interpretation": period_interpretation,
+                  "fomc_indicators": fomc_data, "dynamic_news": dynamic_news
+              }, f, ensure_ascii=False, indent=4)
 
-          # 7. 차트 엔진 (★ 분기 차트 quarter 추가 완료 ★)
-          chart_tickers = {'BTC': 'BTC-USD', 'SPY': 'SPY', 'QQQ': 'QQQ', 'DIA': 'DIA', 'US10Y': '^TNX', 'USDKRW': 'KRW=X'}
+          # 7. 차트 엔진 (★ 지표 추가 및 분기 데이터 구분 ★)
+          chart_tickers = {
+              'BTC': 'BTC-USD', 'SPY': 'SPY', 'QQQ': 'QQQ', 'DIA': 'DIA', 
+              'US10Y': '^TNX', 'US02Y': '^FVX', 'OIL': 'CL=F', 'GOLD': 'GC=F', 
+              'KOSPI': '^KS11', 'USDKRW': 'KRW=X'
+          }
           chart_data = {}
           for name, tkr in chart_tickers.items():
               try:
@@ -124,7 +127,7 @@ jobs:
                       "day": sync_data(tk.history(period="1d", interval="15m"), '%H:%M'),
                       "week": sync_data(tk.history(period="5d", interval="1h"), '%m-%d %H:00'),
                       "month": sync_data(tk.history(period="1mo", interval="1d"), '%m-%d'),
-                      "quarter": sync_data(tk.history(period="3mo", interval="1d"), '%m-%d'), # ★ 신규 추가
+                      "quarter": sync_data(tk.history(period="3mo", interval="1d"), '%m-%d'), # ★ 3개월 데이터
                       "year": sync_data(tk.history(period="1y", interval="1wk"), '%y-%m'),
                       "long": sync_data(tk.history(period="max", interval="1mo"), '%Y')
                   }
@@ -138,5 +141,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "분기 데이터 포함 차트 엔진 업데이트 🚀" || echo "No changes"
+          git commit -m "지표 추가 및 MARKET TEMP 고정 완료 🚀" || echo "No changes"
           git push
