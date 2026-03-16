@@ -26,6 +26,7 @@ jobs:
       - name: Run Update Script
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          FMP_API_KEY: ${{ secrets.FMP_API_KEY }} # ★ 깃허브 Secret에 등록한 FMP 키를 불러옵니다 ★
         run: |
           python << 'EOF'
           import warnings
@@ -37,6 +38,7 @@ jobs:
 
           # 환경 설정
           api_key = os.getenv("GEMINI_API_KEY")
+          fmp_key = os.getenv("FMP_API_KEY")
           genai.configure(api_key=api_key)
           now_korea = (datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=9))
           sync_time = now_korea.strftime('%Y-%m-%d %H:%M:%S')
@@ -56,9 +58,20 @@ jobs:
           stock_financials = {}
           old_sf = old_indicators.get("stock_financials", {})
 
-          # 2. 마켓 데이터 수집 (★기억 유지 + 0.5초 딜레이 방어막 탑재★)
+          # ★ [추가] FMP API 일괄 호출 (할당량 절약 및 속도 향상) ★
+          fmp_data = {}
+          if fmp_key:
+              try:
+                  query_tickers = [t.replace('-USD', 'USD') for t in tickers_list] # FMP 형식에 맞게 변환
+                  fmp_url = f"https://financialmodelingprep.com/api/v3/quote/{','.join(query_tickers)}?apikey={fmp_key}"
+                  res = requests.get(fmp_url, timeout=10).json()
+                  if isinstance(res, list):
+                      for item in res:
+                          fmp_data[item['symbol']] = item
+              except: pass
+
+          # 2. 마켓 데이터 수집 (하이브리드: 차트는 야후, 숫자는 FMP)
           for t in tickers_list:
-              # [기억 복원] 야후가 막혀도 빈칸이 되지 않도록 이전 데이터를 1차로 깔아둡니다.
               prev_data = old_sf.get(t, {})
               stock_financials[t] = {
                   "price": prev_data.get("price", 0.0),
@@ -72,15 +85,14 @@ jobs:
                   "summary": prev_data.get("summary", "정보 수집 중...")
               }
 
+              # [유지] 지표 계산과 차트를 위한 야후 히스토리 수집 (정상 작동 부분)
               try:
                   tk = yf.Ticker(t)
-                  df = tk.history(period="180d") # 180일치로 넉넉하게!
-                  
+                  df = tk.history(period="180d") 
                   if not df.empty:
                       df = df.ffill().fillna(0)
                       raw[t] = df
                       
-                      # 최신 가격으로 덮어쓰기
                       current_p = float(df['Close'].iloc[-1])
                       if len(df) >= 2:
                           prev_p = float(df['Close'].iloc[-2])
@@ -90,8 +102,23 @@ jobs:
                       
                       stock_financials[t]["price"] = round(current_p, 2)
                       stock_financials[t]["change"] = change_p
+              except: pass
 
-                  # 재무정보 수집 시도
+              # ★ [핵심 교체] FMP 공식 API 데이터로 숫자 덮어쓰기 ★
+              fmp_sym = t.replace('-USD', 'USD')
+              if fmp_sym in fmp_data:
+                  fd = fmp_data[fmp_sym]
+                  stock_financials[t].update({
+                      "price": round(fd.get("price", stock_financials[t]["price"]), 2),
+                      "change": round(fd.get("changesPercentage", stock_financials[t]["change"]), 2),
+                      "name": fd.get("name", stock_financials[t]["name"]),
+                      "marketCap": f"${round(fd.get('marketCap', 0) / 1000000000, 2)}B" if fd.get('marketCap') else "N/A",
+                      "per": round(fd.get("pe", 0), 2) if fd.get("pe") else "N/A",
+                      "eps": round(fd.get("eps", 0), 2) if fd.get("eps") else "N/A",
+                      "summary": "공식 실시간 API 연동 완료"
+                  })
+              else:
+                  # FMP에 없는 한국 지수나 특수 종목만 야후 info로 예비 수집 (실패해도 이전 기억 유지됨)
                   try:
                       info = tk.info
                       if info and 'shortName' in info:
@@ -105,8 +132,7 @@ jobs:
                               "summary": str(info.get('longBusinessSummary', stock_financials[t]["summary"]))[:150] + "..."
                           })
                   except: pass
-              except: pass
-              time.sleep(0.5) # ★ 차단 방지를 위해 0.5초 휴식
+              time.sleep(0.5) 
 
           def get_safe_chg(t):
               return stock_financials.get(t, {}).get("change", 0.0)
@@ -235,5 +261,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "🚀 Complete Overhaul: Memory Fallback & Rate Limit Protection" || echo "No changes"
+          git commit -m "🚀 Hybrid Integration: Replaced numerical data fetch with FMP Official API" || echo "No changes"
           git push
