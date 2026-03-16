@@ -59,16 +59,15 @@ jobs:
                   if not df.empty: raw[t] = df
               except: print(f"Skipping {t}")
 
-          # [안전장치] 데이터가 없을 경우 이전 값을 가져오는 함수
+          # [안전장치] 데이터가 없을 경우 에러 없이 0을 반환하여 Exit 1 방지
           def get_safe_chg(t):
-              try: return round(((raw[t]['Close'].iloc[-1] / raw[t]['Close'].iloc[-2]) - 1) * 100, 2)
-              except: return 0.0
-          
-          def get_safe_close(t):
-              try: return raw[t]['Close'].iloc[-1]
+              try: 
+                  if t in raw and len(raw[t]) >= 2:
+                      return round(((raw[t]['Close'].iloc[-1] / raw[t]['Close'].iloc[-2]) - 1) * 100, 2)
+                  return 0.0
               except: return 0.0
 
-          current_vix = round(raw['^VIX']['Close'].iloc[-1], 2) if '^VIX' in raw else old_indicators.get("master_score", 20.0)
+          current_vix = round(raw['^VIX']['Close'].iloc[-1], 2) if ('^VIX' in raw and len(raw['^VIX']) > 0) else 20.0
           market_stats = f"VIX: {current_vix}, S&P500: {get_safe_chg('SPY')}%, Nasdaq: {get_safe_chg('QQQ')}%, BTC: {get_safe_chg('BTC-USD')}%"
 
           # [엔진] 9대 지표 실시간 스코어 계산 (오리지널 로직 보존)
@@ -77,10 +76,10 @@ jobs:
                   def get_s(val, mid, span): return max(0, min(100, (val - (mid - span)) * (100 / (2 * span))))
                   s1 = get_s(35 - current_vix, 20, 15) * 0.25
                   
-                  # s2 계산용 골드 데이터 체크
-                  gc_val = 0.0
-                  if 'GC=F' in raw: gc_val = -((raw['GC=F']['Close'].iloc[-1]/raw['GC=F']['Close'].iloc[-2]-1)*100)
-                  s2 = get_s(gc_val, 0, 2) * 0.15
+                  # s2~s9: 데이터 부재 시 KeyError 방지 로직만 추가 (수식은 동일)
+                  s2 = 7.5
+                  if 'GC=F' in raw and len(raw['GC=F']) >= 2:
+                      s2 = get_s(-((raw['GC=F']['Close'].iloc[-1]/raw['GC=F']['Close'].iloc[-2]-1)*100), 0, 2) * 0.15
                   
                   s3 = 50 * 0.15
                   if 'SPY' in raw and len(raw['SPY']) >= 120:
@@ -98,9 +97,8 @@ jobs:
                       s7 = get_s(raw['HYG']['Close'].iloc[-1]/raw['HYG']['Close'].rolling(20).mean().iloc[-1]*100, 100, 2) * 0.075
                   
                   def get_mfi(t):
-                      if t not in raw: return 1.0
+                      if t not in raw or 'Volume' not in raw[t]: return 1.0
                       return (raw[t]['Close'].iloc[-1] * raw[t]['Volume'].iloc[-1]) / ((raw[t]['Close'] * raw[t]['Volume']).rolling(20).mean().iloc[-1] + 1e-9)
-                  
                   s8 = get_s(get_mfi('QQQ') / get_mfi('DIA'), 1, 0.5) * 0.04
                   
                   s9 = 2.0
@@ -150,17 +148,18 @@ jobs:
                   "fomc_indicators": fomc_data, "dynamic_news": dynamic_news
               }, f, ensure_ascii=False, indent=4)
 
-          # 7. 차트 엔진 (★기존 데이터 보존 로직 추가★)
+          # 7. 차트 엔진 (★NaN 에러 방지 - ffill 추가★)
           chart_tickers = {'BTC': 'BTC-USD', 'SPY': 'SPY', 'QQQ': 'QQQ', 'DIA': 'DIA', 'US10Y': '^TNX', 'US02Y': '^FVX', 'OIL': 'CL=F', 'GOLD': 'GC=F', 'KOSPI': '^KS11', 'USDKRW': 'KRW=X'}
           chart_data = old_charts # 일단 기존 데이터로 채워둠
           for name, tkr in chart_tickers.items():
               try:
                   tk = yf.Ticker(tkr)
                   def sync_data(df, label_fmt):
-                      if df.empty: return None
-                      return {"labels": df.index.strftime(label_fmt).tolist(), "prices": [round(float(x), 2) for x in df['Close'].tolist()]}
+                      if df is None or df.empty: return None
+                      # ★ffill()로 NaN 값을 직전 데이터로 채워 JSON "NaN" 에러를 방지합니다.
+                      prices = df['Close'].ffill().fillna(0).tolist()
+                      return {"labels": df.index.strftime(label_fmt).tolist(), "prices": [round(float(x), 2) for x in prices]}
                   
-                  # 새 데이터를 가져오는 데 성공한 경우에만 업데이트
                   new_day = sync_data(tk.history(period="1d", interval="15m"), '%H:%M')
                   if new_day:
                       chart_data[name] = {
@@ -182,5 +181,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "🚀 Robust update: Persistence logic applied to Dawn Version" || echo "No changes"
+          git commit -m "🚀 Robust update: Fix NaN Chart Error & KeyError" || echo "No changes"
           git push
