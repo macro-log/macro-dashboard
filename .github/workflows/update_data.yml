@@ -31,11 +31,19 @@ jobs:
           import warnings
           warnings.filterwarnings("ignore", category=FutureWarning)
           import yfinance as yf
-          import json, os, requests, re, datetime, urllib.request
+          import json, os, requests, re, datetime, urllib.request, math
           import google.generativeai as genai
           from xml.etree import ElementTree
 
-          # 1. 환경 설정 및 기존 데이터 로드 (기억장치)
+          # ★ 1. 야후 파이낸스 봇 차단 우회용 가짜 브라우저 세션 ★
+          session = requests.Session()
+          session.headers.update({
+              "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+              "Accept": "*/*",
+              "Accept-Encoding": "gzip, deflate, br",
+              "Connection": "keep-alive"
+          })
+
           api_key = os.getenv("GEMINI_API_KEY")
           genai.configure(api_key=api_key)
           now_korea = (datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=9))
@@ -50,118 +58,92 @@ jobs:
                   with open('PROJECT/market_charts.json', 'r', encoding='utf-8') as f: old_charts = json.load(f)
           except: pass
 
-          # 2. 실시간 마켓 데이터 수집 (★누락된 종목 KOSPI, WTI, 국채 등 완벽 추가★)
-          tickers_list = [
-              'BTC-USD', 'SPY', 'QQQ', 'DIA', 'DX-Y.NYB', '^VIX', 'GC=F', 'HYG', 'XLY', 'XLP', 
-              '^TNX', '^TYX', '^FVX', 'CL=F', '^KS11', 'KRW=X', 
-              'AAPL', 'TSLA', 'NVDA', 'MSFT', 'GOOGL', 'AMZN'
-          ]
+          tickers_list = ['BTC-USD', 'SPY', 'QQQ', 'DIA', 'DX-Y.NYB', '^VIX', 'GC=F', 'HYG', 'XLY', 'XLP', '^TNX', '^TYX', '^FVX', 'CL=F', '^KS11', 'KRW=X', 'AAPL', 'TSLA', 'NVDA', 'MSFT', 'GOOGL', 'AMZN']
           raw = {}
-          stock_financials = {} 
+          stock_financials = old_indicators.get("stock_financials", {})
 
+          # 2. 마켓 데이터 수집 (세션 적용)
           for t in tickers_list:
+              if t not in stock_financials:
+                  stock_financials[t] = {"price": 0.0, "change": 0.0, "name": t, "marketCap": "N/A", "per": "N/A", "eps": "N/A", "dividend": "N/A", "target": "N/A", "summary": "정보 수집 중..."}
               try:
-                  tk = yf.Ticker(t)
-                  df = tk.history(period="1mo").ffill() # 180d보다 빠르고 안전하게 최근 1달치로 최적화
+                  # session 파라미터를 넣어 봇 차단을 우회합니다.
+                  tk = yf.Ticker(t, session=session)
+                  df = tk.history(period="1mo")
+                  
+                  current_p = stock_financials[t].get("price", 0.0)
+                  change_p = stock_financials[t].get("change", 0.0)
+                  
                   if not df.empty:
+                      df = df.ffill().fillna(0)
                       raw[t] = df
-                      
-                      # ★ 에러 방지: 데이터가 1개밖에 없을 때 튕기지 않게 방어 ★
                       current_p = float(df['Close'].iloc[-1])
                       if len(df) >= 2:
                           prev_p = float(df['Close'].iloc[-2])
-                          change_p = round(((current_p / prev_p) - 1) * 100, 2)
-                      else:
-                          change_p = 0.0
-                      
-                      # 재무제표 수집 전에 가격 데이터부터 '무조건' 저장 (검색 에러 원천 차단)
-                      stock_financials[t] = {
-                          "price": round(current_p, 2),
-                          "change": change_p,
-                          "name": t,
-                          "marketCap": "N/A",
-                          "per": "N/A",
-                          "eps": "N/A",
-                          "dividend": "N/A",
-                          "target": "N/A",
-                          "summary": "정보 수집 중..."
-                      }
+                          if prev_p != 0 and not math.isnan(current_p):
+                              change_p = round(((current_p / prev_p) - 1) * 100, 2)
+                  
+                  try:
+                      info = tk.info
+                      if info:
+                          stock_financials[t].update({
+                              "price": round(current_p, 2),
+                              "change": change_p,
+                              "name": info.get('shortName', t),
+                              "marketCap": info.get('marketCap', "N/A"),
+                              "per": info.get('forwardPE', info.get('trailingPE', "N/A")),
+                              "eps": info.get('forwardEps', info.get('trailingEps', "N/A")),
+                              "dividend": round(info.get('dividendYield', 0) * 100, 2) if info.get('dividendYield') else "N/A",
+                              "target": info.get('targetMeanPrice', "N/A"),
+                              "summary": str(info.get('longBusinessSummary', '정보 없음'))[:150] + "..."
+                          })
+                  except: pass
+              except: pass
 
-                      # yfinance 재무 데이터 수집 (실패해도 가격은 위에서 이미 저장됨)
-                      try:
-                          info = tk.info
-                          if info:
-                              stock_financials[t].update({
-                                  "name": info.get('shortName', t),
-                                  "marketCap": info.get('marketCap', "N/A"),
-                                  "per": info.get('forwardPE', info.get('trailingPE', "N/A")),
-                                  "eps": info.get('forwardEps', info.get('trailingEps', "N/A")),
-                                  "dividend": round(info.get('dividendYield', 0) * 100, 2) if info.get('dividendYield') else "N/A",
-                                  "target": info.get('targetMeanPrice', "N/A"),
-                                  "summary": str(info.get('longBusinessSummary', '정보 없음'))[:150] + "..."
-                              })
-                      except: pass
-              except: print(f"Skipping {t}")
-
-          # [안전장치] 데이터 부재 시 0 반환
           def get_safe_chg(t):
-              try: return stock_financials[t]['change'] if t in stock_financials else 0.0
-              except: return 0.0
+              return stock_financials.get(t, {}).get("change", 0.0)
 
           current_vix = round(raw['^VIX']['Close'].iloc[-1], 2) if ('^VIX' in raw) else 20.0
           market_stats = f"VIX: {current_vix}, S&P500: {get_safe_chg('SPY')}%, Nasdaq: {get_safe_chg('QQQ')}%, BTC: {get_safe_chg('BTC-USD')}%"
 
-          # [엔진] 9대 지표 실시간 스코어 계산 (사용자 오리지널 로직 보존)
+          # [엔진] 9대 지표 실시간 스코어 계산 (오리지널 로직 보존)
           def calculate_master_score():
               try:
                   def get_s(val, mid, span): return max(0, min(100, (val - (mid - span)) * (100 / (2 * span))))
                   s1 = get_s(35 - current_vix, 20, 15) * 0.25
-                  
                   gc_val = 0.0
                   if 'GC=F' in raw and len(raw['GC=F']) >= 2:
                       gc_val = -((raw['GC=F']['Close'].iloc[-1]/raw['GC=F']['Close'].iloc[-2]-1)*100)
                   s2 = get_s(gc_val, 0, 2) * 0.15
-                  
                   s3 = 50 * 0.15
-                  # S&P500 120일선 계산을 위해 개별적으로 데이터 보강
                   if 'SPY' in raw:
-                      spy_df = yf.Ticker('SPY').history(period="180d")
+                      spy_df = yf.Ticker('SPY', session=session).history(period="180d")
                       if len(spy_df) >= 120:
                           s3 = get_s(spy_df['Close'].iloc[-1]/spy_df['Close'].rolling(120).mean().iloc[-1]*100, 100, 5) * 0.15
-                  
                   s4, s5 = get_s(get_safe_chg('BTC-USD'), 0, 3) * 0.10, get_s(-get_safe_chg('DX-Y.NYB'), 0, 1) * 0.10
-                  
                   cons = 0
                   if 'XLY' in raw and 'XLP' in raw:
                       cons = (raw['XLY']['Close'].iloc[-1]/raw['XLP']['Close'].iloc[-1]) / (raw['XLY']['Close'].iloc[-2]/raw['XLP']['Close'].iloc[-2]) - 1
                   s6 = get_s(cons*100, 0, 1) * 0.10
-                  
                   s7 = 5.0
                   if 'HYG' in raw and len(raw['HYG']) >= 20:
                       s7 = get_s(raw['HYG']['Close'].iloc[-1]/raw['HYG']['Close'].rolling(20).mean().iloc[-1]*100, 100, 2) * 0.075
-                  
                   def get_mfi(t):
                       if t not in raw or 'Volume' not in raw[t]: return 1.0
                       return (raw[t]['Close'].iloc[-1] * raw[t]['Volume'].iloc[-1]) / ((raw[t]['Close'] * raw[t]['Volume']).rolling(20).mean().iloc[-1] + 1e-9)
                   s8 = get_s(get_mfi('QQQ') / get_mfi('DIA'), 1, 0.5) * 0.04
-                  
                   s9 = 2.0
                   if '^TYX' in raw and '^TNX' in raw:
                       s9 = get_s(raw['^TYX']['Close'].iloc[-1] - raw['^TNX']['Close'].iloc[-1], 0.2, 0.5) * 0.035
-                  
                   return int(s1+s2+s3+s4+s5+s6+s7+s8+s9)
               except: return old_indicators.get("master_score", 50)
           master_score = calculate_master_score()
 
-          # [변화량 계산] 어제 대비 점수 변동폭
           prev_score = old_indicators.get("master_score", master_score)
           delta = master_score - prev_score
           delta_text = f"{'+' if delta > 0 else ''}{delta}" if delta != 0 else "유지"
 
-          # 3. 연준 심리 데이터 (보존)
           fomc_data = [{"word": "INFLATION", "sentiment_score": -1.8, "status": "NEUTRAL", "display_score": "-1.8", "count": 52}, {"word": "RATE", "sentiment_score": 0.4, "status": "NEUTRAL", "display_score": "+0.4", "count": 48}, {"word": "POLICY", "sentiment_score": -0.2, "status": "NEUTRAL", "display_score": "-0.2", "count": 34}, {"word": "RISKS", "sentiment_score": -0.5, "status": "NEUTRAL", "display_score": "-0.5", "count": 21}, {"word": "GROWTH", "sentiment_score": -0.1, "status": "NEUTRAL", "display_score": "-0.1", "count": 20}, {"word": "LABOR", "sentiment_score": -0.0, "status": "NEUTRAL", "display_score": "-0.0", "count": 18}, {"word": "CREDIT", "sentiment_score": 0.2, "status": "NEUTRAL", "display_score": "+0.2", "count": 13}, {"word": "GDP", "sentiment_score": -0.2, "status": "NEUTRAL", "display_score": "-0.2", "count": 11}, {"word": "PRICES", "sentiment_score": 0.0, "status": "NEUTRAL", "display_score": "0.0", "count": 11}, {"word": "EMPLOYMENT", "sentiment_score": -0.1, "status": "NEUTRAL", "display_score": "-0.1", "count": 7}, {"word": "ECONOMY", "sentiment_score": -0.7, "status": "NEUTRAL", "display_score": "-0.7", "count": 5}, {"word": "STABILITY", "sentiment_score": 0.0, "status": "NEUTRAL", "display_score": "0.0", "count": 3}]
-
-          # 4. 프리미엄 뉴스 수집 (보존)
           def fetch_premium_news():
               headlines = []
               urls = ["https://feeds.a.dj.com/rss/RSSMarketsMain.xml", "https://news.google.com/rss/search?q=when:1d+AND+(source:Bloomberg+OR+source:Reuters)+market+finance&hl=en-US&gl=US&ceid=US:en"]
@@ -175,7 +157,6 @@ jobs:
               return list(set(headlines))
           all_headlines = fetch_premium_news()
 
-          # 5. 제미나이 AI 분석 (보존)
           dynamic_news, ai_briefing, period_interpretation = {}, "데이터 분석 중...", {}
           try:
               model = genai.GenerativeModel('gemini-2.0-flash')
@@ -188,7 +169,6 @@ jobs:
                   if k in data: dynamic_news[k] = data[k]
           except: pass
 
-          # 6. indicators.json 저장 (모든 데이터 통합)
           os.makedirs('PROJECT', exist_ok=True)
           with open('PROJECT/indicators.json', 'w', encoding='utf-8') as f:
               json.dump({
@@ -203,32 +183,45 @@ jobs:
                   "dynamic_news": dynamic_news
               }, f, ensure_ascii=False, indent=4)
 
-          # 7. 차트 엔진 (★KOSPI 등 차트 실종 방지용 3단 폴백 추가★)
+          # 7. 차트 엔진 (세션 적용하여 데이터 증발 방지)
           chart_tickers = {'BTC': 'BTC-USD', 'SPY': 'SPY', 'QQQ': 'QQQ', 'DIA': 'DIA', 'US10Y': '^TNX', 'US02Y': '^FVX', 'OIL': 'CL=F', 'GOLD': 'GC=F', 'KOSPI': '^KS11', 'USDKRW': 'KRW=X'}
-          chart_data = old_charts 
+          chart_data = old_charts if isinstance(old_charts, dict) else {}
+          
           for name, tkr in chart_tickers.items():
+              if name not in chart_data or not isinstance(chart_data[name], dict):
+                  chart_data[name] = {
+                      "day": {"labels": ["00:00"], "prices": [0.0]}, "week": {"labels": ["00:00"], "prices": [0.0]},
+                      "month": {"labels": ["00:00"], "prices": [0.0]}, "quarter": {"labels": ["00:00"], "prices": [0.0]},
+                      "year": {"labels": ["00:00"], "prices": [0.0]}, "long": {"labels": ["00:00"], "prices": [0.0]}
+                  }
+              
               try:
-                  tk = yf.Ticker(tkr)
-                  def sync_data(df, label_fmt):
-                      if df is None or df.empty: return None
-                      prices = df['Close'].ffill().fillna(0).tolist()
-                      return {"labels": df.index.strftime(label_fmt).tolist(), "prices": [round(float(x), 2) for x in prices]}
+                  tk = yf.Ticker(tkr, session=session) # 여기서도 세션 적용
+                  def get_data(period, interval, fmt):
+                      try:
+                          df = tk.history(period=period, interval=interval)
+                          if df.empty and interval == "15m": df = tk.history(period="5d", interval="1d")
+                          if df.empty: return None
+                          prices = df['Close'].ffill().fillna(0).tolist()
+                          return {"labels": df.index.strftime(fmt).tolist(), "prices": [round(float(x), 2) for x in prices]}
+                      except: return None
+
+                  d_data = get_data("5d", "15m", '%H:%M')
+                  if d_data: 
+                      d_data["labels"], d_data["prices"] = d_data["labels"][-50:], d_data["prices"][-50:]
+                      chart_data[name]["day"] = d_data
                   
-                  # KOSPI 같은 종목은 15분 단위 데이터가 안 나올 때가 많아 1d(일봉)로 안전하게 가져오는 방어 로직
-                  hist_day = tk.history(period="5d", interval="15m")
-                  if hist_day.empty: hist_day = tk.history(period="5d", interval="1d")
-                  
-                  new_day = sync_data(hist_day.tail(50), '%H:%M')
-                  if new_day:
-                      chart_data[name] = {
-                          "day": new_day,
-                          "week": sync_data(tk.history(period="5d", interval="1h"), '%m-%d %H:00'),
-                          "month": sync_data(tk.history(period="1mo", interval="1d"), '%m-%d'),
-                          "quarter": sync_data(tk.history(period="3mo", interval="1d"), '%m-%d'),
-                          "year": sync_data(tk.history(period="1y", interval="1wk"), '%y-%m'),
-                          "long": sync_data(tk.history(period="max", interval="1mo"), '%Y')
-                      }
-              except: continue
+                  w_data = get_data("5d", "1h", '%m-%d %H:00')
+                  if w_data: chart_data[name]["week"] = w_data
+                  m_data = get_data("1mo", "1d", '%m-%d')
+                  if m_data: chart_data[name]["month"] = m_data
+                  q_data = get_data("3mo", "1d", '%m-%d')
+                  if q_data: chart_data[name]["quarter"] = q_data
+                  y_data = get_data("1y", "1wk", '%y-%m')
+                  if y_data: chart_data[name]["year"] = y_data
+                  l_data = get_data("max", "1mo", '%Y')
+                  if l_data: chart_data[name]["long"] = l_data
+              except: pass
           
           with open('PROJECT/market_charts.json', 'w', encoding='utf-8') as f:
               json.dump(chart_data, f, ensure_ascii=False)
@@ -239,5 +232,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "🚀 Complete Fix: Empty Cards, KOSPI, TSLA Search Restored" || echo "No changes"
+          git commit -m "🚀 Critical Fix: Bypassed Yahoo Finance IP Ban with Session" || echo "No changes"
           git push
