@@ -1,19 +1,19 @@
 {
-    "last_updated": "2026-03-17 20:33:26",
+    "last_updated": "2026-03-17 22:26:46",
     "master_score": 40,
-    "score_delta": "-4",
+    "score_delta": "0",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 74009.88,
-            "change": -1.14,
+            "price": 73745.98,
+            "change": -1.49,
             "name": "Bitcoin USD",
-            "marketCap": 1480422719488,
+            "marketCap": 1475144056832,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
             "target": "N/A",
-            "summary": "정보 없음...................................."
+            "summary": "정보 없음......................................."
         },
         "SPY": {
             "price": 669.03,
@@ -57,29 +57,29 @@
             "eps": "N/A",
             "dividend": "N/A",
             "target": "N/A",
-            "summary": "정보 수집 중.............................."
+            "summary": "정보 수집 중................................."
         },
         "^VIX": {
-            "price": 23.55,
-            "change": 0.17,
+            "price": 22.49,
+            "change": -4.34,
             "name": "CBOE Volatility Index",
             "marketCap": "N/A",
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
             "target": "N/A",
-            "summary": "정보 없음...................................."
+            "summary": "정보 없음......................................."
         },
         "GC=F": {
-            "price": 5011.7,
-            "change": 0.35,
+            "price": 5021.8,
+            "change": 0.56,
             "name": "Gold Apr 26",
             "marketCap": "N/A",
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
             "target": "N/A",
-            "summary": "정보 없음...................................."
+            "summary": "정보 없음......................................."
         },
         "HYG": {
             "price": 79.45,
@@ -115,48 +115,48 @@
             "summary": "In seeking to track the performance of the index, the fund employs a replication strategy. It generally invests substantially all, but at least 95%, o..."
         },
         "^TNX": {
-            "price": 4.22,
-            "change": -1.52,
+            "price": 4.2,
+            "change": -0.47,
             "name": "CBOE Interest Rate 10 Year T No",
             "marketCap": "N/A",
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
             "target": "N/A",
-            "summary": "정보 없음...................................."
+            "summary": "정보 없음......................................."
         },
         "^TYX": {
-            "price": 4.86,
-            "change": -1.0,
+            "price": 4.85,
+            "change": -0.21,
             "name": "Treasury Yield 30 Years",
             "marketCap": "N/A",
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
             "target": "N/A",
-            "summary": "정보 없음...................................."
+            "summary": "정보 없음......................................."
         },
         "^FVX": {
-            "price": 3.8,
-            "change": -1.83,
+            "price": 3.78,
+            "change": -0.63,
             "name": "Treasury Yield 5 Years",
             "marketCap": "N/A",
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
             "target": "N/A",
-            "summary": "정보 없음...................................."
+            "summary": "정보 없음......................................."
         },
         "CL=F": {
-            "price": 95.67,
-            "change": 2.32,
+            "price": 94.17,
+            "change": 0.72,
             "name": "Crude Oil Apr 26",
             "marketCap": "N/A",
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
             "target": "N/A",
-            "summary": "정보 없음...................................."
+            "summary": "정보 없음......................................."
         },
         "^KS11": {
             "price": 5640.48,
@@ -167,18 +167,18 @@
             "eps": "N/A",
             "dividend": "N/A",
             "target": "N/A",
-            "summary": "정보 없음...................................."
+            "summary": "정보 없음......................................."
         },
         "KRW=X": {
-            "price": 1490.74,
-            "change": -0.73,
+            "price": 1485.94,
+            "change": -1.05,
             "name": "USD/KRW",
             "marketCap": "N/A",
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
             "target": "N/A",
-            "summary": "정보 없음...................................."
+            "summary": "정보 없음......................................."
         },
         "AAPL": {
             "price": 252.82,
@@ -335,5 +335,6 @@
             "count": 3
         }
     ],
-    "dynamic_news": {}
+    "dynamic_news": {},
+    "earnings_calendar": []
 }
