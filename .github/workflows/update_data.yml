@@ -21,12 +21,13 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -U google-generativeai yfinance pandas requests
+          pip install -U google-generativeai yfinance pandas requests openai
 
       - name: Run Update Script
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          FMP_API_KEY: ${{ secrets.FMP_API_KEY }} # ★ 깃허브 Secret에 등록한 FMP 키를 불러옵니다 ★
+          FMP_API_KEY: ${{ secrets.FMP_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           python << 'EOF'
           import warnings
@@ -38,7 +39,7 @@ jobs:
 
           # 환경 설정
           api_key = os.getenv("GEMINI_API_KEY")
-          fmp_key = os.getenv("FMP_API_KEY") or "1opq2WKRuLAnZ6jsP9ySOQGfVaszJCJt" # 사용자 제공 키 적용
+          fmp_key = os.getenv("FMP_API_KEY") 
           genai.configure(api_key=api_key)
           now_korea = (datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=9))
           sync_time = now_korea.strftime('%Y-%m-%d %H:%M:%S')
@@ -58,11 +59,11 @@ jobs:
           stock_financials = {}
           old_sf = old_indicators.get("stock_financials", {})
 
-          # ★ [추가] FMP API 일괄 호출 (할당량 절약 및 속도 향상) ★
+          # FMP API 일괄 호출
           fmp_data = {}
           if fmp_key:
               try:
-                  query_tickers = [t.replace('-USD', 'USD') for t in tickers_list] # FMP 형식에 맞게 변환
+                  query_tickers = [t.replace('-USD', 'USD') for t in tickers_list]
                   fmp_url = f"https://financialmodelingprep.com/api/v3/quote/{','.join(query_tickers)}?apikey={fmp_key}"
                   res = requests.get(fmp_url, timeout=10).json()
                   if isinstance(res, list):
@@ -70,7 +71,7 @@ jobs:
                           fmp_data[item['symbol']] = item
               except: pass
 
-          # 2. 마켓 데이터 수집 (하이브리드: 차트는 야후, 숫자는 FMP)
+          # 2. 마켓 데이터 수집
           for t in tickers_list:
               prev_data = old_sf.get(t, {})
               stock_financials[t] = {
@@ -85,40 +86,29 @@ jobs:
                   "summary": prev_data.get("summary", "정보 수집 중...")
               }
 
-              # [유지] 지표 계산과 차트를 위한 야후 히스토리 수집 (정상 작동 부분)
               try:
                   tk = yf.Ticker(t)
                   df = tk.history(period="180d") 
                   if not df.empty:
-                      df = df.ffill().fillna(0)
-                      raw[t] = df
-                      
+                      df = df.ffill().fillna(0); raw[t] = df
                       current_p = float(df['Close'].iloc[-1])
                       if len(df) >= 2:
                           prev_p = float(df['Close'].iloc[-2])
                           change_p = round(((current_p / prev_p) - 1) * 100, 2) if prev_p != 0 else 0.0
-                      else:
-                          change_p = 0.0
-                      
+                      else: change_p = 0.0
                       stock_financials[t]["price"] = round(current_p, 2)
                       stock_financials[t]["change"] = change_p
               except: pass
 
-              # ★ [핵심 교체] FMP 공식 API 데이터로 숫자 덮어쓰기 ★
               fmp_sym = t.replace('-USD', 'USD')
               if fmp_sym in fmp_data:
                   fd = fmp_data[fmp_sym]
-                  
-                  # 1. 기본 Quote 데이터 업데이트
                   update_data = {
                       "price": round(fd.get("price", stock_financials[t]["price"]), 2),
                       "change": round(fd.get("changesPercentage", stock_financials[t]["change"]), 2),
                       "name": fd.get("name", stock_financials[t]["name"]),
-                      "marketCap": f"${round(fd.get('marketCap', 0) / 1000000000, 2)}B" if fd.get('marketCap') else "N/A",
-                      "summary": "공식 실시간 API 연동 완료"
+                      "marketCap": f"${round(fd.get('marketCap', 0) / 1000000000, 2)}B" if fd.get('marketCap') else "N/A"
                   }
-                  
-                  # 2. 정확한 P/E, EPS, 배당률(TTM)을 위해 FMP key-metrics-ttm 호출
                   if fmp_key:
                       try:
                           m_url = f"https://financialmodelingprep.com/api/v3/key-metrics-ttm/{fmp_sym}?apikey={fmp_key}"
@@ -127,87 +117,59 @@ jobs:
                               metrics = m_res[0]
                               update_data["per"] = round(metrics.get("peRatioTTM", fd.get("pe", 0)), 2) if metrics.get("peRatioTTM") else (round(fd.get("pe", 0), 2) if fd.get("pe") else "N/A")
                               update_data["eps"] = round(fd.get("eps", 0), 2) if fd.get("eps") else "N/A"
-                              
-                              raw_yield = metrics.get("dividendYieldPercentageTTM")
-                              # 잘못된 과거 메모리를 지우고, 값이 있을 때만 정상 퍼센티지로 업데이트
-                              update_data["dividend"] = round(raw_yield * 100, 2) if raw_yield else "N/A"
-                          else:
-                              # ETF 등 key-metrics 가 없는 경우 (과거 잘못된 메모리 초기화)
-                              update_data["per"] = round(fd.get("pe", 0), 2) if fd.get("pe") else "N/A"
-                              update_data["eps"] = round(fd.get("eps", 0), 2) if fd.get("eps") else "N/A"
-                              update_data["dividend"] = "N/A"
-                      except:
-                          update_data["per"] = round(fd.get("pe", 0), 2) if fd.get("pe") else "N/A"
-                          update_data["eps"] = round(fd.get("eps", 0), 2) if fd.get("eps") else "N/A"
-                          update_data["dividend"] = "N/A"
-                  
+                              update_data["dividend"] = round(metrics.get("dividendYieldPercentageTTM", 0) * 100, 2) if metrics.get("dividendYieldPercentageTTM") else "N/A"
+                      except: pass
                   stock_financials[t].update(update_data)
               else:
-                  # FMP에 없는 한국 지수나 특수 종목만 야후 info로 예비 수집 (실패해도 이전 기억 유지됨)
                   try:
                       info = tk.info
                       if info and 'shortName' in info:
                           stock_financials[t].update({
                               "name": info.get('shortName', t),
                               "marketCap": info.get('marketCap', stock_financials[t]["marketCap"]),
-                              "per": info.get('trailingPE', info.get('forwardPE', stock_financials[t]["per"])), # trailing 우선!
-                              "eps": info.get('trailingEps', info.get('forwardEps', stock_financials[t]["eps"])), # trailing 우선!
-                              "dividend": round(info.get('dividendYield', 0) * 100, 2) if info.get('dividendYield') else "N/A", # 과거 엉뚱한 값 방지
+                              "per": info.get('trailingPE', info.get('forwardPE', stock_financials[t]["per"])),
+                              "eps": info.get('trailingEps', info.get('forwardEps', stock_financials[t]["eps"])),
+                              "dividend": round(info.get('dividendYield', 0) * 100, 2) if info.get('dividendYield') else "N/A",
                               "target": info.get('targetMeanPrice', stock_financials[t]["target"]),
                               "summary": str(info.get('longBusinessSummary', stock_financials[t]["summary"]))[:150] + "..."
                           })
                   except: pass
               time.sleep(0.5) 
 
-          def get_safe_chg(t):
-              return stock_financials.get(t, {}).get("change", 0.0)
-
+          def get_safe_chg(t): return stock_financials.get(t, {}).get("change", 0.0)
           current_vix = round(raw['^VIX']['Close'].iloc[-1], 2) if ('^VIX' in raw) else 20.0
           market_stats = f"VIX: {current_vix}, S&P500: {get_safe_chg('SPY')}%, Nasdaq: {get_safe_chg('QQQ')}%, BTC: {get_safe_chg('BTC-USD')}%"
 
-          # [엔진] 9대 지표 실시간 스코어 계산 (오리지널 로직 보존)
           def calculate_master_score():
               try:
                   def get_s(val, mid, span): return max(0, min(100, (val - (mid - span)) * (100 / (2 * span))))
                   s1 = get_s(35 - current_vix, 20, 15) * 0.25
-                  gc_val = 0.0
-                  if 'GC=F' in raw and len(raw['GC=F']) >= 2:
-                      gc_val = -((raw['GC=F']['Close'].iloc[-1]/raw['GC=F']['Close'].iloc[-2]-1)*100)
+                  gc_val = -((raw['GC=F']['Close'].iloc[-1]/raw['GC=F']['Close'].iloc[-2]-1)*100) if 'GC=F' in raw and len(raw['GC=F']) >= 2 else 0
                   s2 = get_s(gc_val, 0, 2) * 0.15
                   s3 = 50 * 0.15
                   if 'SPY' in raw and len(raw['SPY']) >= 120:
                       s3 = get_s(raw['SPY']['Close'].iloc[-1]/raw['SPY']['Close'].rolling(120).mean().iloc[-1]*100, 100, 5) * 0.15
                   s4, s5 = get_s(get_safe_chg('BTC-USD'), 0, 3) * 0.10, get_s(-get_safe_chg('DX-Y.NYB'), 0, 1) * 0.10
-                  cons = 0
-                  if 'XLY' in raw and 'XLP' in raw:
-                      cons = (raw['XLY']['Close'].iloc[-1]/raw['XLP']['Close'].iloc[-1]) / (raw['XLY']['Close'].iloc[-2]/raw['XLP']['Close'].iloc[-2]) - 1
-                  s6 = get_s(cons*100, 0, 1) * 0.10
-                  s7 = 5.0
-                  if 'HYG' in raw and len(raw['HYG']) >= 20:
-                      s7 = get_s(raw['HYG']['Close'].iloc[-1]/raw['HYG']['Close'].rolling(20).mean().iloc[-1]*100, 100, 2) * 0.075
+                  cons = (raw['XLY']['Close'].iloc[-1]/raw['XLP']['Close'].iloc[-1]) / (raw['XLY']['Close'].iloc[-2]/raw['XLP']['Close'].iloc[-2]) - 1 if 'XLY' in raw and 'XLP' in raw else 0
+                  s6, s7 = get_s(cons*100, 0, 1) * 0.10, 5.0
+                  if 'HYG' in raw and len(raw['HYG']) >= 20: s7 = get_s(raw['HYG']['Close'].iloc[-1]/raw['HYG']['Close'].rolling(20).mean().iloc[-1]*100, 100, 2) * 0.075
                   def get_mfi(t):
                       if t not in raw or 'Volume' not in raw[t]: return 1.0
                       return (raw[t]['Close'].iloc[-1] * raw[t]['Volume'].iloc[-1]) / ((raw[t]['Close'] * raw[t]['Volume']).rolling(20).mean().iloc[-1] + 1e-9)
                   s8 = get_s(get_mfi('QQQ') / get_mfi('DIA'), 1, 0.5) * 0.04
-                  s9 = 2.0
-                  if '^TYX' in raw and '^TNX' in raw:
-                      s9 = get_s(raw['^TYX']['Close'].iloc[-1] - raw['^TNX']['Close'].iloc[-1], 0.2, 0.5) * 0.035
+                  s9 = get_s(raw['^TYX']['Close'].iloc[-1] - raw['^TNX']['Close'].iloc[-1], 0.2, 0.5) * 0.035 if '^TYX' in raw and '^TNX' in raw else 2.0
                   return int(s1+s2+s3+s4+s5+s6+s7+s8+s9)
-              except: return old_indicators.get("master_score", 50)
+              except: return 50
           master_score = calculate_master_score()
-
-          prev_score = old_indicators.get("master_score", master_score)
-          delta = master_score - prev_score
-          delta_text = f"{'+' if delta > 0 else ''}{delta}" if delta != 0 else "유지"
+          delta_text = f"{'+' if master_score - old_indicators.get('master_score', master_score) > 0 else ''}{master_score - old_indicators.get('master_score', master_score)}"
 
           fomc_data = [{"word": "INFLATION", "sentiment_score": -1.8, "status": "NEUTRAL", "display_score": "-1.8", "count": 52}, {"word": "RATE", "sentiment_score": 0.4, "status": "NEUTRAL", "display_score": "+0.4", "count": 48}, {"word": "POLICY", "sentiment_score": -0.2, "status": "NEUTRAL", "display_score": "-0.2", "count": 34}, {"word": "RISKS", "sentiment_score": -0.5, "status": "NEUTRAL", "display_score": "-0.5", "count": 21}, {"word": "GROWTH", "sentiment_score": -0.1, "status": "NEUTRAL", "display_score": "-0.1", "count": 20}, {"word": "LABOR", "sentiment_score": -0.0, "status": "NEUTRAL", "display_score": "-0.0", "count": 18}, {"word": "CREDIT", "sentiment_score": 0.2, "status": "NEUTRAL", "display_score": "+0.2", "count": 13}, {"word": "GDP", "sentiment_score": -0.2, "status": "NEUTRAL", "display_score": "-0.2", "count": 11}, {"word": "PRICES", "sentiment_score": 0.0, "status": "NEUTRAL", "display_score": "0.0", "count": 11}, {"word": "EMPLOYMENT", "sentiment_score": -0.1, "status": "NEUTRAL", "display_score": "-0.1", "count": 7}, {"word": "ECONOMY", "sentiment_score": -0.7, "status": "NEUTRAL", "display_score": "-0.7", "count": 5}, {"word": "STABILITY", "sentiment_score": 0.0, "status": "NEUTRAL", "display_score": "0.0", "count": 3}]
           def fetch_premium_news():
               headlines = []
               urls = ["https://feeds.a.dj.com/rss/RSSMarketsMain.xml", "https://news.google.com/rss/search?q=when:1d+AND+(source:Bloomberg+OR+source:Reuters)+market+finance&hl=en-US&gl=US&ceid=US:en"]
-              headers = {'User-Agent': 'Mozilla/5.0'}
               for url in urls:
                   try:
-                      req = urllib.request.Request(url, headers=headers); res = urllib.request.urlopen(req, timeout=10)
+                      req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'}); res = urllib.request.urlopen(req, timeout=10)
                       root = ElementTree.fromstring(res.read())
                       for item in root.findall('.//item')[:15]: headlines.append(item.find('title').text)
                   except: pass
@@ -217,74 +179,63 @@ jobs:
           dynamic_news, ai_briefing, period_interpretation = {}, "데이터 분석 중...", {}
           try:
               model = genai.GenerativeModel('gemini-2.0-flash')
-              prompt = f"데이터 분석 및 요약 요청: {market_stats} {all_headlines[:20]}. 한국어로 JSON 응답."
+              prompt = f"데이터 분석 요약 요청: {market_stats} {all_headlines[:20]}. 한국어 JSON 응답."
               response = model.generate_content(prompt, generation_config={"response_mime_type": "application/json"})
               data = json.loads(response.text)
-              ai_briefing = data.get("briefing", ai_briefing)
-              period_interpretation = data.get("analysis", period_interpretation)
+              ai_briefing, period_interpretation = data.get("briefing", ai_briefing), data.get("analysis", period_interpretation)
               for k in ["거시경제", "주식시장", "암호화폐", "원자재", "빅테크", "지정학"]:
                   if k in data: dynamic_news[k] = data[k]
           except: pass
 
+          # [실적 데이터 추가]
+          earnings_calendar = []
+          if fmp_key:
+              try:
+                  start_date = now_korea.strftime('%Y-%m-%d')
+                  end_date = (now_korea + datetime.timedelta(days=7)).strftime('%Y-%m-%d')
+                  e_url = f"https://financialmodelingprep.com/api/v3/earning_calendar?from={start_date}&to={end_date}&apikey={fmp_key}"
+                  e_res = requests.get(e_url, timeout=10).json()
+                  if isinstance(e_res, list):
+                      for item in e_res:
+                          earnings_calendar.append({"date": item.get('date'), "symbol": item.get('symbol'), "name": item.get('company'), "time": item.get('time', 'bmo').lower(), "eps_est": item.get('epsEstimated', 'N/A'), "rev_est": item.get('revenueEstimated', 'N/A')})
+              except: pass
+
           os.makedirs('PROJECT', exist_ok=True)
           with open('PROJECT/indicators.json', 'w', encoding='utf-8') as f:
-              json.dump({
-                  "last_updated": sync_time, 
-                  "master_score": master_score, 
-                  "score_delta": delta_text, 
-                  "market_temp": "-2.5",
-                  "stock_financials": stock_financials,
-                  "ai_summary": ai_briefing, 
-                  "period_interpretation": period_interpretation,
-                  "fomc_indicators": fomc_data, 
-                  "dynamic_news": dynamic_news
-              }, f, ensure_ascii=False, indent=4)
+              json.dump({"last_updated": sync_time, "master_score": master_score, "score_delta": delta_text, "market_temp": old_indicators.get("market_temp", "-2.5"), "stock_financials": stock_financials, "ai_summary": ai_briefing, "period_interpretation": period_interpretation, "fomc_indicators": fomc_data, "dynamic_news": dynamic_news, "earnings_calendar": earnings_calendar}, f, ensure_ascii=False, indent=4)
 
-          # 7. 차트 엔진 (★차트도 기억 유지! 실패 시 이전 차트 보존★)
+          # 차트 엔진
           chart_tickers = {'BTC': 'BTC-USD', 'SPY': 'SPY', 'QQQ': 'QQQ', 'DIA': 'DIA', 'US10Y': '^TNX', 'US02Y': '^FVX', 'OIL': 'CL=F', 'GOLD': 'GC=F', 'KOSPI': '^KS11', 'USDKRW': 'KRW=X'}
           chart_data = old_charts if isinstance(old_charts, dict) else {}
-          
           for name, tkr in chart_tickers.items():
-              if name not in chart_data or not isinstance(chart_data[name], dict):
-                  chart_data[name] = {"day": None, "week": None, "month": None, "quarter": None, "year": None, "long": None}
-              
+              if name not in chart_data: chart_data[name] = {"day": None, "week": None, "month": None, "quarter": None, "year": None, "long": None}
               try:
                   tk = yf.Ticker(tkr)
                   def get_data(period, interval, fmt):
                       try:
                           df = tk.history(period=period, interval=interval)
-                          if df.empty and interval == "15m": df = tk.history(period="5d", interval="1d")
                           if df.empty: return None
-                          prices = df['Close'].ffill().fillna(0).tolist()
-                          return {"labels": df.index.strftime(fmt).tolist(), "prices": [round(float(x), 2) for x in prices]}
+                          return {"labels": df.index.strftime(fmt).tolist(), "prices": [round(float(x), 2) for x in df['Close'].ffill().fillna(0).tolist()]}
                       except: return None
-
                   d_data = get_data("5d", "15m", '%H:%M')
-                  if d_data: 
-                      d_data["labels"], d_data["prices"] = d_data["labels"][-50:], d_data["prices"][-50:]
-                      chart_data[name]["day"] = d_data # 성공했을 때만 덮어씀!
-                  
-                  w_data = get_data("5d", "1h", '%m-%d %H:00')
+                  if d_data: d_data["labels"], d_data["prices"] = d_data["labels"][-50:], d_data["prices"][-50:]; chart_data[name]["day"] = d_data
+                  w_data = get_data("5d", "1h", '%m-%d %H:00'); m_data = get_data("1mo", "1d", '%m-%d'); q_data = get_data("3mo", "1d", '%m-%d'); y_data = get_data("1y", "1wk", '%y-%m'); l_data = get_data("max", "1mo", '%Y')
                   if w_data: chart_data[name]["week"] = w_data
-                  m_data = get_data("1mo", "1d", '%m-%d')
                   if m_data: chart_data[name]["month"] = m_data
-                  q_data = get_data("3mo", "1d", '%m-%d')
                   if q_data: chart_data[name]["quarter"] = q_data
-                  y_data = get_data("1y", "1wk", '%y-%m')
                   if y_data: chart_data[name]["year"] = y_data
-                  l_data = get_data("max", "1mo", '%Y')
                   if l_data: chart_data[name]["long"] = l_data
               except: pass
-              time.sleep(0.5) # 차트도 천천히!
-          
-          with open('PROJECT/market_charts.json', 'w', encoding='utf-8') as f:
-              json.dump(chart_data, f, ensure_ascii=False)
+              time.sleep(0.5)
+          with open('PROJECT/market_charts.json', 'w', encoding='utf-8') as f: json.dump(chart_data, f, ensure_ascii=False)
           EOF
+          
+          python fomc_analyzer.py
 
       - name: Commit and Push
         run: |
           git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.email "github-actions[bot]"
           git add .
-          git commit -m "🚀 Hybrid Integration: Replaced numerical data fetch with FMP Official API" || echo "No changes"
+          git commit -m "🚀 Complete Data Sync" || echo "No changes"
           git push

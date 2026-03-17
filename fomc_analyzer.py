@@ -1,103 +1,128 @@
 import json
-import re
 import os
-from collections import Counter
+import time
+from openai import OpenAI
 
-# 1. 핵심 키워드 및 맥락 규칙 (내가 고도화하신 그 로직 그대로)
-TARGET_KEYWORDS = ["INFLATION", "EMPLOYMENT", "RATE", "ECONOMY", "LABOR", "PRICES", "GROWTH", "STABILITY", "RISKS", "DEMAND", "SUPPLY", "SPENDING", "WAGES", "HOUSING", "ENERGY", "TIGHTENING", "EASING", "GDP", "POLICY", "BANKING", "CREDIT"]
+# ★ [보안 수정] 깃허브 보안 정책 위반 문자열을 완전히 제거했습니다 ★
+# API 키는 GitHub Secrets에 등록한 OPENAI_API_KEY 환경 변수에서 안전하게 가져옵니다.
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-CONTEXT_RULES = {
-    "SUPPLY": {"INCREASED": 2.5, "RECOVERY": 2.0, "LABOR": 1.5, "CONSTRAINTS": -4.5, "DISRUPTION": -5.0, "SHORTAGES": -4.0, "TIGHT": -3.0},
-    "INFLATION": {"EASING": 5.0, "DECLINING": 4.0, "SLOWING": 3.5, "PERSISTENT": -5.0, "ELEVATED": -4.0, "HIGH": -3.5, "STUBBORN": -4.5},
-    "RATE": {"HIKE": -5.0, "TIGHTENING": -4.0, "INCREASE": -3.5, "CUT": 5.0, "EASING": 4.5, "PAUSE": 2.5, "LOWER": 3.0},
-    "LABOR": {"STRONG": 2.0, "BALANCED": 3.0, "COOLING": 2.5, "TIGHT": -3.5, "SHORTAGES": -3.0}
-}
+# OpenAI 클라이언트 초기화
+client = OpenAI(api_key=OPENAI_API_KEY)
 
-POS_WORDS = ["MODERATE", "RESILIENT", "SUPPORTIVE", "STABLE", "GRADUAL"]
-NEG_WORDS = ["UNCERTAINTY", "VOLATILE", "CONCERNS", "WEAKENING", "DOWNSIDE"]
-
-def analyze_core_logic(text):
-    """[통합 뇌] 현재와 과거 분석에 공통으로 사용되는 핵심 엔진"""
-    text = text.upper()
-    all_words = re.findall(r'\w+', text)
-    filtered_words = [w for w in all_words if w in TARGET_KEYWORDS]
-    top_keywords = Counter(filtered_words).most_common(12)
-    sentences = re.split(r'[.!?]', text)
+def analyze_with_openai(text, filename):
+    """OpenAI GPT-4o-mini를 사용하여 의사록 심층 분석"""
+    print(f"🤖 OpenAI 분석 중: {filename}...")
     
-    indicators = []
-    total_sentiment = 0
+    # OpenAI는 문맥 파악 능력이 뛰어나므로 핵심 15,000자 정도를 보냅니다.
+    safe_text = text[:15000] 
 
-    for word, count in top_keywords:
-        word_score = 0
-        match_sents = [s for s in sentences if word in s]
-        if not match_sents: continue
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "너는 월스트리트의 시니어 연준 정책 분석가야. FOMC 의사록을 분석하여 정교한 데이터(JSON)를 제공해야 해."},
+                {"role": "user", "content": f"""
+                다음 FOMC 의사록 전문을 읽고 분석해줘.
+                
+                [명령어]
+                1. 종합 점수: 매파적(금리인상 선호)이면 마이너스(-), 비둘기파적(금리인하 선호)이면 플러스(+)로 -10~+10점 사이로 매겨.
+                2. 3줄 요약: 이번 의사록의 핵심을 한국어 3줄로 요약해.
+                3. 테마 분석: 인플레이션, 고용, 금리 등 주요 키워드 6개에 대해 각각 점수와 뉘앙스를 추출해.
 
-        for sent in match_sents:
-            # 맥락 규칙 적용
-            score = 0
-            if word in CONTEXT_RULES:
-                for trigger, weight in CONTEXT_RULES[word].items():
-                    if trigger in sent: score += weight
-            for p in POS_WORDS:
-                if p in sent: score += 1.0
-            for n in NEG_WORDS:
-                if n in sent: score -= 1.5
-            word_score += score
+                [응답 포맷 - 반드시 JSON]
+                {{
+                  "total_score": float,
+                  "summary": "3줄 요약문",
+                  "themes": [
+                    {{ "theme": "키워드", "score": float, "nuance": "뉘앙스 설명" }}
+                  ]
+                }}
+
+                [의사록 전문]
+                {safe_text}
+                """}
+            ],
+            response_format={ "type": "json_object" } # JSON 모드 강제
+        )
         
-        avg_word_score = round(word_score / len(match_sents), 1)
-        status = "NEUTRAL"
-        if avg_word_score >= 2.0: status = "POSITIVE"
-        elif avg_word_score <= -2.0: status = "NEGATIVE"
-
-        indicators.append({
-            "word": word, "sentiment_score": avg_word_score, "status": status,
-            "display_score": f"+{avg_word_score}" if avg_word_score > 0 else str(avg_word_score),
-            "count": count
-        })
-        total_sentiment += avg_word_score
-
-    avg_temp = round((total_sentiment / len(indicators)) * 10, 1) if indicators else 0.0
-    return {"temp": f"+{avg_temp}" if avg_temp > 0 else str(avg_temp), "indicators": indicators, "raw_temp": avg_temp}
+        return json.loads(response.choices[0].message.content)
+    except Exception as e:
+        print(f"❌ {filename} 분석 실패: {e}")
+        return None
 
 def run_all_analysis():
-    # 폴더 체크
-    if not os.path.exists('PROJECT'): os.makedirs('PROJECT')
-    if not os.path.exists('past_minutes'): os.makedirs('past_minutes')
+    past_dir = 'past_minutes'
+    project_dir = 'PROJECT'
+    if not os.path.exists(project_dir): os.makedirs(project_dir)
 
-    # --- 1. 현재 데이터 분석 ---
-    if os.path.exists('current_minutes.txt'):
-        with open('current_minutes.txt', 'r', encoding='utf-8') as f:
-            analysis = analyze_core_logic(f.read())
-            # 기존 indicators.json (뉴스 데이터 유지하며 업데이트)
-            target_path = 'PROJECT/indicators.json'
-            try:
-                with open(target_path, 'r', encoding='utf-8') as f_old:
-                    current_data = json.load(f_old)
-            except:
-                current_data = {}
-            
-            current_data["market_temp"] = analysis["temp"]
-            current_data["indicators"] = analysis["indicators"]
-            
-            with open(target_path, 'w', encoding='utf-8') as f_new:
-                json.dump(current_data, f_new, ensure_ascii=False, indent=2)
-            print(f"✅ 현재 데이터 분석 완료 (PROJECT/indicators.json)")
-
-    # --- 2. 과거 데이터 일괄 분석 ---
-    history = []
-    files = sorted([f for f in os.listdir('past_minutes') if f.endswith('.txt')])
-    for filename in files:
-        with open(os.path.join('past_minutes', filename), 'r', encoding='utf-8') as f:
-            analysis = analyze_core_logic(f.read())
-            history.append({
-                "date": filename.replace('.txt', '').replace('_', '-'),
-                "score": analysis["raw_temp"]
-            })
-            print(f"📊 과거 데이터 처리 중: {filename}")
+    history_path = os.path.join(project_dir, 'historical_data.json')
+    history_data = []
     
-    with open('PROJECT/historical_data.json', 'w', encoding='utf-8') as f_hist:
-        json.dump(history, f_hist, ensure_ascii=False, indent=2)
-    print(f"🚀 총 {len(history)}개의 과거 데이터 동기화 완료 (PROJECT/historical_data.json)")
+    # 이어하기 기능: 이미 분석된 파일은 건너뜁니다.
+    if os.path.exists(history_path):
+        try:
+            with open(history_path, 'r', encoding='utf-8') as f:
+                history_data = json.load(f)
+        except: pass
+
+    done_dates = [item['date'] for item in history_data]
+    files = sorted([f for f in os.listdir(past_dir) if f.endswith('.txt')])
+    latest_analysis = None
+
+    print(f"🚀 총 {len(files)}개의 의사록 분석을 시작합니다. (OpenAI GPT-4o-mini)")
+
+    for filename in files:
+        date_label = filename.replace('.txt', '')
+        if date_label in done_dates:
+            print(f"⏭️ {filename} 스킵")
+            continue
+
+        file_path = os.path.join(past_dir, filename)
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+            
+        analysis = analyze_with_openai(content, filename)
+        
+        if analysis:
+            score = analysis.get("total_score", 0.0)
+            history_data.append({"date": date_label, "score": score})
+            latest_analysis = analysis
+            print(f"✅ 완료: {filename} (점수: {score})")
+            
+            # 파일 하나 끝날 때마다 즉시 저장
+            with open(history_path, 'w', encoding='utf-8') as f:
+                json.dump(history_data, f, ensure_ascii=False, indent=2)
+        
+        # OpenAI는 처리 속도가 매우 빠르므로 1~2초만 쉬어도 충분합니다.
+        time.sleep(1)
+
+    # indicators.json 업데이트 (메인 화면용 최신 정보 반영)
+    if latest_analysis:
+        try:
+            with open(os.path.join(project_dir, 'indicators.json'), 'r', encoding='utf-8') as f_old:
+                current_indicators = json.load(f_old)
+        except: current_indicators = {}
+
+        total_score = latest_analysis.get("total_score", 0.0)
+        current_indicators["market_temp"] = f"+{total_score}" if total_score > 0 else str(total_score)
+        current_indicators["fomc_summary"] = latest_analysis.get("summary", "요약 정보 없음")
+        
+        fomc_indicators = []
+        for t in latest_analysis.get("themes", []):
+            sc = t.get("score", 0.0)
+            fomc_indicators.append({
+                "word": t.get("theme", "알수없음").upper(),
+                "sentiment_score": sc,
+                "status": "POSITIVE" if sc >= 1.5 else ("NEGATIVE" if sc <= -1.5 else "NEUTRAL"),
+                "display_score": f"+{sc}" if sc > 0 else str(sc),
+                "count": 1
+            })
+        current_indicators["fomc_indicators"] = fomc_indicators
+        with open(os.path.join(project_dir, 'indicators.json'), 'w', encoding='utf-8') as f_new:
+            json.dump(current_indicators, f_new, ensure_ascii=False, indent=2)
+
+    print(f"🏁 모든 분석 완료! {len(history_data)}개 데이터 동기화.")
 
 if __name__ == "__main__":
     run_all_analysis()
