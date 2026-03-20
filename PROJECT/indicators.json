@@ -1,19 +1,19 @@
 {
-    "last_updated": "2026-03-20 08:01:11",
-    "master_score": 48,
-    "score_delta": "-1",
+    "last_updated": "2026-03-20 14:07:57",
+    "master_score": 33,
+    "score_delta": "-15",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 70140.06,
-            "change": -1.55,
+            "price": 70792.45,
+            "change": -0.64,
             "name": "Bitcoin USD",
-            "marketCap": 1403014610944,
+            "marketCap": 1416064270336,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
             "target": "N/A",
-            "summary": "정보 없음..................................................................................................."
+            "summary": "정보 없음......................................................................................................"
         },
         "SPY": {
             "price": 659.8,
@@ -49,15 +49,15 @@
             "summary": "The Trust’s Portfolio consists of substantially all of the component common stocks that comprise the DJIA, which are weighted in accordance with the t..."
         },
         "DX-Y.NYB": {
-            "price": 99.16,
-            "change": -0.93,
+            "price": 99.44,
+            "change": -0.64,
             "name": "ICE US Dollar Index - Index - C",
             "marketCap": "N/A",
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
             "target": "N/A",
-            "summary": "정보 수집 중............................................................................................."
+            "summary": "정보 수집 중................................................................................................"
         },
         "^VIX": {
             "price": 24.06,
@@ -68,18 +68,18 @@
             "eps": "N/A",
             "dividend": "N/A",
             "target": "N/A",
-            "summary": "정보 없음..................................................................................................."
+            "summary": "정보 없음......................................................................................................"
         },
         "GC=F": {
-            "price": 4649.6,
-            "change": -4.91,
+            "price": 4721.8,
+            "change": 2.63,
             "name": "Gold Apr 26",
             "marketCap": "N/A",
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
             "target": "N/A",
-            "summary": "정보 없음..................................................................................................."
+            "summary": "정보 없음......................................................................................................"
         },
         "HYG": {
             "price": 79.66,
@@ -123,7 +123,7 @@
             "eps": "N/A",
             "dividend": "N/A",
             "target": "N/A",
-            "summary": "정보 없음..................................................................................................."
+            "summary": "정보 없음......................................................................................................"
         },
         "^TYX": {
             "price": 4.85,
@@ -134,7 +134,7 @@
             "eps": "N/A",
             "dividend": "N/A",
             "target": "N/A",
-            "summary": "정보 없음..................................................................................................."
+            "summary": "정보 없음......................................................................................................"
         },
         "^FVX": {
             "price": 3.92,
@@ -145,48 +145,48 @@
             "eps": "N/A",
             "dividend": "N/A",
             "target": "N/A",
-            "summary": "정보 없음..................................................................................................."
+            "summary": "정보 없음......................................................................................................"
         },
         "CL=F": {
-            "price": 94.12,
-            "change": -2.28,
+            "price": 93.99,
+            "change": -2.24,
             "name": "Crude Oil Apr 26",
             "marketCap": "N/A",
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
             "target": "N/A",
-            "summary": "정보 없음..................................................................................................."
+            "summary": "정보 없음......................................................................................................"
         },
         "^KS11": {
-            "price": 5763.22,
-            "change": -2.73,
+            "price": 5781.78,
+            "change": -2.42,
             "name": "KOSPI Composite Index",
             "marketCap": "N/A",
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
             "target": "N/A",
-            "summary": "정보 없음..................................................................................................."
+            "summary": "정보 없음......................................................................................................"
         },
         "KRW=X": {
-            "price": 1494.41,
-            "change": 0.64,
+            "price": 1498.18,
+            "change": -0.47,
             "name": "USD/KRW",
             "marketCap": "N/A",
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
             "target": "N/A",
-            "summary": "정보 없음..................................................................................................."
+            "summary": "정보 없음......................................................................................................"
         },
         "AAPL": {
             "price": 248.96,
             "change": -0.39,
             "name": "Apple Inc.",
             "marketCap": 3659195744256,
-            "per": 31.513924,
-            "eps": 7.9,
+            "per": 31.553867,
+            "eps": 7.89,
             "dividend": 42.0,
             "target": 295.43536,
             "summary": "Apple Inc. designs, manufactures, and markets smartphones, personal computers, tablets, wearables, and accessories worldwide. The company offers iPhon..."
@@ -207,8 +207,8 @@
             "change": -1.02,
             "name": "NVIDIA Corporation",
             "marketCap": 4339900874752,
-            "per": 36.3666,
-            "eps": 4.91,
+            "per": 36.51534,
+            "eps": 4.89,
             "dividend": 2.0,
             "target": 268.426,
             "summary": "NVIDIA Corporation operates as a data center scale AI infrastructure company. The company operates through two segments, Compute & Networking, and Gra..."
@@ -220,7 +220,7 @@
             "marketCap": 2891343462400,
             "per": 24.328955,
             "eps": 15.99,
-            "dividend": 93.0,
+            "dividend": 94.0,
             "target": 594.6217,
             "summary": "Microsoft Corporation develops and supports software, services, devices, and solutions worldwide. The Productivity and Business Processes segment offe..."
         },
@@ -229,8 +229,8 @@
             "change": -0.18,
             "name": "Alphabet Inc.",
             "marketCap": 3715351707648,
-            "per": 28.437963,
-            "eps": 10.8,
+            "per": 28.411655,
+            "eps": 10.81,
             "dividend": 27.0,
             "target": 376.75394,
             "summary": "Alphabet Inc. offers various products and platforms in the United States, Europe, the Middle East, Africa, the Asia-Pacific, Canada, and Latin America..."
@@ -240,8 +240,8 @@
             "change": -0.53,
             "name": "Amazon.com, Inc.",
             "marketCap": 2241021870080,
-            "per": 29.075209,
-            "eps": 7.18,
+            "per": 29.156424,
+            "eps": 7.16,
             "dividend": "N/A",
             "target": 280.5484,
             "summary": "Amazon.com, Inc. engages in the retail sale of consumer products, advertising, and subscriptions service through online and physical stores in North A..."
