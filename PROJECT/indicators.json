@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-03-23 05:15:50",
-    "master_score": 26,
+    "last_updated": "2026-03-23 06:17:37",
+    "master_score": 25,
     "score_delta": "-1",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 68313.62,
-            "change": -0.58,
+            "price": 67733.65,
+            "change": -1.42,
             "name": "Bitcoin USD",
-            "marketCap": 1366480388096,
+            "marketCap": 1354879074304,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -170,8 +170,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "KRW=X": {
-            "price": 1504.83,
-            "change": 1.01,
+            "price": 1503.94,
+            "change": 0.95,
             "name": "USD/KRW",
             "marketCap": "N/A",
             "per": "N/A",
@@ -210,7 +210,7 @@
             "per": 35.291836,
             "eps": 4.9,
             "dividend": 2.0,
-            "target": 269.226,
+            "target": 269.58203,
             "summary": "NVIDIA Corporation operates as a data center scale AI infrastructure company. The company operates through two segments, Compute & Networking, and Gra..."
         },
         "MSFT": {
