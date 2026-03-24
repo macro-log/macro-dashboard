@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-03-25 07:21:32",
+    "last_updated": "2026-03-25 08:22:24",
     "master_score": 22,
     "score_delta": "0",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 70401.73,
-            "change": -0.72,
+            "price": 70508.5,
+            "change": -0.57,
             "name": "Bitcoin USD",
-            "marketCap": 1408248709120,
+            "marketCap": 1410384527360,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -71,8 +71,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "GC=F": {
-            "price": 4486.6,
-            "change": 1.87,
+            "price": 4483.6,
+            "change": 1.81,
             "name": "Gold Apr 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -148,8 +148,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "CL=F": {
-            "price": 88.36,
-            "change": 0.26,
+            "price": 88.93,
+            "change": 0.91,
             "name": "Crude Oil May 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -218,8 +218,8 @@
             "change": -2.68,
             "name": "Microsoft Corporation",
             "marketCap": 2770344345600,
-            "per": 23.340012,
-            "eps": 15.97,
+            "per": 23.985842,
+            "eps": 15.54,
             "dividend": 95.0,
             "target": 591.60284,
             "summary": "Microsoft Corporation develops and supports software, services, devices, and solutions worldwide. The Productivity and Business Processes segment offe..."
