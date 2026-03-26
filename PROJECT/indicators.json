@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-03-26 08:24:55",
+    "last_updated": "2026-03-26 10:19:59",
     "master_score": 32,
     "score_delta": "0",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 71268.58,
-            "change": 1.06,
+            "price": 71160.96,
+            "change": 0.91,
             "name": "Bitcoin USD",
-            "marketCap": 1425588486144,
+            "marketCap": 1423435759616,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -49,8 +49,8 @@
             "summary": "The Trust’s Portfolio consists of substantially all of the component common stocks that comprise the DJIA, which are weighted in accordance with the t..."
         },
         "DX-Y.NYB": {
-            "price": 99.64,
-            "change": 0.21,
+            "price": 99.63,
+            "change": 0.2,
             "name": "ICE US Dollar Index - Index - C",
             "marketCap": "N/A",
             "per": "N/A",
@@ -71,8 +71,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "GC=F": {
-            "price": 4505.9,
-            "change": 2.42,
+            "price": 4535.5,
+            "change": 3.1,
             "name": "Gold Apr 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -148,8 +148,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "CL=F": {
-            "price": 90.97,
-            "change": -1.49,
+            "price": 91.46,
+            "change": -0.96,
             "name": "Crude Oil May 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -159,8 +159,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "^KS11": {
-            "price": 5642.21,
-            "change": 1.59,
+            "price": 5566.82,
+            "change": -1.34,
             "name": "KOSPI Composite Index",
             "marketCap": "N/A",
             "per": "N/A",
@@ -170,8 +170,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "KRW=X": {
-            "price": 1501.99,
-            "change": 1.12,
+            "price": 1505.88,
+            "change": 0.57,
             "name": "USD/KRW",
             "marketCap": "N/A",
             "per": "N/A",
@@ -185,8 +185,8 @@
             "change": 0.39,
             "name": "Apple Inc.",
             "marketCap": 3712989790208,
-            "per": 31.977215,
-            "eps": 7.9,
+            "per": 31.936789,
+            "eps": 7.91,
             "dividend": 41.0,
             "target": 295.31342,
             "summary": "Apple Inc. designs, manufactures, and markets smartphones, personal computers, tablets, wearables, and accessories worldwide. The company offers iPhon..."
@@ -196,8 +196,8 @@
             "change": 0.76,
             "name": "Tesla, Inc.",
             "marketCap": 1448251097088,
-            "per": 360.70093,
-            "eps": 1.07,
+            "per": 357.3611,
+            "eps": 1.08,
             "dividend": "N/A",
             "target": 421.2722,
             "summary": "Tesla, Inc. designs, develops, manufactures, leases, and sells electric vehicles, and energy generation and storage systems in the United States, Chin..."
@@ -207,8 +207,8 @@
             "change": 1.99,
             "name": "NVIDIA Corporation",
             "marketCap": 4342817226752,
-            "per": 36.391037,
-            "eps": 4.91,
+            "per": 36.465305,
+            "eps": 4.9,
             "dividend": 2.0,
             "target": 268.22195,
             "summary": "NVIDIA Corporation operates as a data center scale AI infrastructure company. The company operates through two segments, Compute & Networking, and Gra..."
@@ -229,8 +229,8 @@
             "change": 0.17,
             "name": "Alphabet Inc.",
             "marketCap": 3519380193280,
-            "per": 26.937962,
-            "eps": 10.8,
+            "per": 26.88817,
+            "eps": 10.82,
             "dividend": 29.0,
             "target": 376.75394,
             "summary": "Alphabet Inc. offers various products and platforms in the United States, Europe, the Middle East, Africa, the Asia-Pacific, Canada, and Latin America..."
@@ -240,8 +240,8 @@
             "change": 2.16,
             "name": "Amazon.com, Inc.",
             "marketCap": 2272690176000,
-            "per": 29.527197,
-            "eps": 7.17,
+            "per": 29.486074,
+            "eps": 7.18,
             "dividend": "N/A",
             "target": 280.46774,
             "summary": "Amazon.com, Inc. engages in the retail sale of consumer products, advertising, and subscriptions service through online and physical stores in North A..."
