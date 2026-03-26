@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-03-27 05:27:10",
+    "last_updated": "2026-03-27 06:22:40",
     "master_score": 28,
-    "score_delta": "+1",
+    "score_delta": "0",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 69281.47,
-            "change": -2.84,
+            "price": 68919.07,
+            "change": -3.35,
             "name": "Bitcoin USD",
-            "marketCap": 1385840115712,
+            "marketCap": 1378591178752,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -49,8 +49,8 @@
             "summary": "The Trust’s Portfolio consists of substantially all of the component common stocks that comprise the DJIA, which are weighted in accordance with the t..."
         },
         "DX-Y.NYB": {
-            "price": 99.8,
-            "change": 0.2,
+            "price": 99.88,
+            "change": 0.28,
             "name": "ICE US Dollar Index - Index - C",
             "marketCap": "N/A",
             "per": "N/A",
@@ -60,8 +60,8 @@
             "summary": "정보 수집 중.................................................................................................................................................."
         },
         "^VIX": {
-            "price": 28.3,
-            "change": 11.73,
+            "price": 27.44,
+            "change": 8.33,
             "name": "CBOE Volatility Index",
             "marketCap": "N/A",
             "per": "N/A",
@@ -71,8 +71,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "GC=F": {
-            "price": 4386.5,
-            "change": -3.59,
+            "price": 4376.9,
+            "change": -3.8,
             "name": "Gold Apr 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -82,11 +82,11 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "HYG": {
-            "price": 78.94,
-            "change": -0.6,
+            "price": 78.92,
+            "change": -0.63,
             "name": "iShares iBoxx $ High Yield Corp",
-            "marketCap": 15441641472,
-            "per": 10.855027,
+            "marketCap": 15436751872,
+            "per": 10.851589,
             "eps": "N/A",
             "dividend": 577.0,
             "target": "N/A",
@@ -148,8 +148,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "CL=F": {
-            "price": 92.56,
-            "change": 2.48,
+            "price": 93.79,
+            "change": 3.84,
             "name": "Crude Oil May 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -170,8 +170,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "KRW=X": {
-            "price": 1507.22,
-            "change": 0.66,
+            "price": 1507.31,
+            "change": 0.67,
             "name": "USD/KRW",
             "marketCap": "N/A",
             "per": "N/A",
