@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-03-28 06:25:58",
+    "last_updated": "2026-03-28 07:21:32",
     "master_score": 11,
     "score_delta": "0",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 66107.4,
-            "change": -3.9,
+            "price": 65964.62,
+            "change": -4.11,
             "name": "Bitcoin USD",
-            "marketCap": 1322478731264,
+            "marketCap": 1319636172800,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
