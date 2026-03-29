@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-03-30 01:23:54",
-    "master_score": 17,
-    "score_delta": "0",
+    "last_updated": "2026-03-30 02:21:56",
+    "master_score": 16,
+    "score_delta": "-1",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 66578.05,
-            "change": 0.39,
+            "price": 66335.09,
+            "change": 0.02,
             "name": "Bitcoin USD",
-            "marketCap": 1332144111616,
+            "marketCap": 1327285534720,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -73,7 +73,7 @@
         "GC=F": {
             "price": 4524.3,
             "change": 3.4,
-            "name": "Gold Apr 26",
+            "name": "Gold Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
             "eps": "N/A",
