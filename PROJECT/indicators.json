@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-03-31 05:35:06",
+    "last_updated": "2026-03-31 06:33:27",
     "master_score": 24,
-    "score_delta": "+2",
+    "score_delta": "0",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 66603.33,
-            "change": 0.98,
+            "price": 66816.26,
+            "change": 1.31,
             "name": "Bitcoin USD",
-            "marketCap": 1332682817536,
+            "marketCap": 1336944754688,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -49,8 +49,8 @@
             "summary": "The Trust’s Portfolio consists of substantially all of the component common stocks that comprise the DJIA, which are weighted in accordance with the t..."
         },
         "DX-Y.NYB": {
-            "price": 100.54,
-            "change": 0.39,
+            "price": 100.53,
+            "change": 0.38,
             "name": "ICE US Dollar Index - Index - C",
             "marketCap": "N/A",
             "per": "N/A",
@@ -71,8 +71,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "GC=F": {
-            "price": 4532.7,
-            "change": 0.91,
+            "price": 4540.4,
+            "change": 1.08,
             "name": "Gold Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -148,8 +148,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "CL=F": {
-            "price": 104.98,
-            "change": 5.36,
+            "price": 105.01,
+            "change": 5.39,
             "name": "Crude Oil May 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -170,8 +170,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "KRW=X": {
-            "price": 1507.02,
-            "change": -0.09,
+            "price": 1516.51,
+            "change": 0.54,
             "name": "USD/KRW",
             "marketCap": "N/A",
             "per": "N/A",
