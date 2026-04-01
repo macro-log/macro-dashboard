@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-04-01 18:59:18",
-    "master_score": 37,
-    "score_delta": "0",
+    "last_updated": "2026-04-01 19:58:03",
+    "master_score": 38,
+    "score_delta": "+1",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 68611.93,
-            "change": 0.55,
+            "price": 68571.32,
+            "change": 0.5,
             "name": "Bitcoin USD",
-            "marketCap": 1372920872960,
+            "marketCap": 1372110323712,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -49,8 +49,8 @@
             "summary": "The Trust’s Portfolio consists of substantially all of the component common stocks that comprise the DJIA, which are weighted in accordance with the t..."
         },
         "DX-Y.NYB": {
-            "price": 99.57,
-            "change": -0.39,
+            "price": 99.46,
+            "change": -0.5,
             "name": "ICE US Dollar Index - Index - C",
             "marketCap": "N/A",
             "per": "N/A",
@@ -60,8 +60,8 @@
             "summary": "정보 수집 중.................................................................................................................................................."
         },
         "^VIX": {
-            "price": 24.86,
-            "change": -1.54,
+            "price": 24.72,
+            "change": -2.1,
             "name": "CBOE Volatility Index",
             "marketCap": "N/A",
             "per": "N/A",
@@ -71,8 +71,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "GC=F": {
-            "price": 4754.7,
-            "change": 2.3,
+            "price": 4765.6,
+            "change": 2.54,
             "name": "Gold Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -148,8 +148,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "CL=F": {
-            "price": 100.08,
-            "change": -1.28,
+            "price": 99.61,
+            "change": -1.75,
             "name": "Crude Oil May 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -170,8 +170,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "KRW=X": {
-            "price": 1506.78,
-            "change": -0.62,
+            "price": 1516.13,
+            "change": 0.6,
             "name": "USD/KRW",
             "marketCap": "N/A",
             "per": "N/A",
