@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-04-02 05:35:04",
-    "master_score": 37,
-    "score_delta": "-1",
+    "last_updated": "2026-04-02 06:33:25",
+    "master_score": 39,
+    "score_delta": "+2",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 67985.37,
-            "change": -0.36,
+            "price": 68425.77,
+            "change": 0.28,
             "name": "Bitcoin USD",
-            "marketCap": 1360399433728,
+            "marketCap": 1369214156800,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -49,8 +49,8 @@
             "summary": "The Trust’s Portfolio consists of substantially all of the component common stocks that comprise the DJIA, which are weighted in accordance with the t..."
         },
         "DX-Y.NYB": {
-            "price": 99.6,
-            "change": -0.36,
+            "price": 99.57,
+            "change": -0.39,
             "name": "ICE US Dollar Index - Index - C",
             "marketCap": "N/A",
             "per": "N/A",
@@ -71,8 +71,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "GC=F": {
-            "price": 4789.0,
-            "change": 3.04,
+            "price": 4784.6,
+            "change": 2.95,
             "name": "Gold Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -148,8 +148,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "CL=F": {
-            "price": 99.27,
-            "change": -2.08,
+            "price": 98.91,
+            "change": -2.44,
             "name": "Crude Oil May 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -170,7 +170,7 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "KRW=X": {
-            "price": 1513.73,
+            "price": 1513.76,
             "change": -0.16,
             "name": "USD/KRW",
             "marketCap": "N/A",
@@ -199,7 +199,7 @@
             "per": 353.01852,
             "eps": 1.08,
             "dividend": "N/A",
-            "target": 421.2722,
+            "target": 418.83316,
             "summary": "Tesla, Inc. designs, develops, manufactures, leases, and sells electric vehicles, and energy generation and storage systems in the United States, Chin..."
         },
         "NVDA": {
@@ -221,7 +221,7 @@
             "per": 23.100063,
             "eps": 15.99,
             "dividend": 98.0,
-            "target": 589.9047,
+            "target": 587.3139,
             "summary": "Microsoft Corporation develops and supports software, services, devices, and solutions worldwide. The Productivity and Business Processes segment offe..."
         },
         "GOOGL": {
