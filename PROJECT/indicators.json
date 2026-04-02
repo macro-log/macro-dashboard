@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-04-02 13:20:19",
-    "master_score": 45,
-    "score_delta": "+7",
+    "last_updated": "2026-04-02 15:05:40",
+    "master_score": 46,
+    "score_delta": "+1",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 66552.54,
-            "change": -2.46,
+            "price": 66577.52,
+            "change": -2.43,
             "name": "Bitcoin USD",
-            "marketCap": 1331738574848,
+            "marketCap": 1332239663104,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -49,8 +49,8 @@
             "summary": "The Trust’s Portfolio consists of substantially all of the component common stocks that comprise the DJIA, which are weighted in accordance with the t..."
         },
         "DX-Y.NYB": {
-            "price": 100.01,
-            "change": 0.36,
+            "price": 100.11,
+            "change": 0.46,
             "name": "ICE US Dollar Index - Index - C",
             "marketCap": "N/A",
             "per": "N/A",
@@ -71,8 +71,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "GC=F": {
-            "price": 4696.8,
-            "change": -1.81,
+            "price": 4628.3,
+            "change": -3.24,
             "name": "Gold Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -148,8 +148,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "CL=F": {
-            "price": 105.31,
-            "change": 5.18,
+            "price": 105.78,
+            "change": 5.65,
             "name": "Crude Oil May 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -159,8 +159,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "^KS11": {
-            "price": 5242.53,
-            "change": -4.31,
+            "price": 5199.67,
+            "change": -5.09,
             "name": "KOSPI Composite Index",
             "marketCap": "N/A",
             "per": "N/A",
@@ -170,8 +170,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "KRW=X": {
-            "price": 1522.08,
-            "change": 1.25,
+            "price": 1503.33,
+            "change": -0.84,
             "name": "USD/KRW",
             "marketCap": "N/A",
             "per": "N/A",
@@ -220,7 +220,7 @@
             "marketCap": 2745297272832,
             "per": 23.100063,
             "eps": 15.99,
-            "dividend": 98.0,
+            "dividend": 99.0,
             "target": 587.3139,
             "summary": "Microsoft Corporation develops and supports software, services, devices, and solutions worldwide. The Productivity and Business Processes segment offe..."
         },
