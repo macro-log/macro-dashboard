@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-04-03 23:37:50",
+    "last_updated": "2026-04-04 00:32:50",
     "master_score": 44,
-    "score_delta": "+1",
+    "score_delta": "0",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 66869.95,
-            "change": -0.03,
+            "price": 66920.68,
+            "change": 0.05,
             "name": "Bitcoin USD",
-            "marketCap": 1338130432000,
+            "marketCap": 1339146895360,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -159,8 +159,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "^KS11": {
-            "price": 5377.3,
-            "change": 2.74,
+            "price": 5234.05,
+            "change": 0.0,
             "name": "KOSPI Composite Index",
             "marketCap": "N/A",
             "per": "N/A",
@@ -170,8 +170,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "KRW=X": {
-            "price": 1510.13,
-            "change": -0.13,
+            "price": 1510.2,
+            "change": -0.12,
             "name": "USD/KRW",
             "marketCap": "N/A",
             "per": "N/A",
@@ -232,7 +232,7 @@
             "per": 27.38611,
             "eps": 10.8,
             "dividend": 28.0,
-            "target": 376.9325,
+            "target": 376.28964,
             "summary": "Alphabet Inc. offers various products and platforms in the United States, Europe, the Middle East, Africa, the Asia-Pacific, Canada, and Latin America..."
         },
         "AMZN": {
