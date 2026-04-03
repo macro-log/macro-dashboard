@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-04-04 03:33:29",
-    "master_score": 44,
-    "score_delta": "+1",
+    "last_updated": "2026-04-04 04:32:11",
+    "master_score": 43,
+    "score_delta": "-1",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 66861.07,
-            "change": -0.04,
+            "price": 66777.56,
+            "change": -0.17,
             "name": "Bitcoin USD",
-            "marketCap": 1337958203392,
+            "marketCap": 1336287690752,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -49,8 +49,8 @@
             "summary": "The Trust’s Portfolio consists of substantially all of the component common stocks that comprise the DJIA, which are weighted in accordance with the t..."
         },
         "DX-Y.NYB": {
-            "price": 100.18,
-            "change": 0.15,
+            "price": 100.22,
+            "change": 0.19,
             "name": "ICE US Dollar Index - Index - C",
             "marketCap": "N/A",
             "per": "N/A",
@@ -170,8 +170,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "KRW=X": {
-            "price": 1510.61,
-            "change": -0.1,
+            "price": 1510.75,
+            "change": -0.09,
             "name": "USD/KRW",
             "marketCap": "N/A",
             "per": "N/A",
