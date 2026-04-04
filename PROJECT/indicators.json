@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-04-05 00:21:59",
+    "last_updated": "2026-04-05 01:23:02",
     "master_score": 45,
-    "score_delta": "+1",
+    "score_delta": "0",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 67419.15,
-            "change": 0.73,
+            "price": 67340.15,
+            "change": 0.61,
             "name": "Bitcoin USD",
-            "marketCap": 1349147820032,
+            "marketCap": 1347567878144,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -170,8 +170,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "KRW=X": {
-            "price": 1514.0,
-            "change": 0.32,
+            "price": 1510.54,
+            "change": 0.09,
             "name": "USD/KRW",
             "marketCap": "N/A",
             "per": "N/A",
