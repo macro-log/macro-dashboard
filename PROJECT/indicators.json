@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-04-06 01:25:11",
+    "last_updated": "2026-04-06 02:21:43",
     "master_score": 41,
-    "score_delta": "+1",
+    "score_delta": "0",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 67338.55,
-            "change": 0.07,
+            "price": 67229.52,
+            "change": -0.09,
             "name": "Bitcoin USD",
-            "marketCap": 1347565649920,
+            "marketCap": 1345385398272,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -148,8 +148,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "CL=F": {
-            "price": 112.06,
-            "change": 11.93,
+            "price": 111.54,
+            "change": 11.41,
             "name": "Crude Oil May 26",
             "marketCap": "N/A",
             "per": "N/A",
