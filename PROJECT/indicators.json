@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-04-07 15:13:15",
+    "last_updated": "2026-04-07 17:05:29",
     "master_score": 40,
-    "score_delta": "+1",
+    "score_delta": "0",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 68583.71,
-            "change": -0.58,
+            "price": 68783.64,
+            "change": -0.11,
             "name": "Bitcoin USD",
-            "marketCap": 1372533555200,
+            "marketCap": 1376535314432,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -20,9 +20,9 @@
             "change": 0.47,
             "name": "State Street SPDR S&P 500 ETF T",
             "marketCap": 604754083840,
-            "per": 26.138395,
+            "per": 26.124811,
             "eps": "N/A",
-            "dividend": 106.0,
+            "dividend": 114.0,
             "target": "N/A",
             "summary": "The trust seeks to achieve its investment objective by holding a portfolio of the common stocks that are included in the index (the “Portfolio”), with..."
         },
@@ -42,15 +42,15 @@
             "change": 0.37,
             "name": "State Street SPDR Dow Jones Ind",
             "marketCap": 37921746944,
-            "per": 22.816935,
+            "per": 22.878618,
             "eps": "N/A",
-            "dividend": 140.0,
+            "dividend": 152.0,
             "target": "N/A",
             "summary": "The Trust’s Portfolio consists of substantially all of the component common stocks that comprise the DJIA, which are weighted in accordance with the t..."
         },
         "DX-Y.NYB": {
-            "price": 100.06,
-            "change": 0.08,
+            "price": 100.05,
+            "change": 0.07,
             "name": "ICE US Dollar Index - Index - C",
             "marketCap": "N/A",
             "per": "N/A",
@@ -60,8 +60,8 @@
             "summary": "정보 수집 중.................................................................................................................................................."
         },
         "^VIX": {
-            "price": 24.17,
-            "change": 1.26,
+            "price": 25.11,
+            "change": 3.89,
             "name": "CBOE Volatility Index",
             "marketCap": "N/A",
             "per": "N/A",
@@ -71,8 +71,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "GC=F": {
-            "price": 4665.1,
-            "change": 0.18,
+            "price": 4666.6,
+            "change": 0.21,
             "name": "Gold Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -88,7 +88,7 @@
             "marketCap": 15589319680,
             "per": 10.958839,
             "eps": "N/A",
-            "dividend": 577.0,
+            "dividend": 588.0,
             "target": "N/A",
             "summary": "The underlying index is a rules-based index consisting of U.S. dollar-denominated, high yield corporate bonds for sale in the U.S. The fund will inves..."
         },
@@ -97,9 +97,9 @@
             "change": 0.82,
             "name": "State Street Consumer Discretio",
             "marketCap": 13112387584,
-            "per": 29.056816,
+            "per": 29.405016,
             "eps": "N/A",
-            "dividend": 81.0,
+            "dividend": 82.0,
             "target": "N/A",
             "summary": "The Advisor employs a replication strategy. The fund generally invests substantially all, but at least 95%, of its total assets in the securities comp..."
         },
@@ -108,9 +108,9 @@
             "change": 0.94,
             "name": "State Street Consumer Staples S",
             "marketCap": 17372817408,
-            "per": 26.277798,
+            "per": 26.02577,
             "eps": "N/A",
-            "dividend": 238.0,
+            "dividend": 265.0,
             "target": "N/A",
             "summary": "In seeking to track the performance of the index, the fund employs a replication strategy. It generally invests substantially all, but at least 95%, o..."
         },
@@ -148,8 +148,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "CL=F": {
-            "price": 115.23,
-            "change": 2.51,
+            "price": 115.42,
+            "change": 2.68,
             "name": "Crude Oil May 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -159,8 +159,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "^KS11": {
-            "price": 5474.53,
-            "change": 0.44,
+            "price": 5494.78,
+            "change": 0.82,
             "name": "KOSPI Composite Index",
             "marketCap": "N/A",
             "per": "N/A",
@@ -170,8 +170,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "KRW=X": {
-            "price": 1504.08,
-            "change": -0.34,
+            "price": 1499.53,
+            "change": -0.64,
             "name": "USD/KRW",
             "marketCap": "N/A",
             "per": "N/A",
