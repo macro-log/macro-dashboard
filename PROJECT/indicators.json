@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-04-08 05:35:55",
+    "last_updated": "2026-04-08 06:34:45",
     "master_score": 41,
-    "score_delta": "+3",
+    "score_delta": "0",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 69359.67,
-            "change": 0.73,
+            "price": 69660.84,
+            "change": 1.16,
             "name": "Bitcoin USD",
-            "marketCap": 1388078825472,
+            "marketCap": 1394107875328,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -49,8 +49,8 @@
             "summary": "The Trust’s Portfolio consists of substantially all of the component common stocks that comprise the DJIA, which are weighted in accordance with the t..."
         },
         "DX-Y.NYB": {
-            "price": 99.62,
-            "change": -0.36,
+            "price": 99.66,
+            "change": -0.32,
             "name": "ICE US Dollar Index - Index - C",
             "marketCap": "N/A",
             "per": "N/A",
@@ -71,8 +71,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "GC=F": {
-            "price": 4732.0,
-            "change": 1.61,
+            "price": 4733.3,
+            "change": 1.64,
             "name": "Gold Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -148,8 +148,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "CL=F": {
-            "price": 111.99,
-            "change": -0.37,
+            "price": 110.34,
+            "change": -1.84,
             "name": "Crude Oil May 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -170,8 +170,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "KRW=X": {
-            "price": 1497.38,
-            "change": -0.79,
+            "price": 1497.74,
+            "change": -0.76,
             "name": "USD/KRW",
             "marketCap": "N/A",
             "per": "N/A",
@@ -185,8 +185,8 @@
             "change": -2.07,
             "name": "Apple Inc.",
             "marketCap": 3725924237312,
-            "per": 32.048042,
-            "eps": 7.91,
+            "per": 32.088608,
+            "eps": 7.9,
             "dividend": 40.0,
             "target": 295.32126,
             "summary": "Apple Inc. designs, manufactures, and markets smartphones, personal computers, tablets, wearables, and accessories worldwide. The company offers iPhon..."
