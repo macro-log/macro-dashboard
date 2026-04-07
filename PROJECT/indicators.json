@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-04-07 20:45:12",
+    "last_updated": "2026-04-07 21:56:37",
     "master_score": 38,
-    "score_delta": "+1",
+    "score_delta": "0",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 68385.41,
-            "change": -0.69,
+            "price": 68329.51,
+            "change": -0.77,
             "name": "Bitcoin USD",
-            "marketCap": 1368569937920,
+            "marketCap": 1367451631616,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -49,8 +49,8 @@
             "summary": "The Trust’s Portfolio consists of substantially all of the component common stocks that comprise the DJIA, which are weighted in accordance with the t..."
         },
         "DX-Y.NYB": {
-            "price": 100.0,
-            "change": 0.02,
+            "price": 99.91,
+            "change": -0.07,
             "name": "ICE US Dollar Index - Index - C",
             "marketCap": "N/A",
             "per": "N/A",
@@ -60,8 +60,8 @@
             "summary": "정보 수집 중.................................................................................................................................................."
         },
         "^VIX": {
-            "price": 25.48,
-            "change": 5.42,
+            "price": 25.43,
+            "change": 5.21,
             "name": "CBOE Volatility Index",
             "marketCap": "N/A",
             "per": "N/A",
@@ -71,8 +71,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "GC=F": {
-            "price": 4673.5,
-            "change": 0.36,
+            "price": 4677.1,
+            "change": 0.44,
             "name": "Gold Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -115,8 +115,8 @@
             "summary": "In seeking to track the performance of the index, the fund employs a replication strategy. It generally invests substantially all, but at least 95%, o..."
         },
         "^TNX": {
-            "price": 4.34,
-            "change": 0.51,
+            "price": 4.33,
+            "change": -0.09,
             "name": "CBOE Interest Rate 10 Year T No",
             "marketCap": "N/A",
             "per": "N/A",
@@ -126,8 +126,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "^TYX": {
-            "price": 4.89,
-            "change": 0.02,
+            "price": 4.9,
+            "change": 0.25,
             "name": "Treasury Yield 30 Years",
             "marketCap": "N/A",
             "per": "N/A",
@@ -137,8 +137,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "^FVX": {
-            "price": 3.98,
-            "change": 0.84,
+            "price": 3.97,
+            "change": -0.18,
             "name": "Treasury Yield 5 Years",
             "marketCap": "N/A",
             "per": "N/A",
@@ -148,8 +148,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "CL=F": {
-            "price": 114.7,
-            "change": 2.04,
+            "price": 115.47,
+            "change": 2.72,
             "name": "Crude Oil May 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -170,8 +170,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "KRW=X": {
-            "price": 1498.18,
-            "change": -0.73,
+            "price": 1497.38,
+            "change": -0.79,
             "name": "USD/KRW",
             "marketCap": "N/A",
             "per": "N/A",
