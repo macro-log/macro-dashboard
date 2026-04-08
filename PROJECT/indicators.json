@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-04-08 10:22:43",
-    "master_score": 46,
-    "score_delta": "+3",
+    "last_updated": "2026-04-08 13:28:41",
+    "master_score": 43,
+    "score_delta": "-3",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 71513.89,
-            "change": 3.85,
+            "price": 71495.72,
+            "change": 3.83,
             "name": "Bitcoin USD",
-            "marketCap": 1431195615232,
+            "marketCap": 1430835167232,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -16,8 +16,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "SPY": {
-            "price": 659.22,
-            "change": 0.04,
+            "price": 658.93,
+            "change": 0.0,
             "name": "State Street SPDR S&P 500 ETF T",
             "marketCap": 605020225536,
             "per": 26.136307,
@@ -27,8 +27,8 @@
             "summary": "The trust seeks to achieve its investment objective by holding a portfolio of the common stocks that are included in the index (the “Portfolio”), with..."
         },
         "QQQ": {
-            "price": 588.59,
-            "change": 0.02,
+            "price": 588.5,
+            "change": 0.0,
             "name": "Invesco QQQ Trust, Series 1",
             "marketCap": 231374733312,
             "per": 31.68269,
@@ -38,8 +38,8 @@
             "summary": "To maintain the correspondence between the composition and weights of the securities in the trust (the \"securities\") and the stocks in the NASDAQ-100 ..."
         },
         "DIA": {
-            "price": 465.88,
-            "change": -0.19,
+            "price": 466.77,
+            "change": 0.0,
             "name": "State Street SPDR Dow Jones Ind",
             "marketCap": 37849440256,
             "per": 22.834997,
@@ -49,8 +49,8 @@
             "summary": "The Trust’s Portfolio consists of substantially all of the component common stocks that comprise the DJIA, which are weighted in accordance with the t..."
         },
         "DX-Y.NYB": {
-            "price": 98.93,
-            "change": -1.05,
+            "price": 98.9,
+            "change": -1.08,
             "name": "ICE US Dollar Index - Index - C",
             "marketCap": "N/A",
             "per": "N/A",
@@ -71,8 +71,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "GC=F": {
-            "price": 4848.7,
-            "change": 4.12,
+            "price": 4823.2,
+            "change": 3.57,
             "name": "Gold Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -82,8 +82,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "HYG": {
-            "price": 79.72,
-            "change": 0.03,
+            "price": 79.7,
+            "change": 0.0,
             "name": "iShares iBoxx $ High Yield Corp",
             "marketCap": 15593232384,
             "per": 10.961591,
@@ -93,8 +93,8 @@
             "summary": "The underlying index is a rules-based index consisting of U.S. dollar-denominated, high yield corporate bonds for sale in the U.S. The fund will inves..."
         },
         "XLY": {
-            "price": 107.77,
-            "change": -1.16,
+            "price": 109.04,
+            "change": 0.0,
             "name": "State Street Consumer Discretio",
             "marketCap": 12959665152,
             "per": 29.06253,
@@ -104,8 +104,8 @@
             "summary": "The Advisor employs a replication strategy. The fund generally invests substantially all, but at least 95%, of its total assets in the securities comp..."
         },
         "XLP": {
-            "price": 81.26,
-            "change": -1.69,
+            "price": 82.66,
+            "change": 0.0,
             "name": "State Street Consumer Staples S",
             "marketCap": 17078577152,
             "per": 25.584976,
@@ -148,8 +148,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "CL=F": {
-            "price": 96.05,
-            "change": -14.55,
+            "price": 96.19,
+            "change": -14.84,
             "name": "Crude Oil May 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -159,8 +159,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "^KS11": {
-            "price": 5788.62,
-            "change": 6.21,
+            "price": 5863.65,
+            "change": 7.58,
             "name": "KOSPI Composite Index",
             "marketCap": "N/A",
             "per": "N/A",
@@ -170,8 +170,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "KRW=X": {
-            "price": 1478.61,
-            "change": -1.94,
+            "price": 1473.78,
+            "change": -2.26,
             "name": "USD/KRW",
             "marketCap": "N/A",
             "per": "N/A",
@@ -181,19 +181,19 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "AAPL": {
-            "price": 253.5,
-            "change": -2.07,
+            "price": 258.86,
+            "change": 0.0,
             "name": "Apple Inc.",
             "marketCap": 3725924237312,
             "per": 32.088608,
             "eps": 7.9,
-            "dividend": 40.0,
+            "dividend": 41.0,
             "target": 295.32126,
             "summary": "Apple Inc. designs, manufactures, and markets smartphones, personal computers, tablets, wearables, and accessories worldwide. The company offers iPhon..."
         },
         "TSLA": {
-            "price": 346.65,
-            "change": -1.75,
+            "price": 352.82,
+            "change": 0.0,
             "name": "Tesla, Inc.",
             "marketCap": 1300780548096,
             "per": 323.97195,
@@ -203,8 +203,8 @@
             "summary": "Tesla, Inc. designs, develops, manufactures, leases, and sells electric vehicles, and energy generation and storage systems in the United States, Chin..."
         },
         "NVDA": {
-            "price": 178.1,
-            "change": 0.26,
+            "price": 177.64,
+            "change": 0.0,
             "name": "NVIDIA Corporation",
             "marketCap": 4328720695296,
             "per": 36.34694,
@@ -214,30 +214,30 @@
             "summary": "NVIDIA Corporation operates as a data center scale AI infrastructure company. The company operates through two segments, Compute & Networking, and Gra..."
         },
         "MSFT": {
-            "price": 372.29,
-            "change": -0.16,
+            "price": 372.88,
+            "change": 0.0,
             "name": "Microsoft Corporation",
             "marketCap": 2766999912448,
-            "per": 23.268126,
-            "eps": 16.0,
+            "per": 23.311834,
+            "eps": 15.97,
             "dividend": 98.0,
             "target": 587.3139,
             "summary": "Microsoft Corporation develops and supports software, services, devices, and solutions worldwide. The Productivity and Business Processes segment offe..."
         },
         "GOOGL": {
-            "price": 305.46,
-            "change": 1.82,
+            "price": 299.99,
+            "change": 0.0,
             "name": "Alphabet Inc.",
             "marketCap": 3695149580288,
-            "per": 28.283333,
-            "eps": 10.8,
-            "dividend": 28.0,
+            "per": 28.257168,
+            "eps": 10.81,
+            "dividend": 27.0,
             "target": 376.28964,
             "summary": "Alphabet Inc. offers various products and platforms in the United States, Europe, the Middle East, Africa, the Asia-Pacific, Canada, and Latin America..."
         },
         "AMZN": {
-            "price": 213.77,
-            "change": 0.46,
+            "price": 212.79,
+            "change": 0.0,
             "name": "Amazon.com, Inc.",
             "marketCap": 2294804119552,
             "per": 29.856146,
