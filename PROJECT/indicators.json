@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-04-09 13:24:50",
-    "master_score": 47,
-    "score_delta": "-2",
+    "last_updated": "2026-04-09 15:15:10",
+    "master_score": 43,
+    "score_delta": "-4",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 70857.71,
-            "change": -1.51,
+            "price": 71023.02,
+            "change": -1.28,
             "name": "Bitcoin USD",
-            "marketCap": 1418102571008,
+            "marketCap": 1421412925440,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -49,8 +49,8 @@
             "summary": "The Trust’s Portfolio consists of substantially all of the component common stocks that comprise the DJIA, which are weighted in accordance with the t..."
         },
         "DX-Y.NYB": {
-            "price": 99.0,
-            "change": -0.65,
+            "price": 99.07,
+            "change": -0.57,
             "name": "ICE US Dollar Index - Index - C",
             "marketCap": "N/A",
             "per": "N/A",
@@ -60,8 +60,8 @@
             "summary": "정보 수집 중.................................................................................................................................................."
         },
         "^VIX": {
-            "price": 21.04,
-            "change": -18.39,
+            "price": 25.78,
+            "change": 6.66,
             "name": "CBOE Volatility Index",
             "marketCap": "N/A",
             "per": "N/A",
@@ -71,8 +71,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "GC=F": {
-            "price": 4744.5,
-            "change": -0.11,
+            "price": 4745.8,
+            "change": -0.08,
             "name": "Gold Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -115,8 +115,8 @@
             "summary": "In seeking to track the performance of the index, the fund employs a replication strategy. It generally invests substantially all, but at least 95%, o..."
         },
         "^TNX": {
-            "price": 4.29,
-            "change": -1.2,
+            "price": 4.34,
+            "change": 0.18,
             "name": "CBOE Interest Rate 10 Year T No",
             "marketCap": "N/A",
             "per": "N/A",
@@ -126,8 +126,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "^TYX": {
-            "price": 4.89,
-            "change": -0.69,
+            "price": 4.92,
+            "change": 0.61,
             "name": "Treasury Yield 30 Years",
             "marketCap": "N/A",
             "per": "N/A",
@@ -137,8 +137,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "^FVX": {
-            "price": 3.92,
-            "change": -1.41,
+            "price": 3.98,
+            "change": -0.13,
             "name": "Treasury Yield 5 Years",
             "marketCap": "N/A",
             "per": "N/A",
@@ -148,8 +148,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "CL=F": {
-            "price": 97.43,
-            "change": 3.2,
+            "price": 97.24,
+            "change": 3.0,
             "name": "Crude Oil May 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -159,8 +159,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "^KS11": {
-            "price": 5778.84,
-            "change": 5.17,
+            "price": 5763.54,
+            "change": 4.89,
             "name": "KOSPI Composite Index",
             "marketCap": "N/A",
             "per": "N/A",
@@ -170,8 +170,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "KRW=X": {
-            "price": 1480.18,
-            "change": -1.26,
+            "price": 1481.81,
+            "change": -1.16,
             "name": "USD/KRW",
             "marketCap": "N/A",
             "per": "N/A",
@@ -185,8 +185,8 @@
             "change": 0.0,
             "name": "Apple Inc.",
             "marketCap": 3805292789760,
-            "per": 32.73072,
-            "eps": 7.91,
+            "per": 32.772152,
+            "eps": 7.9,
             "dividend": 40.0,
             "target": 295.32126,
             "summary": "Apple Inc. designs, manufactures, and markets smartphones, personal computers, tablets, wearables, and accessories worldwide. The company offers iPhon..."
@@ -207,8 +207,8 @@
             "change": 0.0,
             "name": "NVIDIA Corporation",
             "marketCap": 4425454714880,
-            "per": 36.34331,
-            "eps": 5.01,
+            "per": 37.159184,
+            "eps": 4.9,
             "dividend": 2.0,
             "target": 268.22195,
             "summary": "NVIDIA Corporation operates as a data center scale AI infrastructure company. The company operates through two segments, Compute & Networking, and Gra..."
@@ -229,8 +229,8 @@
             "change": 0.0,
             "name": "Alphabet Inc.",
             "marketCap": 3838620205056,
-            "per": 28.256458,
-            "eps": 11.23,
+            "per": 29.327173,
+            "eps": 10.82,
             "dividend": 26.0,
             "target": 376.28964,
             "summary": "Alphabet Inc. offers various products and platforms in the United States, Europe, the Middle East, Africa, the Asia-Pacific, Canada, and Latin America..."
