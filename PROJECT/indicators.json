@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-04-11 08:26:25",
+    "last_updated": "2026-04-11 10:18:14",
     "master_score": 61,
-    "score_delta": "-1",
+    "score_delta": "0",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 72923.62,
-            "change": 1.61,
+            "price": 72722.61,
+            "change": 1.33,
             "name": "Bitcoin USD",
-            "marketCap": 1459500875776,
+            "marketCap": 1455480897536,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -159,8 +159,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "^KS11": {
-            "price": 5778.01,
-            "change": 0.0,
+            "price": 5858.87,
+            "change": 1.4,
             "name": "KOSPI Composite Index",
             "marketCap": "N/A",
             "per": "N/A",
@@ -196,8 +196,8 @@
             "change": 0.96,
             "name": "Tesla, Inc.",
             "marketCap": 1309411115008,
-            "per": 326.1215,
-            "eps": 1.07,
+            "per": 323.10184,
+            "eps": 1.08,
             "dividend": "N/A",
             "target": 416.15024,
             "summary": "Tesla, Inc. designs, develops, manufactures, leases, and sells electric vehicles, and energy generation and storage systems in the United States, Chin..."
