@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-04-11 20:22:01",
-    "master_score": 59,
-    "score_delta": "0",
+    "last_updated": "2026-04-11 21:34:48",
+    "master_score": 60,
+    "score_delta": "+1",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 72860.35,
-            "change": -0.16,
+            "price": 72884.72,
+            "change": -0.13,
             "name": "Bitcoin USD",
-            "marketCap": 1458249531392,
+            "marketCap": 1458738823168,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -188,7 +188,7 @@
             "per": 33.013943,
             "eps": 7.89,
             "dividend": 40.0,
-            "target": 296.12125,
+            "target": 296.3305,
             "summary": "Apple Inc. designs, manufactures, and markets smartphones, personal computers, tablets, wearables, and accessories worldwide. The company offers iPhon..."
         },
         "TSLA": {
