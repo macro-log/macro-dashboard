@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-04-11 13:11:50",
-    "master_score": 63,
-    "score_delta": "+2",
+    "last_updated": "2026-04-11 14:53:42",
+    "master_score": 62,
+    "score_delta": "-1",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 72972.62,
-            "change": 1.68,
+            "price": 72795.39,
+            "change": 1.43,
             "name": "Bitcoin USD",
-            "marketCap": 1460487847936,
+            "marketCap": 1456943529984,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -207,8 +207,8 @@
             "change": 2.57,
             "name": "NVIDIA Corporation",
             "marketCap": 4584652144640,
-            "per": 38.574646,
-            "eps": 4.89,
+            "per": 38.49592,
+            "eps": 4.9,
             "dividend": 2.0,
             "target": 268.22195,
             "summary": "NVIDIA Corporation operates as a data center scale AI infrastructure company. The company operates through two segments, Compute & Networking, and Gra..."
@@ -229,8 +229,8 @@
             "change": -0.39,
             "name": "Alphabet Inc.",
             "marketCap": 3837652369408,
-            "per": 29.374073,
-            "eps": 10.8,
+            "per": 29.319778,
+            "eps": 10.82,
             "dividend": 26.0,
             "target": 376.28964,
             "summary": "Alphabet Inc. offers various products and platforms in the United States, Europe, the Middle East, Africa, the Asia-Pacific, Canada, and Latin America..."
@@ -240,8 +240,8 @@
             "change": 2.02,
             "name": "Amazon.com, Inc.",
             "marketCap": 2563598712832,
-            "per": 33.24686,
-            "eps": 7.17,
+            "per": 33.200558,
+            "eps": 7.18,
             "dividend": "N/A",
             "target": 281.27344,
             "summary": "Amazon.com, Inc. engages in the retail sale of consumer products, advertising, and subscriptions service through online and physical stores in North A..."
