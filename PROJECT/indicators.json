@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-04-12 10:27:50",
-    "master_score": 60,
-    "score_delta": "0",
+    "last_updated": "2026-04-12 13:39:20",
+    "master_score": 54,
+    "score_delta": "-6",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 73075.7,
-            "change": 0.13,
+            "price": 71557.63,
+            "change": -1.95,
             "name": "Bitcoin USD",
-            "marketCap": 1462576611328,
+            "marketCap": 1432198316032,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -71,8 +71,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "GC=F": {
-            "price": 4761.9,
-            "change": -0.63,
+            "price": 4787.4,
+            "change": -0.1,
             "name": "Gold Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
