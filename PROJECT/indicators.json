@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-04-16 07:33:48",
-    "master_score": 65,
-    "score_delta": "0",
+    "last_updated": "2026-04-16 08:33:53",
+    "master_score": 64,
+    "score_delta": "-1",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 75005.99,
-            "change": 1.11,
+            "price": 74752.57,
+            "change": 0.77,
             "name": "Bitcoin USD",
-            "marketCap": 1502399430656,
+            "marketCap": 1496118591488,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -71,8 +71,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "GC=F": {
-            "price": 4822.3,
-            "change": -0.06,
+            "price": 4836.8,
+            "change": 0.24,
             "name": "Gold Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -148,8 +148,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "CL=F": {
-            "price": 91.03,
-            "change": -0.27,
+            "price": 90.78,
+            "change": -0.55,
             "name": "Crude Oil May 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -171,7 +171,7 @@
         },
         "KRW=X": {
             "price": 1475.01,
-            "change": -0.12,
+            "change": 0.38,
             "name": "USD/KRW",
             "marketCap": "N/A",
             "per": "N/A",
