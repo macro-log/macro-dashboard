@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-04-15 17:21:52",
-    "master_score": 60,
-    "score_delta": "+2",
+    "last_updated": "2026-04-15 19:07:59",
+    "master_score": 61,
+    "score_delta": "+1",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 73945.53,
-            "change": -0.32,
+            "price": 74191.0,
+            "change": 0.01,
             "name": "Bitcoin USD",
-            "marketCap": 1478772391936,
+            "marketCap": 1482362585088,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -49,8 +49,8 @@
             "summary": "The Trust’s Portfolio consists of substantially all of the component common stocks that comprise the DJIA, which are weighted in accordance with the t..."
         },
         "DX-Y.NYB": {
-            "price": 98.15,
-            "change": 0.03,
+            "price": 98.21,
+            "change": 0.1,
             "name": "ICE US Dollar Index - Index - C",
             "marketCap": "N/A",
             "per": "N/A",
@@ -60,8 +60,8 @@
             "summary": "정보 수집 중.................................................................................................................................................."
         },
         "^VIX": {
-            "price": 18.02,
-            "change": -1.85,
+            "price": 18.27,
+            "change": -0.49,
             "name": "CBOE Volatility Index",
             "marketCap": "N/A",
             "per": "N/A",
@@ -71,8 +71,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "GC=F": {
-            "price": 4829.5,
-            "change": 0.09,
+            "price": 4821.5,
+            "change": -0.07,
             "name": "Gold Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -148,8 +148,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "CL=F": {
-            "price": 90.9,
-            "change": -0.42,
+            "price": 92.35,
+            "change": 1.17,
             "name": "Crude Oil May 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -170,8 +170,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "KRW=X": {
-            "price": 1473.39,
-            "change": -0.23,
+            "price": 1476.28,
+            "change": -0.04,
             "name": "USD/KRW",
             "marketCap": "N/A",
             "per": "N/A",
@@ -196,8 +196,8 @@
             "change": 3.34,
             "name": "Tesla, Inc.",
             "marketCap": 1366635708416,
-            "per": 322.3009,
-            "eps": 1.13,
+            "per": 334.12845,
+            "eps": 1.09,
             "dividend": "N/A",
             "target": 415.2966,
             "summary": "Tesla, Inc. designs, develops, manufactures, leases, and sells electric vehicles, and energy generation and storage systems in the United States, Chin..."
