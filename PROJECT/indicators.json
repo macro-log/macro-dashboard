@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-04-16 05:05:13",
+    "last_updated": "2026-04-16 06:42:05",
     "master_score": 65,
-    "score_delta": "+1",
+    "score_delta": "0",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 74885.04,
-            "change": 0.95,
+            "price": 74789.21,
+            "change": 0.82,
             "name": "Bitcoin USD",
-            "marketCap": 1499719663616,
+            "marketCap": 1495548166144,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -16,11 +16,11 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "SPY": {
-            "price": 699.89,
-            "change": 0.78,
+            "price": 699.94,
+            "change": 0.79,
             "name": "State Street SPDR S&P 500 ETF T",
-            "marketCap": 642346450944,
-            "per": 27.748766,
+            "marketCap": 642392326144,
+            "per": 27.750748,
             "eps": "N/A",
             "dividend": 114.0,
             "target": "N/A",
@@ -38,19 +38,19 @@
             "summary": "To maintain the correspondence between the composition and weights of the securities in the trust (the \"securities\") and the stocks in the NASDAQ-100 ..."
         },
         "DIA": {
-            "price": 484.73,
+            "price": 484.72,
             "change": -0.16,
             "name": "State Street SPDR Dow Jones Ind",
-            "marketCap": 39380869120,
-            "per": 23.758924,
+            "marketCap": 39380058112,
+            "per": 23.758434,
             "eps": "N/A",
             "dividend": 152.0,
             "target": "N/A",
             "summary": "The Trust’s Portfolio consists of substantially all of the component common stocks that comprise the DJIA, which are weighted in accordance with the t..."
         },
         "DX-Y.NYB": {
-            "price": 98.04,
-            "change": -0.08,
+            "price": 98.08,
+            "change": -0.04,
             "name": "ICE US Dollar Index - Index - C",
             "marketCap": "N/A",
             "per": "N/A",
@@ -60,8 +60,8 @@
             "summary": "정보 수집 중.................................................................................................................................................."
         },
         "^VIX": {
-            "price": 18.06,
-            "change": -1.63,
+            "price": 18.17,
+            "change": -1.03,
             "name": "CBOE Volatility Index",
             "marketCap": "N/A",
             "per": "N/A",
@@ -71,8 +71,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "GC=F": {
-            "price": 4822.1,
-            "change": -0.06,
+            "price": 4813.9,
+            "change": -0.23,
             "name": "Gold Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -82,33 +82,33 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "HYG": {
-            "price": 80.44,
-            "change": -0.07,
+            "price": 80.46,
+            "change": -0.05,
             "name": "iShares iBoxx $ High Yield Corp",
-            "marketCap": 15734064128,
-            "per": 11.060592,
+            "marketCap": 15737975808,
+            "per": 11.063341,
             "eps": "N/A",
             "dividend": 588.0,
             "target": "N/A",
             "summary": "The underlying index is a rules-based index consisting of U.S. dollar-denominated, high yield corporate bonds for sale in the U.S. The fund will inves..."
         },
         "XLY": {
-            "price": 118.17,
+            "price": 118.18,
             "change": 1.49,
             "name": "State Street Consumer Discretio",
-            "marketCap": 14210296832,
-            "per": 31.867119,
+            "marketCap": 14211500032,
+            "per": 31.869816,
             "eps": "N/A",
             "dividend": 82.0,
             "target": "N/A",
             "summary": "The Advisor employs a replication strategy. The fund generally invests substantially all, but at least 95%, of its total assets in the securities comp..."
         },
         "XLP": {
-            "price": 81.03,
-            "change": -0.54,
+            "price": 81.06,
+            "change": -0.5,
             "name": "State Street Consumer Staples S",
-            "marketCap": 17030237184,
-            "per": 25.512558,
+            "marketCap": 17036541952,
+            "per": 25.522003,
             "eps": "N/A",
             "dividend": 265.0,
             "target": "N/A",
@@ -148,8 +148,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "CL=F": {
-            "price": 90.93,
-            "change": -0.38,
+            "price": 91.39,
+            "change": 0.12,
             "name": "Crude Oil May 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -170,8 +170,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "KRW=X": {
-            "price": 1474.98,
-            "change": -0.13,
+            "price": 1474.37,
+            "change": -0.17,
             "name": "USD/KRW",
             "marketCap": "N/A",
             "per": "N/A",
