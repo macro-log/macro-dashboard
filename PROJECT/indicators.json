@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-04-16 13:44:21",
+    "last_updated": "2026-04-16 15:28:28",
     "master_score": 62,
-    "score_delta": "-1",
+    "score_delta": "0",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 75136.73,
-            "change": 1.29,
+            "price": 75064.95,
+            "change": 1.19,
             "name": "Bitcoin USD",
-            "marketCap": 1502073716736,
+            "marketCap": 1501975805952,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -49,8 +49,8 @@
             "summary": "The Trust’s Portfolio consists of substantially all of the component common stocks that comprise the DJIA, which are weighted in accordance with the t..."
         },
         "DX-Y.NYB": {
-            "price": 97.95,
-            "change": -0.12,
+            "price": 98.04,
+            "change": -0.02,
             "name": "ICE US Dollar Index - Index - C",
             "marketCap": "N/A",
             "per": "N/A",
@@ -71,8 +71,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "GC=F": {
-            "price": 4849.6,
-            "change": 1.03,
+            "price": 4843.8,
+            "change": 0.91,
             "name": "Gold Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -148,8 +148,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "CL=F": {
-            "price": 91.71,
-            "change": 0.46,
+            "price": 91.51,
+            "change": 0.24,
             "name": "Crude Oil May 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -159,8 +159,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "^KS11": {
-            "price": 6192.57,
-            "change": 1.66,
+            "price": 6211.6,
+            "change": 1.97,
             "name": "KOSPI Composite Index",
             "marketCap": "N/A",
             "per": "N/A",
@@ -170,8 +170,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "KRW=X": {
-            "price": 1471.06,
-            "change": 0.11,
+            "price": 1473.4,
+            "change": 0.27,
             "name": "USD/KRW",
             "marketCap": "N/A",
             "per": "N/A",
@@ -196,8 +196,8 @@
             "change": 7.62,
             "name": "Tesla, Inc.",
             "marketCap": 1470765727744,
-            "per": 332.16104,
-            "eps": 1.18,
+            "per": 356.31818,
+            "eps": 1.1,
             "dividend": "N/A",
             "target": 414.58926,
             "summary": "Tesla, Inc. designs, develops, manufactures, leases, and sells electric vehicles, and energy generation and storage systems in the United States, Chin..."
@@ -210,7 +210,7 @@
             "per": 40.17576,
             "eps": 4.95,
             "dividend": 2.0,
-            "target": 268.22195,
+            "target": 268.6148,
             "summary": "NVIDIA Corporation operates as a data center scale AI infrastructure company. The company operates through two segments, Compute & Networking, and Gra..."
         },
         "MSFT": {
@@ -229,8 +229,8 @@
             "change": 1.26,
             "name": "Alphabet Inc.",
             "marketCap": 4078140653568,
-            "per": 30.759123,
-            "eps": 10.96,
+            "per": 31.157116,
+            "eps": 10.82,
             "dividend": 25.0,
             "target": 376.0575,
             "summary": "Alphabet Inc. offers various products and platforms in the United States, Europe, the Middle East, Africa, the Asia-Pacific, Canada, and Latin America..."
