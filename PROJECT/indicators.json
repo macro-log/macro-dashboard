@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-04-18 07:28:33",
-    "master_score": 62,
-    "score_delta": "0",
+    "last_updated": "2026-04-18 08:30:39",
+    "master_score": 61,
+    "score_delta": "-1",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 77453.99,
-            "change": 3.06,
+            "price": 77101.16,
+            "change": 2.59,
             "name": "Bitcoin USD",
-            "marketCap": 1549534625792,
+            "marketCap": 1542631587840,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -188,7 +188,7 @@
             "per": 34.20633,
             "eps": 7.9,
             "dividend": 39.0,
-            "target": 296.4555,
+            "target": 297.4555,
             "summary": "Apple Inc. designs, manufactures, and markets smartphones, personal computers, tablets, wearables, and accessories worldwide. The company offers iPhon..."
         },
         "TSLA": {
@@ -221,7 +221,7 @@
             "per": 26.474014,
             "eps": 15.97,
             "dividend": 87.0,
-            "target": 580.86945,
+            "target": 579.5731,
             "summary": "Microsoft Corporation develops and supports software, services, devices, and solutions worldwide. The Productivity and Business Processes segment offe..."
         },
         "GOOGL": {
@@ -243,7 +243,7 @@
             "per": 34.945606,
             "eps": 7.17,
             "dividend": "N/A",
-            "target": 281.10156,
+            "target": 281.1797,
             "summary": "Amazon.com, Inc. engages in the retail sale of consumer products, advertising, and subscriptions service through online and physical stores in North A..."
         }
     },
