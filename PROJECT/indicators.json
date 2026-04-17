@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-04-17 10:27:17",
-    "master_score": 50,
-    "score_delta": "0",
+    "last_updated": "2026-04-17 13:41:43",
+    "master_score": 49,
+    "score_delta": "-1",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 74781.29,
-            "change": -0.03,
+            "price": 74851.26,
+            "change": 0.06,
             "name": "Bitcoin USD",
-            "marketCap": 1495416832000,
+            "marketCap": 1497470730240,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -49,8 +49,8 @@
             "summary": "The Trust’s Portfolio consists of substantially all of the component common stocks that comprise the DJIA, which are weighted in accordance with the t..."
         },
         "DX-Y.NYB": {
-            "price": 98.24,
-            "change": 0.18,
+            "price": 98.22,
+            "change": -0.0,
             "name": "ICE US Dollar Index - Index - C",
             "marketCap": "N/A",
             "per": "N/A",
@@ -71,8 +71,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "GC=F": {
-            "price": 4804.7,
-            "change": 0.1,
+            "price": 4816.9,
+            "change": 0.66,
             "name": "Gold Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -148,8 +148,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "CL=F": {
-            "price": 90.13,
-            "change": -1.27,
+            "price": 89.8,
+            "change": -5.16,
             "name": "Crude Oil May 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -159,8 +159,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "^KS11": {
-            "price": 6203.07,
-            "change": -0.37,
+            "price": 6197.89,
+            "change": -0.45,
             "name": "KOSPI Composite Index",
             "marketCap": "N/A",
             "per": "N/A",
@@ -170,8 +170,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "KRW=X": {
-            "price": 1479.88,
-            "change": 0.39,
+            "price": 1479.32,
+            "change": 0.36,
             "name": "USD/KRW",
             "marketCap": "N/A",
             "per": "N/A",
@@ -207,8 +207,8 @@
             "change": -0.26,
             "name": "NVIDIA Corporation",
             "marketCap": 4820896841728,
-            "per": 40.645493,
-            "eps": 4.88,
+            "per": 40.47959,
+            "eps": 4.9,
             "dividend": 2.0,
             "target": 268.6148,
             "summary": "NVIDIA Corporation operates as a data center scale AI infrastructure company. The company operates through two segments, Compute & Networking, and Gra..."
@@ -220,7 +220,7 @@
             "marketCap": 3123531218944,
             "per": 26.315592,
             "eps": 15.97,
-            "dividend": 89.0,
+            "dividend": 87.0,
             "target": 580.86945,
             "summary": "Microsoft Corporation develops and supports software, services, devices, and solutions worldwide. The Productivity and Business Processes segment offe..."
         },
@@ -240,8 +240,8 @@
             "change": 0.48,
             "name": "Amazon.com, Inc.",
             "marketCap": 2685336551424,
-            "per": 34.77716,
-            "eps": 7.18,
+            "per": 34.82566,
+            "eps": 7.17,
             "dividend": "N/A",
             "target": 281.10156,
             "summary": "Amazon.com, Inc. engages in the retail sale of consumer products, advertising, and subscriptions service through online and physical stores in North A..."
