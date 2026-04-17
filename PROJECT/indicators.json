@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-04-18 06:33:03",
+    "last_updated": "2026-04-18 07:28:33",
     "master_score": 62,
-    "score_delta": "+2",
+    "score_delta": "0",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 77403.86,
-            "change": 3.0,
+            "price": 77453.99,
+            "change": 3.06,
             "name": "Bitcoin USD",
-            "marketCap": 1550679670784,
+            "marketCap": 1549534625792,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -221,7 +221,7 @@
             "per": 26.474014,
             "eps": 15.97,
             "dividend": 87.0,
-            "target": 579.5731,
+            "target": 580.86945,
             "summary": "Microsoft Corporation develops and supports software, services, devices, and solutions worldwide. The Productivity and Business Processes segment offe..."
         },
         "GOOGL": {
