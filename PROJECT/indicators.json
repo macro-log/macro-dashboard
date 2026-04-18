@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-04-18 13:24:11",
-    "master_score": 61,
-    "score_delta": "-1",
+    "last_updated": "2026-04-18 15:07:33",
+    "master_score": 62,
+    "score_delta": "+1",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 77036.26,
-            "change": 2.51,
+            "price": 77172.98,
+            "change": 2.69,
             "name": "Bitcoin USD",
-            "marketCap": 1541457313792,
+            "marketCap": 1544512208896,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -126,7 +126,7 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "^TYX": {
-            "price": 4.88,
+            "price": 4.89,
             "change": -0.89,
             "name": "Treasury Yield 30 Years",
             "marketCap": "N/A",
