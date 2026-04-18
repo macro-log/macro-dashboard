@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-04-18 10:20:50",
-    "master_score": 62,
-    "score_delta": "+1",
+    "last_updated": "2026-04-18 13:24:11",
+    "master_score": 61,
+    "score_delta": "-1",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 77329.38,
-            "change": 2.9,
+            "price": 77036.26,
+            "change": 2.51,
             "name": "Bitcoin USD",
-            "marketCap": 1547317936128,
+            "marketCap": 1541457313792,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -39,7 +39,7 @@
         },
         "DIA": {
             "price": 494.22,
-            "change": 1.77,
+            "change": 1.81,
             "name": "State Street SPDR Dow Jones Ind",
             "marketCap": 40151863296,
             "per": 24.224075,
@@ -49,8 +49,8 @@
             "summary": "The Trust’s Portfolio consists of substantially all of the component common stocks that comprise the DJIA, which are weighted in accordance with the t..."
         },
         "DX-Y.NYB": {
-            "price": 98.23,
-            "change": 0.01,
+            "price": 98.1,
+            "change": -0.12,
             "name": "ICE US Dollar Index - Index - C",
             "marketCap": "N/A",
             "per": "N/A",
@@ -71,8 +71,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "GC=F": {
-            "price": 4849.4,
-            "change": 1.34,
+            "price": 4857.6,
+            "change": 1.51,
             "name": "Gold Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -148,8 +148,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "CL=F": {
-            "price": 84.0,
-            "change": -11.29,
+            "price": 83.85,
+            "change": -11.45,
             "name": "Crude Oil May 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -159,8 +159,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "^KS11": {
-            "price": 6226.05,
-            "change": 0.0,
+            "price": 6191.92,
+            "change": -0.55,
             "name": "KOSPI Composite Index",
             "marketCap": "N/A",
             "per": "N/A",
@@ -185,8 +185,8 @@
             "change": 2.59,
             "name": "Apple Inc.",
             "marketCap": 3971820552192,
-            "per": 33.320595,
-            "eps": 8.11,
+            "per": 34.249683,
+            "eps": 7.89,
             "dividend": 38.0,
             "target": 297.4555,
             "summary": "Apple Inc. designs, manufactures, and markets smartphones, personal computers, tablets, wearables, and accessories worldwide. The company offers iPhon..."
@@ -196,8 +196,8 @@
             "change": 3.01,
             "name": "Tesla, Inc.",
             "marketCap": 1503299239936,
-            "per": 357.6964,
-            "eps": 1.12,
+            "per": 370.94443,
+            "eps": 1.08,
             "dividend": "N/A",
             "target": 414.58926,
             "summary": "Tesla, Inc. designs, develops, manufactures, leases, and sells electric vehicles, and energy generation and storage systems in the United States, Chin..."
@@ -220,7 +220,7 @@
             "marketCap": 3142335070208,
             "per": 26.309273,
             "eps": 16.07,
-            "dividend": 87.0,
+            "dividend": 86.0,
             "target": 579.5731,
             "summary": "Microsoft Corporation develops and supports software, services, devices, and solutions worldwide. The Productivity and Business Processes segment offe..."
         },
@@ -229,8 +229,8 @@
             "change": 1.68,
             "name": "Alphabet Inc.",
             "marketCap": 4133303091200,
-            "per": 31.061817,
-            "eps": 11.0,
+            "per": 31.637035,
+            "eps": 10.8,
             "dividend": 25.0,
             "target": 376.0575,
             "summary": "Alphabet Inc. offers various products and platforms in the United States, Europe, the Middle East, Africa, the Asia-Pacific, Canada, and Latin America..."
