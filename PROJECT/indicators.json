@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-04-20 01:28:06",
-    "master_score": 55,
+    "last_updated": "2026-04-20 02:27:43",
+    "master_score": 54,
     "score_delta": "-1",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 75669.22,
-            "change": -0.08,
+            "price": 75269.09,
+            "change": -0.6,
             "name": "Bitcoin USD",
-            "marketCap": 1514642735104,
+            "marketCap": 1505588412416,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -150,7 +150,7 @@
         "CL=F": {
             "price": 82.59,
             "change": -12.78,
-            "name": "Crude Oil May 26",
+            "name": "Crude Oil Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
             "eps": "N/A",
