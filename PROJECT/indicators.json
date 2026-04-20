@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-04-20 20:11:22",
+    "last_updated": "2026-04-20 22:05:29",
     "master_score": 66,
     "score_delta": "0",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 75138.64,
-            "change": 1.74,
+            "price": 75241.98,
+            "change": 1.88,
             "name": "Bitcoin USD",
-            "marketCap": 1505103052800,
+            "marketCap": 1506813673472,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -49,8 +49,8 @@
             "summary": "The Trust’s Portfolio consists of substantially all of the component common stocks that comprise the DJIA, which are weighted in accordance with the t..."
         },
         "DX-Y.NYB": {
-            "price": 98.22,
-            "change": 0.12,
+            "price": 98.23,
+            "change": 0.13,
             "name": "ICE US Dollar Index - Index - C",
             "marketCap": "N/A",
             "per": "N/A",
@@ -60,8 +60,8 @@
             "summary": "정보 수집 중.................................................................................................................................................."
         },
         "^VIX": {
-            "price": 19.46,
-            "change": 11.33,
+            "price": 19.02,
+            "change": 8.81,
             "name": "CBOE Volatility Index",
             "marketCap": "N/A",
             "per": "N/A",
@@ -71,8 +71,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "GC=F": {
-            "price": 4812.9,
-            "change": -0.92,
+            "price": 4823.6,
+            "change": -0.7,
             "name": "Gold Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -116,7 +116,7 @@
         },
         "^TNX": {
             "price": 4.25,
-            "change": -1.46,
+            "change": 0.19,
             "name": "CBOE Interest Rate 10 Year T No",
             "marketCap": "N/A",
             "per": "N/A",
@@ -127,7 +127,7 @@
         },
         "^TYX": {
             "price": 4.89,
-            "change": -0.89,
+            "change": 0.02,
             "name": "Treasury Yield 30 Years",
             "marketCap": "N/A",
             "per": "N/A",
@@ -137,8 +137,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "^FVX": {
-            "price": 3.84,
-            "change": -1.92,
+            "price": 3.86,
+            "change": 0.44,
             "name": "Treasury Yield 5 Years",
             "marketCap": "N/A",
             "per": "N/A",
@@ -148,8 +148,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "CL=F": {
-            "price": 87.61,
-            "change": 4.48,
+            "price": 86.92,
+            "change": 3.66,
             "name": "Crude Oil Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -170,8 +170,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "KRW=X": {
-            "price": 1472.28,
-            "change": -0.38,
+            "price": 1472.97,
+            "change": -0.33,
             "name": "USD/KRW",
             "marketCap": "N/A",
             "per": "N/A",
