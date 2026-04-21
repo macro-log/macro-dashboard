@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-04-21 13:41:13",
-    "master_score": 59,
-    "score_delta": "-3",
+    "last_updated": "2026-04-21 15:29:14",
+    "master_score": 60,
+    "score_delta": "+1",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 75732.01,
-            "change": 2.54,
+            "price": 75791.81,
+            "change": 2.62,
             "name": "Bitcoin USD",
-            "marketCap": 1516387696640,
+            "marketCap": 1516331728896,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -49,8 +49,8 @@
             "summary": "The Trust’s Portfolio consists of substantially all of the component common stocks that comprise the DJIA, which are weighted in accordance with the t..."
         },
         "DX-Y.NYB": {
-            "price": 98.15,
-            "change": 0.1,
+            "price": 98.14,
+            "change": 0.09,
             "name": "ICE US Dollar Index - Index - C",
             "marketCap": "N/A",
             "per": "N/A",
@@ -71,8 +71,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "GC=F": {
-            "price": 4808.7,
-            "change": 0.04,
+            "price": 4798.6,
+            "change": -0.17,
             "name": "Gold Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -148,8 +148,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "CL=F": {
-            "price": 86.48,
-            "change": -3.49,
+            "price": 86.36,
+            "change": -3.63,
             "name": "Crude Oil Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -159,8 +159,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "^KS11": {
-            "price": 6362.59,
-            "change": 2.31,
+            "price": 6382.6,
+            "change": 2.63,
             "name": "KOSPI Composite Index",
             "marketCap": "N/A",
             "per": "N/A",
@@ -170,8 +170,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "KRW=X": {
-            "price": 1470.68,
-            "change": 0.38,
+            "price": 1468.16,
+            "change": 0.21,
             "name": "USD/KRW",
             "marketCap": "N/A",
             "per": "N/A",
