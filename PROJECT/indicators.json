@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-04-22 05:00:37",
-    "master_score": 56,
-    "score_delta": "-3",
+    "last_updated": "2026-04-22 05:56:57",
+    "master_score": 58,
+    "score_delta": "+2",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 75057.83,
-            "change": -1.07,
+            "price": 75733.98,
+            "change": -0.18,
             "name": "Bitcoin USD",
-            "marketCap": 1501301571584,
+            "marketCap": 1515277254656,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -16,11 +16,11 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "SPY": {
-            "price": 704.15,
-            "change": -0.64,
+            "price": 704.08,
+            "change": -0.65,
             "name": "State Street SPDR S&P 500 ETF T",
-            "marketCap": 646017581056,
-            "per": 27.907354,
+            "marketCap": 646191972352,
+            "per": 27.914888,
             "eps": "N/A",
             "dividend": 114.0,
             "target": "N/A",
@@ -38,19 +38,19 @@
             "summary": "To maintain the correspondence between the composition and weights of the securities in the trust (the \"securities\") and the stocks in the NASDAQ-100 ..."
         },
         "DIA": {
-            "price": 491.4,
-            "change": -0.59,
+            "price": 491.36,
+            "change": -0.6,
             "name": "State Street SPDR Dow Jones Ind",
-            "marketCap": 39918288896,
-            "per": 24.083157,
+            "marketCap": 39919509504,
+            "per": 24.08389,
             "eps": "N/A",
             "dividend": 152.0,
             "target": "N/A",
             "summary": "The Trust’s Portfolio consists of substantially all of the component common stocks that comprise the DJIA, which are weighted in accordance with the t..."
         },
         "DX-Y.NYB": {
-            "price": 98.49,
-            "change": 0.45,
+            "price": 98.4,
+            "change": 0.36,
             "name": "ICE US Dollar Index - Index - C",
             "marketCap": "N/A",
             "per": "N/A",
@@ -60,8 +60,8 @@
             "summary": "정보 수집 중.................................................................................................................................................."
         },
         "^VIX": {
-            "price": 20.69,
-            "change": 9.64,
+            "price": 19.5,
+            "change": 3.34,
             "name": "CBOE Volatility Index",
             "marketCap": "N/A",
             "per": "N/A",
@@ -71,8 +71,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "GC=F": {
-            "price": 4701.8,
-            "change": -2.18,
+            "price": 4729.0,
+            "change": -1.61,
             "name": "Gold Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -85,8 +85,8 @@
             "price": 80.37,
             "change": -0.26,
             "name": "iShares iBoxx $ High Yield Corp",
-            "marketCap": 15719393280,
-            "per": 11.050278,
+            "marketCap": 15720372224,
+            "per": 11.050966,
             "eps": "N/A",
             "dividend": 588.0,
             "target": "N/A",
@@ -148,8 +148,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "CL=F": {
-            "price": 91.57,
-            "change": 2.19,
+            "price": 90.77,
+            "change": 1.29,
             "name": "Crude Oil Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -170,8 +170,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "KRW=X": {
-            "price": 1483.86,
-            "change": 1.28,
+            "price": 1481.37,
+            "change": 1.11,
             "name": "USD/KRW",
             "marketCap": "N/A",
             "per": "N/A",
@@ -232,7 +232,7 @@
             "per": 30.767593,
             "eps": 10.8,
             "dividend": 25.0,
-            "target": 376.50394,
+            "target": 376.6825,
             "summary": "Alphabet Inc. offers various products and platforms in the United States, Europe, the Middle East, Africa, the Asia-Pacific, Canada, and Latin America..."
         },
         "AMZN": {
