@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-04-22 05:56:57",
-    "master_score": 58,
-    "score_delta": "+2",
+    "last_updated": "2026-04-22 06:40:12",
+    "master_score": 57,
+    "score_delta": "-1",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 75733.98,
-            "change": -0.18,
+            "price": 75642.93,
+            "change": -0.3,
             "name": "Bitcoin USD",
-            "marketCap": 1515277254656,
+            "marketCap": 1513919610880,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -49,8 +49,8 @@
             "summary": "The Trust’s Portfolio consists of substantially all of the component common stocks that comprise the DJIA, which are weighted in accordance with the t..."
         },
         "DX-Y.NYB": {
-            "price": 98.4,
-            "change": 0.36,
+            "price": 98.44,
+            "change": 0.39,
             "name": "ICE US Dollar Index - Index - C",
             "marketCap": "N/A",
             "per": "N/A",
@@ -71,8 +71,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "GC=F": {
-            "price": 4729.0,
-            "change": -1.61,
+            "price": 4738.5,
+            "change": -1.42,
             "name": "Gold Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -148,8 +148,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "CL=F": {
-            "price": 90.77,
-            "change": 1.29,
+            "price": 90.22,
+            "change": 0.68,
             "name": "Crude Oil Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -170,8 +170,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "KRW=X": {
-            "price": 1481.37,
-            "change": 1.11,
+            "price": 1486.27,
+            "change": 1.44,
             "name": "USD/KRW",
             "marketCap": "N/A",
             "per": "N/A",
@@ -188,7 +188,7 @@
             "per": 33.73511,
             "eps": 7.89,
             "dividend": 38.0,
-            "target": 297.4555,
+            "target": 297.7055,
             "summary": "Apple Inc. designs, manufactures, and markets smartphones, personal computers, tablets, wearables, and accessories worldwide. The company offers iPhon..."
         },
         "TSLA": {
@@ -199,7 +199,7 @@
             "per": 351.29092,
             "eps": 1.1,
             "dividend": "N/A",
-            "target": 414.58926,
+            "target": 415.80878,
             "summary": "Tesla, Inc. designs, develops, manufactures, leases, and sells electric vehicles, and energy generation and storage systems in the United States, Chin..."
         },
         "NVDA": {
@@ -243,7 +243,7 @@
             "per": 34.806408,
             "eps": 7.18,
             "dividend": "N/A",
-            "target": 281.1797,
+            "target": 282.6328,
             "summary": "Amazon.com, Inc. engages in the retail sale of consumer products, advertising, and subscriptions service through online and physical stores in North A..."
         }
     },
