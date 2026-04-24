@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-04-25 06:38:55",
+    "last_updated": "2026-04-25 07:32:00",
     "master_score": 61,
     "score_delta": "0",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 77634.92,
-            "change": -0.81,
+            "price": 77529.37,
+            "change": -0.94,
             "name": "Bitcoin USD",
-            "marketCap": 1553936809984,
+            "marketCap": 1553297309696,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -187,7 +187,7 @@
             "marketCap": 3979469914112,
             "per": 34.31139,
             "eps": 7.9,
-            "dividend": 38.0,
+            "dividend": "N/A",
             "target": 297.7055,
             "summary": "Apple Inc. designs, manufactures, and markets smartphones, personal computers, tablets, wearables, and accessories worldwide. The company offers iPhon..."
         },
@@ -231,7 +231,7 @@
             "marketCap": 4166206881792,
             "per": 31.859388,
             "eps": 10.81,
-            "dividend": 25.0,
+            "dividend": "N/A",
             "target": 377.29492,
             "summary": "Alphabet Inc. offers various products and platforms in the United States, Europe, the Middle East, Africa, the Asia-Pacific, Canada, and Latin America..."
         },
