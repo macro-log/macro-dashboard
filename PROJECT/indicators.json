@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-04-25 10:23:23",
-    "master_score": 61,
-    "score_delta": "0",
+    "last_updated": "2026-04-25 13:28:19",
+    "master_score": 62,
+    "score_delta": "+1",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 77529.18,
-            "change": -0.95,
+            "price": 77678.85,
+            "change": -0.75,
             "name": "Bitcoin USD",
-            "marketCap": 1552336551936,
+            "marketCap": 1554869125120,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -71,8 +71,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "GC=F": {
-            "price": 4725.4,
-            "change": 0.43,
+            "price": 4722.3,
+            "change": 0.37,
             "name": "Gold Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -148,8 +148,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "CL=F": {
-            "price": 94.88,
-            "change": -1.01,
+            "price": 94.4,
+            "change": -1.51,
             "name": "Crude Oil Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -171,7 +171,7 @@
         },
         "KRW=X": {
             "price": 1476.32,
-            "change": -0.11,
+            "change": -0.25,
             "name": "USD/KRW",
             "marketCap": "N/A",
             "per": "N/A",
@@ -218,8 +218,8 @@
             "change": 2.13,
             "name": "Microsoft Corporation",
             "marketCap": 3155936149504,
-            "per": 26.605263,
-            "eps": 15.96,
+            "per": 26.588602,
+            "eps": 15.97,
             "dividend": 86.0,
             "target": 577.9991,
             "summary": "Microsoft Corporation develops and supports software, services, devices, and solutions worldwide. The Productivity and Business Processes segment offe..."
@@ -229,9 +229,9 @@
             "change": 1.63,
             "name": "Alphabet Inc.",
             "marketCap": 4166206881792,
-            "per": 31.33758,
-            "eps": 10.99,
-            "dividend": 25.0,
+            "per": 31.859388,
+            "eps": 10.81,
+            "dividend": 24.0,
             "target": 377.29492,
             "summary": "Alphabet Inc. offers various products and platforms in the United States, Europe, the Middle East, Africa, the Asia-Pacific, Canada, and Latin America..."
         },
@@ -240,8 +240,8 @@
             "change": 3.49,
             "name": "Amazon.com, Inc.",
             "marketCap": 2839014801408,
-            "per": 36.818687,
-            "eps": 7.17,
+            "per": 36.76741,
+            "eps": 7.18,
             "dividend": "N/A",
             "target": 283.47656,
             "summary": "Amazon.com, Inc. engages in the retail sale of consumer products, advertising, and subscriptions service through online and physical stores in North A..."
