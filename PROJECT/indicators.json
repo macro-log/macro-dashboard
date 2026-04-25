@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-04-25 13:28:19",
+    "last_updated": "2026-04-25 15:15:03",
     "master_score": 62,
-    "score_delta": "+1",
+    "score_delta": "0",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 77678.85,
-            "change": -0.75,
+            "price": 77569.96,
+            "change": -0.89,
             "name": "Bitcoin USD",
-            "marketCap": 1554869125120,
+            "marketCap": 1552775905280,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -185,8 +185,8 @@
             "change": -0.87,
             "name": "Apple Inc.",
             "marketCap": 3979469914112,
-            "per": 34.31139,
-            "eps": 7.9,
+            "per": 34.35488,
+            "eps": 7.89,
             "dividend": 38.0,
             "target": 297.7055,
             "summary": "Apple Inc. designs, manufactures, and markets smartphones, personal computers, tablets, wearables, and accessories worldwide. The company offers iPhon..."
@@ -207,8 +207,8 @@
             "change": 4.32,
             "name": "NVIDIA Corporation",
             "marketCap": 5062002737152,
-            "per": 40.837257,
-            "eps": 5.1,
+            "per": 42.591003,
+            "eps": 4.89,
             "dividend": 2.0,
             "target": 268.6148,
             "summary": "NVIDIA Corporation operates as a data center scale AI infrastructure company. The company operates through two segments, Compute & Networking, and Gra..."
