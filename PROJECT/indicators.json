@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-04-26 03:35:37",
+    "last_updated": "2026-04-26 04:37:36",
     "master_score": 63,
     "score_delta": "0",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 77384.14,
-            "change": -0.09,
+            "price": 77258.83,
+            "change": -0.25,
             "name": "Bitcoin USD",
-            "marketCap": 1549072072704,
+            "marketCap": 1546322575360,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -243,7 +243,7 @@
             "per": 36.76741,
             "eps": 7.18,
             "dividend": "N/A",
-            "target": 283.47656,
+            "target": 283.78906,
             "summary": "Amazon.com, Inc. engages in the retail sale of consumer products, advertising, and subscriptions service through online and physical stores in North A..."
         }
     },
