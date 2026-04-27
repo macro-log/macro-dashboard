@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-04-28 05:51:59",
+    "last_updated": "2026-04-28 06:45:13",
     "master_score": 59,
     "score_delta": "0",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 76963.98,
-            "change": -2.15,
+            "price": 76881.27,
+            "change": -2.26,
             "name": "Bitcoin USD",
-            "marketCap": 1540938792960,
+            "marketCap": 1540648599552,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -71,8 +71,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "GC=F": {
-            "price": 4694.5,
-            "change": -0.59,
+            "price": 4697.7,
+            "change": -0.52,
             "name": "Gold Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -148,8 +148,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "CL=F": {
-            "price": 96.65,
-            "change": 2.38,
+            "price": 96.68,
+            "change": 2.42,
             "name": "Crude Oil Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -170,8 +170,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "KRW=X": {
-            "price": 1474.5,
-            "change": -0.37,
+            "price": 1473.98,
+            "change": -0.4,
             "name": "USD/KRW",
             "marketCap": "N/A",
             "per": "N/A",
@@ -220,7 +220,7 @@
             "marketCap": 3157422768128,
             "per": 26.601128,
             "eps": 15.97,
-            "dividend": "N/A",
+            "dividend": 86.0,
             "target": 572.6657,
             "summary": "Microsoft Corporation develops and supports software, services, devices, and solutions worldwide. The Productivity and Business Processes segment offe..."
         },
