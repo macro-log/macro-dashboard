@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-04-28 08:42:43",
+    "last_updated": "2026-04-28 10:56:05",
     "master_score": 59,
     "score_delta": "0",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 77279.02,
-            "change": -1.75,
+            "price": 77112.37,
+            "change": -1.96,
             "name": "Bitcoin USD",
-            "marketCap": 1545827647488,
+            "marketCap": 1543597326336,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -49,8 +49,8 @@
             "summary": "The Trust’s Portfolio consists of substantially all of the component common stocks that comprise the DJIA, which are weighted in accordance with the t..."
         },
         "DX-Y.NYB": {
-            "price": 98.47,
-            "change": -0.04,
+            "price": 98.53,
+            "change": 0.02,
             "name": "ICE US Dollar Index - Index - C",
             "marketCap": "N/A",
             "per": "N/A",
@@ -71,8 +71,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "GC=F": {
-            "price": 4706.0,
-            "change": -0.35,
+            "price": 4699.9,
+            "change": -0.47,
             "name": "Gold Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -148,8 +148,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "CL=F": {
-            "price": 96.69,
-            "change": 2.43,
+            "price": 96.93,
+            "change": 2.68,
             "name": "Crude Oil Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -159,8 +159,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "^KS11": {
-            "price": 6475.63,
-            "change": -0.0,
+            "price": 6697.57,
+            "change": 1.25,
             "name": "KOSPI Composite Index",
             "marketCap": "N/A",
             "per": "N/A",
@@ -170,7 +170,7 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "KRW=X": {
-            "price": 1473.89,
+            "price": 1473.98,
             "change": -0.05,
             "name": "USD/KRW",
             "marketCap": "N/A",
@@ -207,8 +207,8 @@
             "change": 4.0,
             "name": "NVIDIA Corporation",
             "marketCap": 5264706109440,
-            "per": 44.296524,
-            "eps": 4.89,
+            "per": 44.206123,
+            "eps": 4.9,
             "dividend": 2.0,
             "target": 268.6148,
             "summary": "NVIDIA Corporation operates as a data center scale AI infrastructure company. The company operates through two segments, Compute & Networking, and Gra..."
@@ -228,7 +228,7 @@
             "price": 350.34,
             "change": 1.72,
             "name": "Alphabet Inc.",
-            "marketCap": 4238063173632,
+            "marketCap": 4238218362880,
             "per": 32.40888,
             "eps": 10.81,
             "dividend": 24.0,
