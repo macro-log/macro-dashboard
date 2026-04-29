@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-04-30 07:45:15",
-    "master_score": 54,
+    "last_updated": "2026-04-30 08:43:38",
+    "master_score": 53,
     "score_delta": "-1",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 75913.97,
-            "change": -0.57,
+            "price": 75762.79,
+            "change": -0.77,
             "name": "Bitcoin USD",
-            "marketCap": 1519986933760,
+            "marketCap": 1517768933376,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -71,8 +71,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "GC=F": {
-            "price": 4561.3,
-            "change": -0.66,
+            "price": 4563.7,
+            "change": -0.61,
             "name": "Gold Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -148,8 +148,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "CL=F": {
-            "price": 108.47,
-            "change": 8.55,
+            "price": 108.07,
+            "change": 8.15,
             "name": "Crude Oil Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -170,8 +170,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "KRW=X": {
-            "price": 1488.28,
-            "change": 1.04,
+            "price": 1471.99,
+            "change": -0.07,
             "name": "USD/KRW",
             "marketCap": "N/A",
             "per": "N/A",
@@ -210,7 +210,7 @@
             "per": 42.704082,
             "eps": 4.9,
             "dividend": 2.0,
-            "target": 268.6148,
+            "target": 269.16544,
             "summary": "NVIDIA Corporation operates as a data center scale AI infrastructure company. The company operates through two segments, Compute & Networking, and Gra..."
         },
         "MSFT": {
