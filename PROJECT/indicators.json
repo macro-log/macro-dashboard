@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-05-02 10:48:45",
+    "last_updated": "2026-05-02 13:51:56",
     "master_score": 61,
-    "score_delta": "+1",
+    "score_delta": "0",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 78337.99,
-            "change": 2.67,
+            "price": 78162.06,
+            "change": 2.43,
             "name": "Bitcoin USD",
-            "marketCap": 1568388939776,
+            "marketCap": 1565028515840,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -71,8 +71,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "GC=F": {
-            "price": 4625.6,
-            "change": 0.24,
+            "price": 4629.9,
+            "change": 0.33,
             "name": "Gold Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -83,7 +83,7 @@
         },
         "HYG": {
             "price": 80.06,
-            "change": -0.4,
+            "change": 0.12,
             "name": "iShares iBoxx $ High Yield Corp",
             "marketCap": 15726240768,
             "per": 11.00834,
@@ -148,8 +148,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "CL=F": {
-            "price": 102.5,
-            "change": -2.45,
+            "price": 101.94,
+            "change": -2.98,
             "name": "Crude Oil Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -207,8 +207,8 @@
             "change": -0.56,
             "name": "NVIDIA Corporation",
             "marketCap": 4823327440896,
-            "per": 40.417515,
-            "eps": 4.91,
+            "per": 40.5,
+            "eps": 4.9,
             "dividend": 2.0,
             "target": 269.16544,
             "summary": "NVIDIA Corporation operates as a data center scale AI infrastructure company. The company operates through two segments, Compute & Networking, and Gra..."
@@ -218,9 +218,9 @@
             "change": 1.63,
             "name": "Microsoft Corporation",
             "marketCap": 3078640631808,
-            "per": 24.669048,
-            "eps": 16.8,
-            "dividend": 89.0,
+            "per": 24.69845,
+            "eps": 16.78,
+            "dividend": 88.0,
             "target": 561.9275,
             "summary": "Microsoft Corporation develops and supports software, services, devices, and solutions worldwide. The Productivity and Business Processes segment offe..."
         },
