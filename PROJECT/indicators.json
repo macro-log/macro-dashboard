@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-05-04 03:42:50",
+    "last_updated": "2026-05-04 04:45:46",
     "master_score": 56,
     "score_delta": "0",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 78680.21,
-            "change": 0.03,
+            "price": 78815.33,
+            "change": 0.2,
             "name": "Bitcoin USD",
-            "marketCap": 1575317274624,
+            "marketCap": 1577269198848,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -199,7 +199,7 @@
             "per": 358.55045,
             "eps": 1.09,
             "dividend": "N/A",
-            "target": 414.09903,
+            "target": 413.1878,
             "summary": "Tesla, Inc. designs, develops, manufactures, leases, and sells electric vehicles, and energy generation and storage systems in the United States, Chin..."
         },
         "NVDA": {
@@ -221,7 +221,7 @@
             "per": 24.68385,
             "eps": 16.78,
             "dividend": 88.0,
-            "target": 561.9275,
+            "target": 560.7736,
             "summary": "Microsoft Corporation develops and supports software, services, devices, and solutions worldwide. The Productivity and Business Processes segment offe..."
         },
         "GOOGL": {
