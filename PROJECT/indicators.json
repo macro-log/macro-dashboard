@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-05-04 06:32:25",
-    "master_score": 56,
-    "score_delta": "0",
+    "last_updated": "2026-05-04 07:30:20",
+    "master_score": 60,
+    "score_delta": "+4",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 78920.27,
-            "change": 0.33,
+            "price": 79111.07,
+            "change": 0.58,
             "name": "Bitcoin USD",
-            "marketCap": 1580128272384,
+            "marketCap": 1582068006912,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -49,8 +49,8 @@
             "summary": "The Trust’s Portfolio consists of substantially all of the component common stocks that comprise the DJIA, which are weighted in accordance with the t..."
         },
         "DX-Y.NYB": {
-            "price": 98.21,
-            "change": 0.13,
+            "price": 98.13,
+            "change": -0.08,
             "name": "ICE US Dollar Index - Index - C",
             "marketCap": "N/A",
             "per": "N/A",
@@ -71,8 +71,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "GC=F": {
-            "price": 4644.5,
-            "change": 0.65,
+            "price": 4631.7,
+            "change": 0.04,
             "name": "Gold Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
@@ -148,8 +148,8 @@
             "summary": "정보 없음...................................................................................................................................................."
         },
         "CL=F": {
-            "price": 101.94,
-            "change": -2.98,
+            "price": 100.9,
+            "change": -1.02,
             "name": "Crude Oil Jun 26",
             "marketCap": "N/A",
             "per": "N/A",
