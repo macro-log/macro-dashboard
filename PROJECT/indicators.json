@@ -1,14 +1,14 @@
 {
-    "last_updated": "2026-05-04 00:37:27",
+    "last_updated": "2026-05-04 01:36:36",
     "master_score": 56,
     "score_delta": "0",
     "market_temp": "-2.5",
     "stock_financials": {
         "BTC-USD": {
-            "price": 78688.65,
-            "change": 0.04,
+            "price": 78740.83,
+            "change": 0.11,
             "name": "Bitcoin USD",
-            "marketCap": 1576052064256,
+            "marketCap": 1575488454656,
             "per": "N/A",
             "eps": "N/A",
             "dividend": "N/A",
@@ -232,7 +232,7 @@
             "per": 29.419529,
             "eps": 13.11,
             "dividend": 22.0,
-            "target": 408.87207,
+            "target": 413.77603,
             "summary": "Alphabet Inc. offers various products and platforms in the United States, Europe, the Middle East, Africa, the Asia-Pacific, Canada, and Latin America..."
         },
         "AMZN": {
